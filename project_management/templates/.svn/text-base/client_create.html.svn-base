@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+
+{% block title %} Task {% endblock %}
+
+{% block contentdata %}
+    <style>
+        form { padding: 10px; }
+        .entry-form{ width: 100%; }
+        .element{ width: 50%; min-height: 30px; float: left; }
+        .label { width: 40%; float: left; }
+        .field { width: 60%; float: left; }
+        .SaveAndCancel{ width: 100%; clear: both; }
+        input[type=text]{ width: 160px;}
+        select{ width: 170px; }
+        #id_notes{ width: 250px; height: 90px;}
+    </style>
+
+    <script>
+    $(document).ready(function(){
+        $('#id_type').val('5'); 
+        $('#cancel').click(function(){
+            getURL1 =  window.location.href.split("?");
+            if (getURL1.length > 1)
+                {
+                 getURL = window.location.href.split("from=");
+                 if (getURL.indexOf('initiation') >=0)
+                    window.location.href = '{% url projects.views.manage_project_initiation_request %}?id={{project.id}}&approve={{project.is_approved}}';
+                }
+            else
+                window.location.href = '{% url customer.views.clientlist %}';
+        });
+        
+    });
+    </script>
+
+    <form id="client_form" name="client_form" action="" method="POST" />
+        <div class="header">Client Details</div><br>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+            {% endfor %}
+        {% endif %}
+
+        {{form.errors}}
+        <div class="entry-form">
+            {% for field in form %}
+                <div class="element">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% ifequal field.name 'type' %}
+                    {% for address_field in address_form %}
+                        <div class="element">
+                            <div class="label">{{address_field.label_tag}}</div>
+                            <div class="field">{{address_field}}</div>
+                        </div>
+                    {% endfor %}
+                {% endifequal %}
+            {% endfor %}
+        </div>
+
+        <div class="SaveAndCancel">
+        	{% if task_id == '' %}
+            <input type="submit" id="save" name="save" value="Save"/>
+            {% endif %}
+            
+            <input type="button" id="cancel" name="cancel" value="Cancel" />
+            
+        </div>
+    </form>
+{% endblock %}

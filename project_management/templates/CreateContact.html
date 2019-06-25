@@ -1,0 +1,520 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+
+{% block title %} {{action}} {{ title }} {% endblock %}
+ {% block programcontent %}  {% endblock %}
+{% block programmenu %} {% endblock %}
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+
+<script language="JavaScript">
+function AddNewDept()
+{
+    var selObj = document.getElementById('departmentID');
+  if (selObj.options[selObj.selectedIndex].value == "Add New")
+    document.getElementById('txtdept').style.display="block";
+ else
+    document.getElementById('txtdept').style.display="none";
+}
+
+function setHide() 
+{
+	document.getElementById("customerID").disabled =false; 
+	document.getElementById("externalType").disabled =false;
+	document.getElementById("departmentID").disabled =true;	
+	
+}
+function setVisibility() 
+{
+	document.getElementById("customerID").disabled =true;	
+	document.getElementById("externalType").disabled =true;	
+	document.getElementById("departmentID").disabled =false;
+}
+function showhide()
+{
+	if(document.getElementById("typeid") != null)
+	{
+		if(document.getElementById("typeid").value == "External")
+		{
+			document.getElementById("External").checked=true;
+			setHide()
+		}
+		else
+		{
+			document.getElementById("Internal").checked=true;
+			
+			if(document.getElementById("previlage").value == "Executive")
+				document.getElementById("rdnormal").checked=true;
+			else
+				document.getElementById("normal").checked=true;
+		}
+		
+	}
+}
+
+function userCheckHide(){
+	if (document.getElementById("External").checked == true){
+		setHide();
+	}
+	else{
+		setVisibility();
+	}
+}
+
+function setaction(action)
+{
+	var formObj = document.getElementById("saveUser");
+				    var newAttr = document.createAttribute("action");
+				    newAttr.nodeValue = action;	
+				    formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+				    formObj.setAttributeNode(newAttr);
+}
+function setCancelFormAction(action)
+{
+	setaction(action);
+	return true;
+}
+function setFormAction(action){    
+ var flg = false;
+ if (ReqValidate('userName,email','User Name,Email'))
+	{
+		if(document.getElementById("Internal").checked)	
+		{	
+			if (document.getElementById('txtdept').style.display =="block")
+			{
+				flg = ReqValidate('txtdept','Department');
+					setaction(action);
+			}
+			else
+			{
+				if(emailValidation('email')){ 
+					setaction(action);
+					flg = true;
+				}
+				else
+					flg = false;
+			
+		}
+		}
+		if(document.getElementById("External").checked)
+		{ 
+			if(document.getElementById("customerID").value != 0)
+			{
+				if(document.getElementById("externalType").value != 0)
+				{
+					if(emailValidation('email'))
+					{ 
+						flg = true;
+						setaction(action);
+					}
+					else
+						flg = false;
+				}
+				else
+				{
+					alert('Select an external type from the list');
+					flg = false;
+				}
+			}
+			else
+			{
+				alert('Select a business unit from the list');
+				flg = false;
+			}
+		}
+	}
+
+if(flg && !isOfficeNum(document.getElementById("mobile").value)){
+alert (' Enter valid mobile number');
+flg = false;
+}
+
+if(flg && !isOfficeNum(document.getElementById("officeNo").value)){
+alert (' Enter valid office number');
+flg = false;
+}
+
+if(flg && !isOfficeNum(document.getElementById("extensionNo").value)){
+alert (' Enter valid extension number');
+flg = false;
+}    
+    
+ return flg;
+}
+
+</script>
+<script language="JavaScript">
+function setFocusOfElement(){
+	document.getElementById('userName').focus();
+	if(document.getElementById("Internal").checked)
+	{
+		setVisibility();
+	}
+	else
+	{
+		setHide();
+	}
+}
+</script>
+<script type="application/javascript">
+function init() 
+ { 
+   setFocusOfElement();
+ };
+
+if (navigator.appName == "Netscape"){
+   if (document.addEventListener) 
+   {
+       document.addEventListener("DOMContentLoaded", init, false);
+   }
+}
+else
+{
+ window.onload = init;
+} 
+</script>
+    <form id="saveUser" name="saveUser" method="post" action="#">
+         <div class="wr-ar">
+ 			 <div style="float:left">
+          <div class="update-program-hdr">        
+                <span class="header">{{action}} {{title}}</span>
+            </div></div>
+             
+            <div style="float:left;padding-left:57%;padding-top:5px;padding-bottom:5px;">
+			   <table>
+              <tr>
+                <td style="white-space: nowrap">
+                  <input name="contactSave" type="submit" title="Save" id="contactSavetop" style="margin-top: 10px" value="Save"
+                        class="b1" onclick="return setFormAction('../UserSave/');" />
+                <input name="contactSave&Continue" type="submit" title="Save And Continue" id="contactSave&Continuetop" style="margin-top: 10px" value="Save and Continue"
+                       class="b1" onclick="return setFormAction('../UserSaveAndContinue/');" />
+                 <input name="cancel" type="submit" title="Cancel" id="cancel_bttop" value="Cancel" style="margin-top: 10px" class="b1" onclick="return setCancelFormAction('../UserList/');"/>
+                 </td>              </tr>
+           </table>  
+          </div>
+          
+ <div class="both"></div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+ <tr>
+  <td style="width: 50%; text-align: center; vertical-align: middle;">
+   <label id="msg" class="Arial-12-maroon">
+       {{ duplicatealert }}</label></td>
+ </tr>
+ <tr>
+  <td align="left" valign="top" class="program-name-form-box">
+   <div align="center" style="padding-top: 15px; padding-bottom: 5px; padding-left: 15px;
+       padding-right: 15px;">
+       <table width="100%" border="0" cellspacing="2" cellpadding="0">
+         <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                   User Name*</td>
+               <td width="89%" height="28" align="left" valign="top">
+                   <input type="text" maxlength="120" name="userName" id="userName" value="{{fiveg_user.name.strip}}"
+                       style="width: 152px" />
+                   
+                   {% if userProfileDetails %}
+                   {% else %}
+                       {% if fiveg_user.address.pk %}
+                       <input type="hidden" maxlength="120" name="address_id" id="address_id" value="{{fiveg_user.address.pk}}" />
+                       {% endif %} 
+                       {% endif %}
+                   <input type="hidden" maxlength="120" name="authUserID" id="authUserID" value="{% if userProfileDetails %}{% else %}{{fiveg_user.userProfile.authUser.pk}}{% endif %}" />
+                   <input type="hidden" maxlength="120" name="userID" id="userID" value="{{fiveg_user.pk}}" />
+						 <input type="hidden" maxlength="120" name="userProfileID" id="userProfileID" value="{% if userProfileDetails %}{% else %}{{fiveg_user.userProfile.userProfileID}}{% endif %}" />
+						 <input type="hidden" maxlength="120" name="action" id="action" value="{{action}}" />
+						
+				</td>												
+           </tr>
+            <tr>
+         <td align="left" valign="middle" colspan="2">
+             <div id="sub6"><! style="display: None;" -->
+                 <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                     <tr>
+                         <td width="15%" align="left" valign="middle" class="con-grey">
+                              Job Title </td>                                                    
+                         <td width="89%" height="28" align="left" valign="top">
+                         <input type="text" maxlength="120" name="title" id="title" value="{{fiveg_user.title.strip}}"
+                       style="width: 152px" />
+                         </td>
+                     </tr>
+                 </table>
+             </div>
+         </td>
+           </tr> 
+           <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                   User Type*
+               </td>
+               <td width="89%" height="28" align="left" valign="middle">
+                   <table border="0" cellpadding="1" cellspacing="1">
+                       <tr>
+                          
+                           {% if fiveg_user %} {% ifequal fiveg_user.sysuserType 'Internal' %}
+                           <td width="89%" height="28" align="left" valign="middle">
+                               <input type="radio" value="Internal" checked name="userType" id="Internal" onclick="javascript: setVisibility();" />
+                               <span class="con-grey">Internal</span>
+                               <input type="radio" value="External" disabled name="userType" id="External" onclick="javascript: setHide();" />
+                               <span class="con-grey">External</span></td>
+                           {% else %}
+                           <td width="89%" height="28" align="left" valign="middle">
+                               <input type="radio" value="Internal" disabled name="userType" id="Internal" onclick="javascript: setVisibility();" />
+                               <span class="con-grey">Internal</span>
+                               <input type="radio" value="External" checked name="userType" id="External" onclick="javascript: setHide();" />
+                               <span class="con-grey">External</span></td>
+                           {% endifequal %} {% else %}
+                           <td width="89%" height="28" align="left" valign="middle">
+                               <input type="radio" value="Internal" checked name="userType" id="Internal" onclick="javascript: setVisibility();" />
+                               <span class="con-grey">Internal</span>
+                               <input type="radio" value="External" name="userType" id="External" onclick="javascript: setHide();" />
+                               <span class="con-grey">External</span></td>
+                           {% endif %}
+                       </tr>
+                   </table>
+               </td>
+           </tr>
+           <tr>
+               <td align="left" valign="middle" colspan="2">
+                   <div id="sub3" > <! style="display: None;" -->
+                       <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                           <tr>
+                               <td width="15%" align="left" valign="middle" class="con-grey">
+                                   Business Unit*</td>
+                               <td width="89%" height="28" align="left" valign="top">
+                                   <select id="customerID" name="customerID" disabled class="select-box" style="width: 157px">
+								
+								{% if fiveg_user %}
+								{% ifequal fiveg_user.customer.name 'None' %}
+								<option value="0">Select</option>
+								{% else %}
+								<option value="{{fiveg_user.customer.pk}}">{{fiveg_user.customer.name|cut:"None"}}</option>
+								{% endifequal %}														
+								{% else %}
+                                       <option value="0">Select</option>
+								{% endif %}
+                                       {% for customer in customers|dictsort:"name" %}
+                                           {% ifequal customer.name 'Null' %}
+									{% endifequal %}
+									{% ifequal customer.name fiveg_user.customer.name %}
+									{% else %}
+                                       <option value="{{customer.pk}}">{{customer.name|cut:"None"}}</option>
+								{% endifequal %}
+                                       {% endfor %} 
+                                   </select>
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
+               </td>
+           </tr>
+           <tr>
+               <td align="left" valign="middle" colspan="2">
+                   <div id="sub6">
+                       <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                           <tr>
+                               <td width="15%" align="left" valign="middle" class="con-grey">
+                                    External Type*</td>
+                               
+                               <td width="89%" height="28" align="left" valign="top">
+                                   <select id="externalType" disabled name="externalType" class="select-box" style="width: 157px" >                           
+							{% if fiveg_user %}
+							{% ifequal fiveg_user.userType.name 'None' %}
+								<option value="0">Select</option>
+								{% else %}
+								<option value="{{fiveg_user.userType.userType}}">{{fiveg_user.userType.name|cut:"None"}}</option>
+							{% endifequal %}
+								{% else %}
+                                       <option value="0">Select</option>
+								{% endif %}
+								{% for type in userTypes|dictsort:"name" %}
+								{% ifequal type.name fiveg_user.userType.name %}
+									{% else %}
+								<option value="{{type.userType}}">{{type.name|cut:"None"}}</option>
+								{% endifequal %}
+								{% endfor %}
+                                       <!-- <option selected="selected">Customer</option>
+                                       <option>Supplier</option>
+                                       <option>Contractor</option>
+                                       <option>Consultant</option> -->
+                                   </select>
+                               </td>
+                           </tr>
+                       </table>
+                   </div>
+               </td>
+           </tr>
+           <tr style = "visibility:hidden;">
+               <td align="left" valign="middle" colspan="2">
+                   <div id="sub4">
+                       <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                           <tr align="left">
+                               <td width="15%" align="left" valign="middle" class="con-grey">
+                                  Client</td>
+                               <td width="18%" height="28" align="left" valign="top">
+                                   <select name="departmentID" id="departmentID" class="select-box" style="width: 157px" onchange="AddNewDept();">
+                                       {% if fiveg_user %}
+                                       {% ifequal fiveg_user.sysuserType 'External' %} {% ifequal fiveg_user.department.name 'None' %}
+								<option value="0">Select</option>{% endifequal %}
+								{% else %}
+								<option value="{{fiveg_user.department.departmentID}}">{{fiveg_user.department.name}}</option>
+								{% endifequal %}{% else %}
+                                       <option value="0">Select</option>
+								{% endif %}
+                                       
+                                       {% for department in departments %}
+								{% ifequal department.name fiveg_user.department.name %}
+									{% else %}
+                                       <option value="{{department.departmentID}}">{{department.name|cut:"None"}} </option>
+								{% endifequal %}
+                                       {% endfor %}
+								<option value="Add New">Add New</option>
+                                   </select>
+                               </td>
+						<td width="67%" height="28" align="left" valign="top">
+<input id="txtdept" name="UserDepartmentName" type="text" maxlength="120"  style="display:none"/></td>
+                           </tr>
+                       </table>
+                   </div>
+               </td>
+           </tr>
+           <tr>
+               <td align="left" valign="middle" colspan="2">
+                   <div id="sub5">
+                       <table cellpadding="0" width="100%">
+                           <tr>
+                               <td width="9%" align="left" valign="middle" class="con-grey">
+                                   Privilege*
+                               </td>
+                               
+                               <td width="50%" height="28" align="left" valign="middle">
+						{% for privilege in userPrivileges %}
+						{% if fiveg_user%}
+							{% ifequal privilege.name fiveg_user.userProfile.role.name %}
+                                   <input type="radio" checked value="{{privilege.id}}" name="roleID" id="roleID" />
+                                   <span class="con-grey">{{privilege.name}}</span>
+							{% else %}
+							{% if fiveg_userProfileDetails %}
+							{% ifequal privilege.id userProfileDetails.role_id %}
+                                   <input type="radio" checked value="{{privilege.id}}" name="roleID" id="roleID" />
+                                   <span class="con-grey">{{privilege.name}}</span>
+							{% else %}
+							<input type="radio" value="{{privilege.id}}" name="roleID" id="roleID" />
+                                   <span class="con-grey">{{privilege.name}}</span>
+							{% endifequal %}
+							{% else %}
+							<input type="radio" value="{{privilege.id}}" name="roleID" id="roleID" />
+                                   <span class="con-grey">{{privilege.name}}</span>
+							{% endif %}		{% endifequal %}											{% else %}
+							<input type="radio" checked value="{{privilege.id}}" name="roleID" id="roleID" />
+                                   <span class="con-grey">{{privilege.name}}</span>
+						{% endif %}
+						{% endfor %}
+                               </td>
+						
+                               
+                           </tr>
+                       </table>
+                   </div>
+               </td>
+           </tr>
+           <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                   Email*
+               </td>
+               <td width="89%" height="28" align="left" valign="top">
+                   <input type="text" name="email" id="email" value="{% if authUserDetails %}{{authUserDetails.email.strip}}{% else %}{{fiveg_user.userProfile.authUser.email.strip}}{% endif %}" style="width: 152px" maxlength="120" />
+               </td>
+           </tr>
+ <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                   Office Number
+                   </td>
+               <td width="89%" height="28" align="left" valign="top">
+                   <input type="text" name="officeNo" id="officeNo" maxlength="20" value="{% if userProfileDetails %}{{userProfileDetails.officeNumber.strip}}{% else %}{{fiveg_user.userProfile.officeNumber.strip}}{% endif %}"
+                       style="width: 152px" />
+                   <input type="text" name="extensionNo" id="extensionNo" maxlength="6" value="{% if userProfileDetails %}{{userProfileDetails.extensionNumber.strip}}{% else %}{{fiveg_user.userProfile.extensionNumber.strip}}{% endif %}"
+                       style="width: 52px" />
+               </td>
+           </tr>
+           <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                   Mobile
+               </td>
+               <td width="89%" height="28" align="left" valign="top">
+                   <input type="text" name="mobile" id="mobile" maxlength="20" value="{% if userProfileDetails %}{{userProfileDetails.mobile.strip}}{% else %}{{fiveg_user.userProfile.mobile.strip}}{% endif %}"
+                       style="width: 152px" />
+               </td>
+           </tr>
+           <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                   Active 
+               </td>
+               <td width="89%" height="28" align="left" valign="top">
+		    {% ifequal action 'Update' %}
+          <input id="status" name="status" {% ifequal fiveg_user.status 1 %}checked {% endifequal %} value="1" type="checkbox" />
+		    {% else %}
+			<input id="status" name="status" checked value="1" type="checkbox" />
+		   {% endifequal %}
+          </td>
+           </tr>
+           <tr>
+               <td width="15%" align="left" valign="middle" class="con-grey">
+                    Notes
+               </td>
+               <td width="89%" height="28" align="left" valign="top">
+                 <textarea name="notes" class="text-area" id="notes" style="width:260px; height:140px" cols="10" rows="1" maxlength="250" onkeypress="return imposeMaxLength(this,  event);" onbeforepaste="return doPaste(this);" onpaste="return doPaste(this);">{{fiveg_user.notes.strip}}</textarea>  
+               </td>
+           </tr>
+           <tr>
+               <td align="left" valign="top" class="con-grey">
+                   &nbsp;</td>
+               <td align="left" valign="top">
+                   <table>
+                       <tr>
+                           <td>
+                             <input name="contactSave" title="Save" type="submit" id="contactSave" style="margin-top: 10px" value="Save"
+                                       class="b1" onclick="return setFormAction('../UserSave/');" />
+                               
+                           </td>
+					<td>
+                 <input name="contactSave&Continue" type="submit" title="Save and Continue" id="contactSave&Continue" style="margin-top: 10px" value="Save and Continue"
+                                       class="b1" onclick="return setFormAction('../UserSaveAndContinue/');" />
+                               
+                           </td>					
+                           <td>
+                                   <input name="cancel" type="submit" title="Cancel" id="cancel_bt" value="Cancel" style="margin-top: 10px" class="b1" onclick="return setCancelFormAction('../UserList/');" />
+                           </td>
+					</form>
+                           <!--<td>
+                               <form id="Form1" method="post" action="/MyPage/">
+                                   <input name="cancel" type="submit" id="Submit1" value="My Page" style="margin-top: 10px"
+                                       class="b1" />
+                               </form>
+                       </td>-->
+                       </tr>
+                   </table>
+               </td>
+           </tr>
+           <tr>
+               <td colspan="2" align="left" valign="top" class="con-grey">
+                   <span class="con-s-grey">Marked (*) Fields are Mandatory</span>
+               </td>
+           </tr>
+       </table>
+   </div>
+   <div style="padding-bottom: 5px; padding-left: 15px; padding-right: 15px;">
+   </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    
+</body>
+{% endblock %} 

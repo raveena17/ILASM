@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.expander.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} My Clients {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<script>
+$(document).ready(function() {
+    $('div.expandable').expander({
+        expandText:         '[show]',
+        userCollapseText: '[hide]'
+    });
+    $('table#myclients_list').tablesorter();
+	
+	$('#create-customer').click(function(){ 
+        window.location.href = '{% url customer.views.manage_client %}'
+    });
+	$('#show_inactive').click(function(){ window.location.href = '{% url customer.views.clientlist %}?is_active=1' });
+    $('#hide_inactive').click(function(){ window.location.href = '{% url customer.views.clientlist %}?is_active=0' });
+   $('#deactivate').click(function(){
+            if(confirm('Are you sure you want to deactivate the project?')){
+                document.getElementById('myclients').action = '{% url deactivate-client %}';
+            }
+            else{
+                return false;
+            }
+        })
+
+    $('#activate').click(function(){
+            if((confirm('Are you sure you want to activate the project?'))){
+                document.getElementById('myclients').action = '{% url activate-client %}';
+            }
+            else{
+                return false;
+            }
+        }) 
+});
+</script>
+<style>
+	.list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-customer { padding-top: 10px; padding-bottom: 10px; width: 100%;}
+	#create-customer { float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+     form { padding: 10px; }
+    .myclients_list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .myclients-header-panel { width:100%;  }
+    .myclients-list-header, .myclients-column { width: 20%; padding-top: 10px;  }
+    .myclients-content { width:100%; }
+	.footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+	
+</style>
+{% load pagination_tags %}
+<form name="myclients" id="myclients" action="" method="POST">
+    <div class="list" >
+        <div class="list-header">
+            <span class="header">My Clients</span>
+        </div>
+		
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+		 <div class="program-blue-box">
+                <div class="create-customer">
+				{% if perms.customer.add_customer or perms.customer.change_customer %}
+                    {% if not show_inactive %}
+                        <input type="button" id="show_inactive" name="show_inactive" class="b1" value="show Inactive" />
+                    {% else %}
+                        <input type="button" id="hide_inactive" name="hide_inactive" class="b1" value="hide Inactive" />
+                    {% endif %}
+                    {% endif %}
+                {% if perms.customer.add_customer %}
+                    <input type="button" id="create-customer" name="create-customer" class="b1" value="Create Client" />
+                {% endif %}
+                </div>
+            </div>
+		{% autopaginate client_list %}
+        <table id="myclients_list" class="tablesorter">
+            <thead class="list-header-panel">
+                <tr>
+					<th class="header link-line-bg con-white-bold" width="8%">Select</th>
+                    <th class="header link-line-bg con-white-bold" width="8%">Customer Code</th>
+                    <th class="header link-line-bg con-white-bold" width="17%">Client Name</th>
+                    <th class="header link-line-bg con-white-bold" width="17%">Contact Name</th>
+                    <th class="header link-line-bg con-white-bold" width="18%">Contact Details</th>
+					<th class="header link-line-bg con-white-bold" width="7%">Status</th>
+                </tr>
+            </thead>
+            <tfoot class="footer">
+                    <tr>
+                        <td colspan="4">
+                            <div class="footer-buttons">
+                            {% if perms.customer.delete_customer %}
+                                <input type="submit" value="Activate" id="activate" name="activate" class="b1" />
+                                <input type="submit" value="Deactivate" id="deactivate" name="deactivate" class="b1" onclick=""/>
+                                <input type="button" value="Select All" id="select_all" name="select_all" class="b1" onclick="return doCheck('myclients');"  />
+                                <input type="button" value="Clear All" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('myclients');"  />
+                            {% endif %}
+                            </div>
+                        </td>
+                        <td colspan="5">
+                          {% paginate %}  
+                        </td>
+                    </tr>
+                </tfoot>
+            <tbody>
+                {% for client in client_list %}
+                    
+						<tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="client_pk" name="client_pk" value="{{client.pk}}" />
+                                <a href="{% url customer.views.manage_client id=client.pk %}">View</a>
+                            </td>
+                        <td class="myclients-column">
+                        {{client.customer_code}} 
+                        </td>
+                        <td class="myclients-column">
+                         {{client.name}}
+                        </td>
+                        <td class="myclients-column">
+                           {{client.firstname}} &nbsp;{{client.lastname}}
+                        </td>
+                        <td class="myclients-column">
+                            <div class="expandable">
+                               
+                                <span style="padding-right:28px;">Address</span> - <textarea style="border:0;height:100px;width:150px;" class="con-grey">{{client.address}}</textarea><br />
+                                
+                            </div>
+                        </td>
+						<td class="myclients-column">
+							{% if client.is_active %}
+                           Active
+						   {% else %}
+						   Inactive
+						   {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
+{% endblock %} 

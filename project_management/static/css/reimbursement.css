@@ -1,0 +1,193 @@
+
+        /*form { padding: 10px; position: absolute; top: 150px;}*/
+        form {padding: 13px; position: absolute; top: 130px;}
+        .header{position: absolute; text-align: left; left: 155px; font-size: 16}
+        .field { width: 59%; float:left; min-height: 45px; right: 200px;}
+        /*.label { width: 26%; float: left; min-height: 35px;}*/
+        .label {
+          width: 21%;
+          float: left;
+          min-height: 35px;
+          text-align: left!important;
+      }
+        label {font-weight: normal !important; color: #333;font-size: 15px;font-family: Liberation Serif;}
+        select {width: 37%;}
+        #id_prepared_by { border:0px; background: white; width: 90%, }
+        #id_client_name { border:0px; background:  white; width: 90%}
+        #id_visit_location { border:0px; background: white; width: 90%}
+        #id_from_date { border:0px; background:  white; width: 90%}
+        #id_to_date { border:0px; background:  white; width: 90%}
+        #cvr_status { border:0px; background:  white; width: 90%}
+        .category {width: 100%}
+
+        /* input[type=text], input[type=password], textarea, select, .vTextField { border: 1px solid #ccc; background: white; } */
+        /* input, textarea, select {background: white;} */
+        input {background: white;}
+
+        #cvr_table{display:none;}
+        #client_tittle{display:none;font-family: Arial, Helvetica, sans-serif;}
+        /* #id_name { border: none } */
+
+        #cvr_table  td, th {  
+            border: 1px solid lightgray; 
+            height: 30px; 
+            transition: all 0.3s; 
+          }
+
+       
+        table {  
+          color: #333;
+          font-family: Helvetica, Arial, sans-serif;
+          width: 99%; 
+          border-collapse: 
+          collapse; border-spacing: 0; 
+        }
+        td {
+          background: #FAFAFA;
+          text-align: left;   
+        }
+
+        td, th {  
+            border: 1px solid transparent; 
+            height: 30px; 
+            transition: all 0.3s; 
+          } 
+          .expenses {
+            position: relative;
+            float: right;
+            right: 92%;
+            margin-top: 7%!important;
+            /* bottom: 10%; */
+        }
+        .amount_label {
+          position: relative;
+          float: right;
+          right: 15%;
+          margin-top: 11%;
+      }
+      #id_total_amount{
+        position: relative;
+        float: left;
+        left: 78%;
+        margin-top: 5%;
+    }
+       /* .amount_label {
+            position: relative;
+            float: right;
+            right: 15%;
+            margin-top: 13%!important;
+        }
+        #id_total_amount {
+        position: relative;
+        float: right;
+        right: -158px;
+        margin-top: 8%;
+    }*/
+        #client_tittle {
+            display: none;
+            font-size: 13px;
+            font-family: Arial, Helvetica, sans-serif;
+            position: relative;
+            float: right;
+            right: 91%;
+            margin-top: -4%!important;
+            color: black;
+        }
+        .cvr_div {
+            position: relative;
+            float: left;
+            margin-top: 5%;
+        }
+        button {
+            position: relative;
+            float: right;
+            right: 67%;
+            margin-top: 10%;
+        }
+        #approve {
+            position: relative;
+            float: right;
+            right: 67%;
+            margin-top: 10%;
+            background-color: buttonface;
+            color: black;
+        }
+        #reject{
+            position: relative;
+            float: right;
+            right: 52%;
+            margin-top: 10%;
+            background-color: buttonface;
+            color: black;
+        }
+
+#travel_remark{
+    position: relative;
+    float: left;
+    margin-top: 10%;
+}
+
+input[type="file"] {
+    position:absolute;width:200px;height:30px;opacity:0;
+}
+
+/*.image-upload > input {
+  visibility:hidden;
+  width:0;
+  height:0
+}*/
+#img {
+    width: 14%;
+}
+
+
+/*#reject{
+    position: relative;
+    float: right;
+    right: 67%;
+    margin-top: 10%;
+}*/
+/*#create {
+    position: relative;
+    float: right;
+    right: 67%;
+    margin-top: 10%;
+}*/
+        /*  h4 {
+            font-family: Arial, Helvetica, sans-serif;
+            float: left;
+            right: 92%;
+            bottom: 61%;
+        }*/
+
+    /*  .amount {
+        position: relative;
+        float: left;
+        left: 84%;
+    }
+    .amount_label {
+      position: relative;
+      float: right;
+      right: 18%;
+      margin-top: 6%;
+  }
+     */   
+        
+span { font-weight: bold; }
+
+
+#print_button {
+    background-color: buttonface;
+    position: relative;
+    float: right;
+    right: 59%;
+    margin-top: 17%;
+}
+
+
+#update {
+    position: relative;
+    float: left;
+    left: -44%;
+    margin-top: 10%;
+}

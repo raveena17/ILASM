@@ -1,0 +1,220 @@
+
+{% url access_control.views.PrivilegeView as privileges %}
+{% url common_manager.views.MasterView as master %}
+{% url common_manager.views.SettingsManager as settings_manager %}
+{% url create-user as create_user %}
+{% url logs.views.DisplayLog as logs  %}
+{% url non_project_task.createMenuTaskViews.CreateMenuTaskView as task %}
+{% url non_project_task.views.NonProjectTaskList as task_list  %}
+{% url notifications.views.event_list as event_list  %}
+{% url projects.TaskListviews.add_tasklist as module %}
+{% url milestone.views.manage_milestone as milestone %}
+{% url projects.views.project_list as project_list %}
+{% url timesheet.views.task_tracking as timesheet  %}
+{% url users.views.manage_myprofile as my_profile  %}
+{% url users.views.user_list as user_list %}
+{% url business_unit.views.business_unit_list as business_unit_list %}
+{% url users.views.BusinessUnitView as business_unit %}
+{% url tasks.views.non_project_task_list as non_project_task_list %}
+{% url timesheet.views.daywise_task_lookup as daysTaskLookUpURL %}
+{% url timesheet.views.total_time_spent as totaltimespent %}
+
+
+{% load user_tags %}
+<style>
+li{height:25px;padding-left:5px;}
+</style>
+<div class="parentbox">
+    <img src="/static/css/images/green_tab.png" width="140" height="25" style="padding-top:5px;padding-bottom:5px;"/>
+
+    {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="/5GPal/">
+		<img src="/static/css/images/5gpal.gif" width="20" height="20"/>&nbsp;5GPAL</a>
+    </div>
+    {% endif %}
+
+     <!-- {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="/re-use/">
+		<img src="/static/css/images/re_use.png" width="20" height="20"/>&nbsp;Re-Use</a>
+    </div>
+    {% endif %}
+
+    {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="/NewsLetter/list/">
+		<img src="/static/css/images/NewsletterIcon.GIF" width="20" height="20"/>&nbsp;News letter</a>
+    </div>
+    {% endif %} --> 
+
+    {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="http://5gtechav/bugtracking" target="_blank" >
+            <img src="/static/css/images/bug.gif" width="20" height="20" />&nbsp;Bugzee</a>
+    </div>
+    {% endif %}
+
+    <div class="nestedbox">
+        <a href="/contacts/">
+            <img src="/static/css/images/contact.gif"  width="20" height="20" />
+                &nbsp;5G Address book
+        </a>
+    </div>
+
+    {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="http://192.168.1.77/trac" target="_blank" >
+            <img src="/static/css/images/trac.gif" width="20" height="20" />&nbsp;Trac
+        </a>
+    </div>
+    {% endif %}
+    
+
+    {% if perms.users.view_addressbook %}
+    <div class="nestedbox">
+        <a href="http://192.168.1.102:8010/admin/" target="_blank" >
+            <img src="/static/css/images/contact.gif" width="20" height="20" />&nbsp;Address Book
+        </a>
+    </div>
+    {% endif %}
+    {% if perms.users.view_userprofile or user.is_superuser %}
+    <div class="nestedbox">
+        <a href="http://192.168.1.102:8020/admin/" target="_blank" >
+            <img src="/static/css/images/5gpal.gif" width="20" height="20" />&nbsp;File Management
+        </a>
+    </div>
+    {% endif %}
+
+        {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="http://5gtechads:8080/auth.aspx" target="_blank" >
+        <img src="/static/css/images/teamlab.jpg" width="20" height="20" />&nbsp;Team Lab</a>
+    </div>
+    {% endif %}
+    
+    {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="https://5gtechads/default.aspx" target="_blank" >
+        <img src="/static/css/images/sharepoint.jpg" width="20" height="20" />&nbsp;Share Point</a>
+    </div>
+    {% endif %}
+    
+    {% if not user.is_superuser %}
+    <div class="nestedbox">
+        <a href="http://192.168.1.111/" target="_blank" >
+        <img src="/static/css/images/ftp.jpg" width="20" height="20" />&nbsp;File Transfer Protocol</a>
+    </div>
+    {% endif %}
+
+
+    {% if not user.is_superuser %}
+        <img src="/static/css/images/blue_tab.png" width="140" height="25" style="padding-top:5px;padding-bottom:5px;"/>
+        
+        {% if perms.users.change_userprofile %}
+            <div class="nestedbox">
+                    <a href="{{ my_profile }}">&nbsp;My Profile</a>
+            </div>
+        {% endif %}
+
+        <div class="nestedbox">
+            <a href="http://mail.google.com/a/fifthgentech.com" target="_blank" >&nbsp;My Mail</a>
+        </div>
+
+        <div class="nestedbox">
+            <a href="http://5gtechav/mindsharecms/ListApplyLeave.aspx" target="_blank" >&nbsp;My Leave</a>
+        </div>
+
+        <div class="nestedbox">
+            <a href="{{ project_list }}">&nbsp;My Project</a>
+        </div>
+
+        <div class="nestedbox">
+            {% if perms.timesheet.add_tasktracking or perms.timesheet.change_tasktracking %}
+                <a href="/timesheet/">
+            {% else %}
+                <a href="#">
+            {% endif %}&nbsp;My Timesheet</a>
+        </div>
+    {% endif %}
+    <img src="/static/css/images/actions.png" width="140" height="25" style="padding-top:5px;padding-bottom:5px;"/>
+   <!--  <ul class="no-bullets"> -->
+        {%if perms.business_unit.add_businessunit or perms.business_unit.change_businessunit %}
+        		{% if request.user.id != 148 %} 
+            <li><a href="{{ business_unit_list }}">Business Unit</a></li>
+        		{% endif %}
+        {% endif %}
+		 {% if perms.users.view_userprofile or user.is_superuser %}
+		 <li><a href="{{ user_list }}">User</a></li>
+		{% endif %} 
+        {% if user.is_superuser %}
+            <li><a href="{{ logs }}">Logs</a></li>
+            <li><a href="{{ master }}">Master</a></li>
+         {% else %}
+            {% if perms.business_unit.add_businessunit or perms.business_unit.change_businessunit %}
+            	{% if request.user.id != 148 %}  
+                <li><a href="/customer/list">My Clients</a></li>
+            	{% endif %}
+            {% endif %}
+            {% if perms.notifications.add_event or perms.notifications.change_event %}
+            	{% if request.user.id != 148 %} 
+                <li><a href="{{ event_list }}">Event</a></li>
+            	{% endif %}
+            {% endif %}
+            {% if perms.tasks.add_task or perms.tasks.change_task %} 
+             <li><a href="{{ non_project_task_list }}">Non Project Task</a></li>
+	    {% endif %}
+        {% endif %}
+		{% if perms.projects.add_project or perms.projects.change_project %}
+			{% if request.user.id != 148 %}
+            <li><a href="http://5gtechav/mindsharecms/ApproveLeave.aspx" target="_blank">Approve Leave</a></li>
+            
+            {% endif %}
+        {% endif %}
+		{% if perms.projects.add_project and request.user.id != 148 %}
+			<li><a href="/project/requestlist">Approve Initiation</a></li>
+			
+		{% endif %}
+		{% if perms.projects.add_project or perms.projects.change_project %}
+			{% if request.user.id != 148 %}
+            <li><a href="/projectbudget/list/">Approve Project Budget</a></li>
+            {% endif %}
+        {% endif %}
+         {% if user.is_superuser %}
+            <li><a href="/alert/list/">Alert Configuration </a></li>           
+        {% endif %}
+        {% if user.is_superuser %}
+            <li><a href="/alert/payitstatus/"> PayITStatus</a></li>           
+        {% endif %}
+<!--
+        {% if perms.projects.add_project and request.user.id != 148 %}
+            <li><a href="/announcement/list/">Approve Announcement</a></li>
+        {% endif %}
+         <br> -->
+
+	{% if perms.users.book_conference_room or perms.users.approve_conference_room_booking %}
+	      {% if request.user.id != 148 %}
+	<li><a href = "/conferenceroombooking/MonthlyCalendar">Book Conf. Room</a></li>
+			{% endif %}
+	{% endif %}
+	
+	
+			   
+		
+		
+	 </ul> 
+    <img src="/static/css/images/request.png" width="140" height="25" style="padding-top:8px"/>
+    <!-- <ul> -->
+        <li><a href="http://5gtechav/mindsharecms/ApplyLeave.aspx" target="_blank">Leave Request</a></li>
+        
+        <li><a href="/comingsoon/">Material Request</a></li>
+        <li><a href="/comingsoon/">Travel Request</a></li>
+        <li><a href="/comingsoon/">IT Request</a></li>
+	{% if perms.business_unit.add_businessunit and request.user.id != 148 %}
+		<li><a href="/project/request">Project Initiation</a></li>	
+	{% endif %}
+	{% if perms.projects.change_project and not perms.projects.add_project %}
+            <li><a href="/project/requestlist/">Project request status</a></li>
+        {% endif %} 
+   <!--  </ul> -->
+</div>

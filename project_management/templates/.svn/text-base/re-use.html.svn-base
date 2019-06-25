@@ -1,0 +1,43 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} Re-Use {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+<form name="contacts" id="contacts" action="." method="post">
+<div class="wr-ar">
+  	<div class="update-program-hdr">
+   	<table width="100%">
+        <tr>
+     		<td width="30%"><span class="header">Re-Use</span></td>
+     		<td width="50%"></td>
+        </tr>
+     </table>
+   </div>
+   <div style="overflow:auto;padding:5px;">
+	<div align="center">
+		<img class="image-inline" src="/static/css/images/re_use.png" alt="Re Use" height="200" 				width="149" />
+	</div>
+	<table width="100%"  border="0" cellspacing="0" cellpadding="0">	
+	<tr>
+		<td>
+		   <p>‘Re-use’ is an organizational initiative which was started last financial year as part of aligning with 5G’s Vision 2008. The key objectives of the re-use team are to reduce the development time &amp; increase the quality of work products by creating standard components, controls and code segments that can be used across products.</p> 
+<p>The re-use team comprises of <a href="mailto:sangeetha@fifthgentech.com">Sangeetha</a>.</p> 
+<p></p> 
+		</td>
+	</tr>
+	</table>
+	<div align="left">
+	   Click <a href="/re-use/components/" target="_blank" >here </a> to go to Re-Use Library.
+	</div>
+    </div>
+</div>
+{% endblock %} 

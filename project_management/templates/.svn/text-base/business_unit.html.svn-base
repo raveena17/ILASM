@@ -1,0 +1,49 @@
+<script type="application/javascript">
+$(function() { 
+    $('#overlay #cancel').click(closeOverlay);
+
+    $('#overlay #save' ).click(function(){
+        if ($('#id_project').val() != ''){
+            var businessUnit = {
+                    'project_id': window.location.search.substring('ids').split("=")[1],
+                    'name':$('#overlay #id_name').val(),
+                    'businessunitID':$('#overlay #domainID').val()
+                  };
+            var addBusinessUnit = function(json){
+                if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+                else{
+                    $("#id_project_type option[value='"+ json[0].id +"']").remove();
+                    $('#id_business_unit').prepend('<option value="'+json[0].id+'">'+json[0].resource+'</option>');
+                    closeOverlay();
+                }
+                }
+            $.ajax({ 
+                type : "POST",
+                url : "/project/business_unit/",
+                data : businessUnit,
+                success : addBusinessUnit,
+                dataType: "json"
+                });
+            }
+        });
+    });
+
+</script>
+<style>
+#overlay label{ color: white; }
+</style>
+<html>
+<head>
+    <title> Business Unit </title>
+</head>
+<body id="overlay">
+    <h3><p><label> Business Unit </label></p></h3>
+    <h4><p><label> {{form.errors}} </label></p></h4>
+    {{form.as_p}}
+    <div style="padding-left:45px;">
+    <input type="hidden" id="businessunitID" name="businessunitID" value="{{businessunitID}}" />
+    <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+    </div>
+</body>
+</html>

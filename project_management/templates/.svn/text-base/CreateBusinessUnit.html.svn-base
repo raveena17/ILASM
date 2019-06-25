@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+
+{% block title %} {{action}} {{ title }}  {% endblock %}
+{% block programcontent %} {% endblock %} {% block programmenu %} {% endblock %}
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+ <style type="text/css">
+
+draglist {
+    position: relative;
+    width: 200px;
+    height:240px;
+    background: #f7f7f7;
+    border: 1px solid gray;
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+</style>
+
+<script language="JavaScript" type="application/javascript">
+function getstate(event)
+{
+
+      var form = this;
+      var data = {}
+      getdata = $("#Country").val()
+
+$.getJSON("/GetState/?countryid="+getdata,
+function(json)
+{
+document.getElementById('State').options.length =0;
+if (json.length > 0)
+{
+	for (j =json.length-1 ;j >=0;j--)
+	{
+	  newLi = $('<option selected value='+json[j].id+'>'+json[j].name+'</option>');
+		$("#State").prepend(newLi);
+	}
+}
+else
+{
+	var newLi = $('<option value=0>None</option>');
+	$("#State").prepend(newLi);
+}
+ }
+);
+
+}
+window.onload = function(){
+	document.getElementById('customername').focus();
+	showvalue();
+  }
+function showvalue()
+{
+if (document.getElementById("userid").value != '')
+    document.getElementById("customerkeycontact").value=document.getElementById("userid").value;
+}
+function setAddContactAction(action)
+{
+	var formObj = document.getElementById("createcustomer");
+   var newAttr = document.createAttribute("action");
+   newAttr.nodeValue = action;
+   formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+   formObj.setAttributeNode(newAttr);
+	//document.createcustomer.action = action;
+}
+
+function setFormAction(action){
+var flg = false;
+	flg = chkMaxlength(document.getElementById('customernotes'),'Notes');
+	if (!flg) flg = false;
+ if(flg && ReqValidate('customername','Business Unit Name')){
+    flg = true;
+ //document.createcustomer.action=action;
+	var formObj = document.getElementById("createcustomer");
+    var newAttr = document.createAttribute("action");
+    newAttr.nodeValue = action;
+    formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+    formObj.setAttributeNode(newAttr);
+    }
+    else{
+    flg = false;
+    }
+    if(flg)
+ 	{if (document.getElementById('url').value != ""){
+ 	if (urlValidation('url','URL') == true){
+    flg = true;}
+    else{ document.getElementById('url').focus();flg = false;}
+    }
+    }
+ return flg;
+}
+function setFormsAction(actions) {
+var flg = true;
+document.customercontact.action = actions;
+return flg;
+}
+</script>
+<script type="application/javascript">
+function getSubType(event)
+{
+     var form = this;
+     var data = {}
+     getdata = $("#businessunittype").val()
+
+
+}
+/*function init()
+ {
+   //document.getElementById('businessunitsubtype').value = document.getElementById('setsubtype').value;
+ };
+
+if (navigator.appName == "Netscape")
+{
+  for Mozilla 
+   if (document.addEventListener)
+   {
+       document.addEventListener("DOMContentLoaded", init, false);
+   }
+}
+else
+{
+ window.onload = init;
+} */
+</script>
+
+<body runat="server">
+{% include "user_popup.html" %}
+    <!-- <form id="createcustomer" method="post" action="/SaveCustomer/"> -->
+<form id="createcustomer" name="createcustomer" method="post" action="#"> <!-- onsubmit="SelectAllOptions();" -->
+<div class="wr-ar">
+    <div style="float:left">
+    <div class="update-program-hdr">
+        <span class="header"> {{action}} {{title}}</span>
+     </div></div>
+   <div style="float:left;padding-left:53%;padding-top:13px;">
+   <table><tr>
+       <td style="white-space:nowrap">
+         <input name="btncreate" type="submit" id="savetop" title="Save" value="Save" class="b1" onclick="return setFormAction('{% url users.views.BusinessUnitSave %}');"/>
+         <input name="btnupdate" type="submit" id="saveContinuetop" title="Save And Continue"  value="Save and Continue" class="b1" onclick="return setFormAction('{% url users.views.BusinessUnitSaveAndContinue %}');" />
+         <input type="submit" name="btncancel" id="canceltop" value="Cancel" title="Cancel" class="b1" onclick="setAddContactAction('{% url users.views.businessunit_list %}');" />
+       </td>
+       </tr>
+   </table>
+   </div>
+   <div class="both"></div>
+   <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td style="width: 80%; text-align: center; vertical-align: middle;">
+            <label id="msg" class="Arial-12-maroon">{{ duplicatealert }}</label>
+        </td>
+    </tr>
+    <tr>
+    <td align="left" valign="top" class="program-name-form-box" style="width:70%;">
+      <div align="center" style="padding-top: 15px; padding-bottom: 5px; padding-left: 15px;padding-right: 15px;">
+       <table width="100%" border="0" cellspacing="2" cellpadding="0">
+         <tr>
+            <td width="17%" align="left" class="con-grey">
+              Business Unit Name <span class="Arial-12-grey">*</span>
+            </td>
+            <td height="28" align="left" style="width: 180px">
+             <input type="text" maxlength="120" name="customername" id="customername" value="{{customer.name.strip}}" style="width: 200px" />
+             <input type="hidden" name="customerid" id="customerid" value="{{customer.id}}"/>
+             <input type="hidden" name="action" id="action"  value="{{action}}"/>
+            </td>              
+            <td width="13%" align="left" class="con-grey">Type *</td>
+            <td height="33" align="left" valign="middle" style="width: 220px">
+              <select id="businessunittype" name="businessunittype" class="select-box" style="width: 208px" onchange="getSubType(event);">
+				{% if customer %}
+				  <option value="{{customer.type.typeID}}">{{customer.type.name}}</option>
+				{% endif %}
+                  {% for type in types|dictsort:"name" %}
+    				{% ifequal type.name customer.type.name %}
+    				{% else %}
+    			       <option value="{{type.typeID}}">{{type.name}}</option>
+    				{% endifequal %}
+					{% endfor %}                  
+               </select>
+             </td>
+          </tr>
+          <tr>                 
+			<input type="hidden" name="addressid" id="addressid" value="{{customer.address.addressID}}" style="width: 107px" />
+            <td align="left" class="con-grey" style="height: 28px">Address1 </td>
+            <td align="left" style="width: 111px; height: 28px">
+               <input type="text" maxlength="250" name="address1" id="address1" style="width: 200px" value='{{customer.address.Address1.strip|cut:"None"}}{{address.Address1.strip|cut:"None"}}'/>
+            </td>
+            <td width="13%" align="left" class="con-grey" style="height: 28px">Address2</td>
+            <td align="left" style="height: 28px">
+                <input type="text" maxlength="250" name="address2" id="address2" style="width: 200px" value='{{customer.address.Address2.strip|cut:"None"}}{{address.Address2.strip|cut:"None"}}'/>
+            </td>
+         </tr>
+         <tr>
+            <td align="left" valign="middle" class="con-grey">City</td>
+            <td height="33" align="left" valign="middle" style="width: 111px">
+                <input type="text" maxlength="120" name="city" id="city" style="width: 200px" value='{{customer.address.city.strip|cut:"None"}}{{address.city.strip|cut:"None"}}'/></td>            
+            <td width="13%" align="left" class="con-grey">Country </td>
+            <td height="28" align="left">
+                <select id="Country" name="Country" onchange="getstate(event);" class="select-box" style="width: 208px">
+                  {% ifequal action 'Create' %}
+                    <option value="0" >None </option> 
+                  {% endifequal %}
+    			  {% if customer %}
+    				{% if countrySelected %}
+    						<option value="{{countrySelected.countryID}}">{{countrySelected.name}}</option>
+    				{% else %}
+    						<option value="{{customer.address.country.countryID}}">{{customer.address.country.name}}</option>
+    				{% endif %}
+    			  {% endif %}
+				 {% for country in countries|dictsort:"name" %}
+					{% ifequal country.name customer.address.country.name %}
+					{% else %}
+						{% ifequal country.name countrySelected.name %}
+						{% else %}
+                        <option value="{{country.countryID}}">{{country.name}}</option>
+                       {% endifequal %}
+					{% endifequal %}
+				 {% endfor %}
+                </select>
+              </td>
+          </tr>
+          <tr>
+             <td align="left" class="con-grey" style="height: 27px">
+                <span class="Arial-12-grey">State/Province </span></td>
+             <td align="left" style="width: 111px; height: 27px">
+                <select id="State" name="State" class="select-box" style="width: 208px">
+				{% if customer %}
+					{% if stateSelected %}
+							<option value="{{stateSelected.stateID}}">{{stateSelected.name}}</option>
+					{% else %}
+							<option value="{{customer.address.state.stateID}}">{{customer.address.state.name}}</option>
+					{% endif %}
+				{% endif %}
+				{% for state in states|dictsort:"name" %}
+					{% ifequal state.name customer.address.state.name %}
+					{% else %}
+							{% ifequal state.name stateSelected.name %}
+							{% else %}
+								<option value="{{state.stateID}}">{{state.name}}</option>
+							{% endifequal %}
+					{% endifequal %}
+				{% endfor %}
+                </select>
+            </td>
+            <td width="13%" align="left" class="con-grey" style="height: 27px">ZIP/Postal Code</td>
+            <td align="left" style="height: 27px">
+                <input type="text" maxlength="12" name="zipCode" id="zipCode" style="width: 200px" value="{% ifnotequal customer.address.zipCode '0' %}{{customer.address.zipCode.strip}}{% endifnotequal %}{% ifnotequal address.zipCode '0' %}{{address.zipCode.strip}}{% endifnotequal %}"/></td>
+         </tr>
+        <tr>
+            <td width="17%" align="left" class="con-grey">URL</td>
+            <td height="28" align="left" style="width: 220px">
+                <input type="text" name="url" id="url" style="width: 200px" maxlength="120" value="{{customer.url.strip}}"/></td>
+            <td width="13%" align="left" valign="middle" class="con-grey">Related To </td>
+            <td height="33" align="left" valign="middle">
+                <select id="relatedTo" name="relatedTo" class="select-box" style="width: 208px">
+				{% if customer %}
+					<option value="{{customer.relatedTo.pk}}">{% ifequal customer.relatedTo.name 'Internal' %}None{% else %}{{customer.relatedTo.name}}{% endifequal %}</option>
+					{% else %}
+					<option value="0">Select</option>
+				{% endif %}
+                    {% for eachRelatedTo in relatedTo|dictsort:"name" %}
+						{% ifequal eachRelatedTo.name customer.relatedTo.name %}
+						{% else %}
+					       <option value="{{eachRelatedTo.pk}}">{{eachRelatedTo.name}}</option>
+						{% endifequal %}
+					{% endfor %}
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" class="con-grey" style="height: 34px"> Notes </td>
+            <td align="left" colspan="5" style="width: 194px; height: 14px">
+                <textarea name="customernotes" class="text-area" id="customernotes" style="width: 508px; height: 142px" cols="10" rows="1" maxlength="250" onkeypress="return imposeMaxLength(this,  event);" onbeforepaste="return doPaste(this);" onpaste="return doPaste(this);" >{{customer.notes.strip}}</textarea></td>
+        </tr>
+        <tr style="height: 8px;"></tr>
+        <tr>
+            <input type="hidden" id="userid" name="keycontact" value="{{customer_list.keyContact}}" />
+            <td align="left" valign="top" class="con-grey">&nbsp;</td>
+            <td align="left" valign="top">
+                <table>
+                    <tr>
+                        <td align="left" valign="bottom">
+                            <input name="btncreate" type="submit" title="Save"  id="save" value="Save" class="b1"onclick="return setFormAction('{% url users.views.BusinessUnitSave %}');"/></td>
+                       <td align="left" valign="bottom">
+                        <input name="btnupdate" type="submit" id="saveContinue" title="Save And Continue"  value="Save and Continue" class="b1" onclick="return setFormAction('{% url users.views.BusinessUnitSaveAndContinue %}');" />
+                       </td>
+                       <td align="left" valign="bottom">
+                          <input type="submit" name="btncancel" id="cancel" title="Cancel" value="Cancel" class="b1" onclick="setAddContactAction('{% url users.views.businessunit_list %}');" />
+                       </td>
+                    </tr>
+                </table>
+             </td>
+         </tr>
+      </table>
+    </td>
+     <td align="left" valign="top" class="program-name-form-box" style="width: 30%;">
+       {% ifequal action 'Update' %}
+           <table width="100%">
+               <tr><td>&nbsp;</td></tr>
+               <tr>
+                   <td height="33" align="right" valign="middle">
+                       <input type="submit" class="b1" value="Add Contact" onclick="setAddContactAction('../AddCustomerContact/?customerid={{customer.id}}');">
+                    </td>               
+              </tr>                    
+                   <tr>
+                     <td align="left">{%load tags%}
+                        <input type="hidden" name="customerid" id="customerid" value="{{customer.id}}" />        
+                   	    <ul style="width:225px;height:138px;list-style:none;padding:0;margin:0;overflow:auto;border:1px solid gray;" name="UserList">
+                	        {% for user in customerUsers|dictsort:"name" %}
+                    		<li class="program-row" style="list-style:none;" onmouseover="showUser('{{user.pk}}');" onmouseout="hideUser();">
+                    		<!-- <a id="delete" class="con-grey" href="/CustomerContactDelete/?ids={{user.pk}}" style="padding-right:2px;">
+                    		<img src="/static/img/admin/icon_deletelink.gif" style="vertical-align: middle;" />
+                    		</a> -->
+                    		<a id="A1" class="con-grey" href="/UpdateCustomerContact/?ids={{user.pk}}&customerid={{customer.id}}" style="padding-left:2px;padding-right:2px;">
+                    		<img src="/static/img/admin/icon_changelink.gif"  style="vertical-align: middle;" />
+                    		</a>{{user.name|truncchar:18}}&nbsp;&nbsp;{{user.title|truncchar:7}}</li>
+                	        {% endfor %}
+                		</ul>        
+                	  </td>        
+                	</tr>
+         
+         </table>
+        {% endifequal %}
+     </td>
+   </tr>
+    <tr>
+        <td colspan="2" align="left" valign="top" class="con-grey">
+          <span class="con-s-grey">Marked (*) Fields are Mandatory</span></td>
+    </tr>
+    <div style="padding-bottom: 5px; padding-left: 15px; padding-right: 15px;"></div>
+ </table>
+</form>
+</body>
+{% endblock %}

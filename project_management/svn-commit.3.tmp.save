@@ -1,0 +1,6 @@
+* Altered Validation messages.
+
+--This line, and those below, will be ignored--
+
+M    templates/cost.html
+M    templates/phase.html

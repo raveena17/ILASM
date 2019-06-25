@@ -1,0 +1,165 @@
+[
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 1,
+    "fields":{
+    "name":"Waterfall"
+    }
+    },
+
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 2,
+    "fields":{
+    "name":"Incremental"
+    }
+    },
+
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 3,
+    "fields":{
+    "name":"Iterative"
+    }
+    },
+
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 4,
+    "fields":{
+    "name":"Evolution Prototype"
+    }
+    },
+
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 5,
+    "fields":{
+    "name":"Evolution Delivery"
+    }
+    },
+
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 6,
+    "fields":{
+    "name":"Agile"
+    }
+    },
+
+    {
+    "model":"projects.DevelopmentProcess",
+    "pk": 7,
+    "fields":{
+    "name":"V-Model"
+    }
+    },
+
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 1,
+	"fields": {
+		"name": "Marketing Campaign",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 2,
+	"fields": {
+		"name": "Advertising",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 3,
+	"fields": {
+		"name": "Manufacturing",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 4,
+	"fields": {
+		"name": "Construction",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 5,
+	"fields": {
+		"name": "Product Development",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 6,
+	"fields": {
+		"name": "Sales",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 7,
+	"fields": {
+		"name": "Marketing",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 8,
+	"fields": {
+		"name": "Administration",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 9,
+	"fields": {
+		"name": "Finance",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 10,
+	"fields": {
+		"name": "Sales Alliance",
+		"level": "1"
+	}
+    },
+    {
+	"model": "projects.ProjectType",
+	"pk": 11,
+	"fields": {
+		"name": "Joint Venture",
+		"level": "1"
+	}
+    },
+
+    {
+	"model": "projects.ProjectType",
+	"pk": 12,
+	"fields": {
+		"name": "Business Development",
+		"level": "1"
+	}
+    }
+]

@@ -1,0 +1,563 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/SVN/Mindshare/!svn/ver/1394/trunk/src/PayIT/payit/apps/updated_code/project_management/templates
+END
+customer_contact.html
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/customer_contact.html
+END
+event_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/event_list.html
+END
+project_menus.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1325/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_menus.html
+END
+contacts.html
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/SVN/Mindshare/!svn/ver/1130/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/contacts.html
+END
+CreateBusinessUnit.html
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CreateBusinessUnit.html
+END
+MonthlyCalendar.html
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/MonthlyCalendar.html
+END
+customers.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/customers.html
+END
+customer_contact_from_project.html
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/customer_contact_from_project.html
+END
+Survey_of_the_month.html
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Survey_of_the_month.html
+END
+businessunit_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/businessunit_list.html
+END
+header.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/header.html
+END
+projectbudget_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1261/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/projectbudget_list.html
+END
+alertconfig.html
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/SVN/Mindshare/!svn/ver/1362/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/alertconfig.html
+END
+tasklist.html
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/tasklist.html
+END
+5gpal_Policies.html
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1131/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/5gpal_Policies.html
+END
+5gpal__process-templates.html
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/SVN/Mindshare/!svn/ver/1360/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/5gpal__process-templates.html
+END
+manage_business_unit.html
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/manage_business_unit.html
+END
+5gpal_FxCop_and_Rules.html
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/5gpal_FxCop_and_Rules.html
+END
+task_type.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1393/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/task_type.html
+END
+development_environment.html
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/development_environment.html
+END
+DayCalendar.html
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/DayCalendar.html
+END
+cost.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1323/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/cost.html
+END
+customer_from_project.html
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/customer_from_project.html
+END
+coming_soon.html
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/coming_soon.html
+END
+search_header.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/search_header.html
+END
+projectDashboard.html
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1274/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/projectDashboard.html
+END
+Repository.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Repository.html
+END
+event.html
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/event.html
+END
+Re-Use_Library.html
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Re-Use_Library.html
+END
+AnnouncementView.html
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/AnnouncementView.html
+END
+5G-Pal.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/5G-Pal.html
+END
+Create_Tag_Or_ProjectType.html
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Create_Tag_Or_ProjectType.html
+END
+EventEditor.html
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/EventEditor.html
+END
+WeeklyCalendar.html
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/WeeklyCalendar.html
+END
+business_unit.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/business_unit.html
+END
+Approved_Announcement_Mail.html
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Approved_Announcement_Mail.html
+END
+task_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1274/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/task_list.html
+END
+re-use.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/re-use.html
+END
+projectbudget.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1393/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/projectbudget.html
+END
+user_popup.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/user_popup.html
+END
+client_create.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1370/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/client_create.html
+END
+task.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1393/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/task.html
+END
+Gift_of_the_Gurus.html
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Gift_of_the_Gurus.html
+END
+Mystifier-july08.html
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Mystifier-july08.html
+END
+project_initiation_request.html
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/SVN/Mindshare/!svn/ver/1392/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_initiation_request.html
+END
+LogPopUp.html
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/LogPopUp.html
+END
+Recent_updates.html
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Recent_updates.html
+END
+Project_Initiate_Request_Mail.html
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Project_Initiate_Request_Mail.html
+END
+domain.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/domain.html
+END
+login.html
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/login.html
+END
+ClientList.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/ClientList.html
+END
+project_home.html
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_home.html
+END
+project_plan.html
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/SVN/Mindshare/!svn/ver/1314/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_plan.html
+END
+project_group.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_group.html
+END
+Approved_project_print.html
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/SVN/Mindshare/!svn/ver/1274/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Approved_project_print.html
+END
+Notification.html
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Notification.html
+END
+pay_it_status.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1377/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/pay_it_status.html
+END
+CreateNonProgramTask.html
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CreateNonProgramTask.html
+END
+customer_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/customer_list.html
+END
+5gpal__process-templates_old.html
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/5gpal__process-templates_old.html
+END
+milestone.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1274/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/milestone.html
+END
+phase.html
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/SVN/Mindshare/!svn/ver/1393/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/phase.html
+END
+add_task_to_task_pane.html
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/add_task_to_task_pane.html
+END
+budget_pdf.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1326/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/budget_pdf.html
+END
+Logs.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Logs.html
+END
+myprofile.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/myprofile.html
+END
+project_type.html
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_type.html
+END
+timesheet2.html
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1142/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/timesheet2.html
+END
+sidemenu.html
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/SVN/Mindshare/!svn/ver/1360/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/sidemenu.html
+END
+logout.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/logout.html
+END
+user_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/user_list.html
+END
+base.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1277/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/base.html
+END
+book_conference_room.html
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/book_conference_room.html
+END
+CreateAnnouncement.html
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CreateAnnouncement.html
+END
+user.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/user.html
+END
+CreateContact.html
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CreateContact.html
+END
+MyPage.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/MyPage.html
+END
+Announcement_List.html
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Announcement_List.html
+END
+create_conference_room.html
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/create_conference_room.html
+END
+timesheet.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/timesheet.html
+END
+milestone_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1274/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/milestone_list.html
+END
+Logo_Race.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Logo_Race.html
+END
+non_project_task_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/non_project_task_list.html
+END
+footer.html
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/footer.html
+END
+Project_initiation_request_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/SVN/Mindshare/!svn/ver/1394/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Project_initiation_request_list.html
+END
+CreateCustomerContact.html
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CreateCustomerContact.html
+END
+project_list.html
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/SVN/Mindshare/!svn/ver/1370/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project_list.html
+END
+non_project_task.html
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/non_project_task.html
+END
+alertlist.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1361/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/alertlist.html
+END
+CommonMaster.html
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CommonMaster.html
+END
+project.html
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/SVN/Mindshare/!svn/ver/1274/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/project.html
+END
+CreateMenuTask.html
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/CreateMenuTask.html
+END
+Mystifier.html
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templates/Mystifier.html
+END

@@ -1,0 +1,172 @@
+.form-style-3{
+    margin-left: 10px; 
+    max-width: 450px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+.form-style-3 label{
+    display:block;
+    /*margin-bottom: 10px;*/
+    margin: 0px 0px 10px 0px;
+}
+.form-style-3 label > span{
+    float: left;
+    width: 200px;
+    color: #666;
+    font-weight: bold;
+    font-size: 13px;
+    text-shadow: 1px 1px 1px #fff;
+}
+.form-style-3 fieldset{
+    width : 450px;
+    /*height: 550px;*/
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    margin: 0px 0px 10px 0px;
+    border: 1px solid #e1e1e1;
+    padding: 20px;
+    background: #fafafa;
+    box-shadow: inset 0px 0px 15px #fafafa;
+    -moz-box-shadow: inset 0px 0px 15px #fafafa;
+    -webkit-box-shadow: inset 0px 0px 15px #fafafa;
+}
+.form-style-3 fieldset legend{
+    color: #666;
+    border-top: 1px solid #e1e1e1;
+    border-left: 1px solid #e1e1e1;
+    border-right: 1px solid #e1e1e1;
+    border-radius: 5px 5px 0px 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    -moz-border-radius: 5px 5px 0px 0px;
+    background: #fafafa;
+    padding: 0px 8px 3px 8px;
+    box-shadow: -0px -1px 2px red;
+    -moz-box-shadow:-0px -1px 2px #fafafa;
+    -webkit-box-shadow:-0px -1px 2px #fafafa;
+    font-weight: normal;
+    font-size: 14px;
+}
+.form-style-3 textarea{
+    width:10px;
+    height:50px;
+}
+.form-style-3 input[type=text],
+.form-style-3 input[type=date],
+.form-style-3 input[type=datetime],
+.form-style-3 input[type=number],
+.form-style-3 input[type=search],
+.form-style-3 input[type=time],
+.form-style-3 input[type=url],
+.form-style-3 select,
+.form-style-3 textarea{
+    /*max-width: 10px;*/
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    /*border: 1px solid lightgray;*/
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    margin-left: 0;
+    outline: none;
+    color: #333333;
+    padding: 5px 8px 5px 8px;
+    box-shadow: inset 1px 1px 4px #e1e1e1;
+    -moz-box-shadow: inset 1px 1px 4px #e1e1e1;
+    -webkit-box-shadow: inset 1px 1px 4px #e1e1e1;
+    /*background: ;*/
+    width:49%;
+    margin-top: -3%;
+    margin-left: 46%;
+}
+
+
+input {
+    margin: 2px 0;
+    width: 63px;
+    margin-top: 20px;
+    margin-left: 142px;
+    font-size: 13px;
+    /* border: 1px solid #ddd; */
+    background-color: #f4f4f4;
+    color: #333333;
+} 
+
+.form-style-3  input[type=submit]
+{
+   width: 100px;
+   /*margin-left: 130px; */
+    font-size: 11px;
+    },
+.form-style-3  input[type=button]{
+    width: 100px;
+    margin-left: 500px;
+    background: #e1e1e1;
+    /*border: 1px solid #C94A81;*/
+    border: 1px solid #e1e1e1;
+    padding: 5px 15px 5px 15px;
+    color: #e1e1e1;
+    box-shadow: inset -1px -1px 3px #fafafa;
+    -moz-box-shadow: inset -1px -1px 3px #fafafa;
+    -webkit-box-shadow: inset -1px -1px 3px #fafafa;
+    border-radius: 3px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;   
+    font-weight: bold;
+}
+.required{
+    color:red;
+    font-weight:normal;
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+select.select2 {
+  position: absolute;
+  visibility: hidden;
+}
+
+
+
+/*.cvr_form select,
+.cvr_form input,
+.cvr_form textarea {
+    width: 240px !important;*/
+/*}*/

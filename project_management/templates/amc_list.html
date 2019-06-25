@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Business Unit {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    #create-amc-report {float: right;}
+</style>
+<script>
+$(document).ready(function(){
+    $('#create-amc-report').click(function(){ 
+        window.location.href = "/amc/create/"
+    });
+    
+    $('table.tablesorter').tablesorter();
+});
+</script>
+{% load pagination_tags %}
+    <form id="amc_list" name="amc_list" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">AMC List</span>
+            </div>
+
+            <div class="program-blue-box">
+                <div class="create-button">
+                    <input type="button" id="create-amc-report" name="create-amc-report" class="b1" value="New AMC" />
+                </div>
+            </div>
+            <div id="msg1"> 
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {% if amcList %} 
+                <h1>AMC List</h1>
+
+                <table id="users" class="tablesorter">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Select</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">S.No</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Customer</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Project</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Milestone</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Due date</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">To-AMC end date</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Remarks</th>
+                        </tr>
+                    </thead>
+
+                <tfoot class="footer">
+                    <tr>
+                       <center>
+                        <td colspan="4"></td>
+                        <td colspan="10">
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if amcList.has_previous %}
+                                    <a href="?page={{ amcList.previous_page_number }}">previous</a>
+                                {% endif %}
+
+                               {% for n in amcList.paginator.page_range %}
+                                    {% if amcList.number == n %}
+                                      <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                    {% elif n > amcList.number|add:'-2' and n < amcList.number|add:'4' %}
+                                    <span class="page-item"><a class="page-link" href="?page={{ n }}">{{ n }}</a></span>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if amcList.has_next %}
+                                    <a href="?page={{ amcList.next_page_number }}">next</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </td><center>
+                    </tr>
+                </tfoot>
+
+                <tbody>                                         
+                     {% for amc in amcList %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="amc_pk" name="businessunit_pk" value="{{amc.pk}}" />
+                                <a href="/amc/update/{{amc.pk}}">View</a>
+                            </td>
+                            <td width="5%">
+                                {% if is_paginated %}
+                                    {{ page_obj.start_index|add:forloop.counter0 }}
+                                {% else %}
+                                   {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td width="15%">{{ amc.customer_name }}</td>
+                            <td width="10%">{{ amc.project_name }}</td>
+                            <td width="10%">{{ amc.milestone_name }}</td>
+                            <td width="10%">{{ amc.Due_date }}</td>
+                            <td width="10%">{{ amc.AMC_end_date }}</td>
+                            <td width="10%">{{ amc.remarks }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+
+        </div>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/static/css/jquery.autocomplete.css" rel="stylesheet" media="screen"/>
+    <link type="text/css" href="/static/css/jquery-ui-redmond-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/timesheetnew.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-ui-1.7.2.custom.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.autocomplete.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.toChecklist.js"></script>
+    <script type="application/javascript" src="/static/js/timesheetnew.js"></script>              
+{% endblock %}
+{% block contentdata %}
+<script type="application/javascript">
+var validation = [];
+
+		$(function(){		
+		'{% for each_pjt in projects %}'
+		'{% for each_tsk in each_pjt.sel_task %}'
+			tsk = '{{ each_pjt.id }}' +';' + '{{ forloop.counter }}'			
+		 		if (validation.indexOf(tsk) == -1)
+					validation.push(tsk)						
+		'{% endfor %}'
+		'{% endfor %}'	
+		'{% for each_tsk in sel_non_pjt_tsk %}'
+			tsk = '0' +';' + '{{ forloop.counter }}'			
+		 		if (validation.indexOf(tsk) == -1)
+					validation.push(tsk)						
+		'{% endfor %}'
+				});
+		
+function addtask() 
+		{	  
+     		     		
+      }
+function CheckedSave() 
+		{				 			 	
+		 	for (var i = 0; i < validation.length; i++) 
+			  {				 					 	 
+			    for (var j=i+1; j < validation.length; j++) 
+			     {		         
+			      task_id1 = validation[i].split(';')
+			      task_id2 = validation[j].split(';')
+			      
+       			ftime1 = parseFloat($('#'+task_id1[0]+'_Timefrom'+task_id1[1]).val())       			
+			      ttime1 = parseFloat($('#'+task_id1[0]+'_Timeto'+task_id1[1]).val())			   
+			      ftime2 = parseFloat($('#'+task_id2[0]+'_Timefrom'+task_id2[1]).val())			     
+			      ttime2 = parseFloat($('#'+task_id2[0]+'_Timeto'+task_id2[1]).val())
+			      			      								     			                              
+			          if ((((ftime1) != (ttime1)) && ((ftime2) != (ttime2)) && ((ftime1) != (ftime2)) && ((ttime1) != (ttime2)))) 
+			          {			          				          	                              
+			              if ((ftime1 < ftime2) && (ttime1 > ftime2) || (ftime1 < ttime2) && (ttime1 > ttime2)) 
+			              {			              				              			                 
+			                  alert("Selected time interval is already defined");			                     
+			              		return;
+			              }
+			              if (((ftime1) > (ttime1)) || ((ftime2) > (ttime2)))
+							  {							  
+									alert ("From time should not be greater than to time");												
+									return;
+							  }			             
+			          }
+			          else 
+			          {				          	  		          	  
+			              alert("Selected time range is already defined");			          	  		   
+			              return;
+			          }                            
+			     }
+			 }	
+     			$('#Timesheet_new').submit();
+      }
+function RemoveDisabled(task,projectid,num)
+{
+  if (projectid == '0' || projectid != '' || projectid != undefined ) 
+   {
+   		if (task.value == '' || task.value == undefined) 
+       	{   
+       	  $('#'+projectid+'_Timefrom'+num).removeAttr('disabled');
+           $('#'+projectid+'_Timeto'+num).removeAttr('disabled');	      	       	 
+       	} 
+       	else
+      	{  
+            var task1 = $('#'+projectid+'_task1').val()
+           	if (task1 == null || task1 == "" || task1 == undefined)
+            	{
+       				alert('Please select first row');
+       				$('#'+projectid+'_task'+num).val("")
+       				$('#'+projectid+'_Timefrom'+num).attr('disabled',true);
+               	$('#'+projectid+'_Timeto'+num).attr('disabled',true);
+            	}
+          	else
+          		{
+              		$('#'+projectid+'_Timefrom'+num).removeAttr('disabled');
+              		$('#'+projectid+'_Timeto'+num).removeAttr('disabled');
+          		}
+      	}   		   	 	   	     		   		      
+ 	}	 
+}
+function totalcalc(i)
+{
+	row=5;
+	var tot=0.00;
+	var res=0;
+	var total = parseFloat($('#total').val(''));
+
+	for(i=1;i<row;i++)
+	{
+		{% for each_pjt in projects %}
+	  	res=$('#'+{{each_pjt.id}}+'_HiddenValue'+i).val() 
+	  	tot= tot+parseFloat(res);
+      {% endfor %} 
+      res=$('#0_HiddenValue'+i).val() 
+      tot= tot+parseFloat(res);    					
+	}
+	  $('#total').val(tot.toFixed(2));
+}
+
+function calcTimeto(task,projectid,i)
+{		
+	if (projectid == '0' || projectid != '' || projectid != undefined ) 
+   {
+      if (task.value == '' || task.value == undefined) 
+       {
+       	$('#'+projectid+'_Timefrom'+i).attr('disabled',true);
+	    	$('#'+projectid+'_Timeto'+i).attr('disabled',true);
+       }                       
+       else
+       {           
+       	ttime = parseFloat($('#'+projectid+'_Timeto'+i).val())
+       	ftime = parseFloat($('#'+projectid+'_Timefrom'+i).val())
+       	       	       	       	       	
+       	hour_diff = ttime.toFixed()- ftime.toFixed()       	
+       
+       	if ((((Math.ceil(ttime)-ttime) > 0 ) && ((Math.ceil(ftime)-ftime) > 0 )) || (((Math.ceil(ttime)-ttime) == 0 ) && 	((Math.ceil(ftime)-ftime) == 0 ))){
+       		temp_diff = 0
+       	}
+       	if (((Math.ceil(ttime)-ttime) > 0 ) && ((Math.ceil(ftime)-ftime) == 0 )){
+       		temp_diff = 0.30
+       	}
+       	if (((Math.ceil(ttime)-ttime) == 0 ) && ((Math.ceil(ftime)-ftime) > 0 )){
+       		temp_diff = -0.30
+       	}
+       	time_diff = (hour_diff + temp_diff)
+       	time_diff.toFixed(2);
+       	            	       	       	       	       	       	       						          	       	       			           			
+			($('#'+projectid+'_HiddenValue'+i).val(time_diff))
+		 	totalcalc();
+		 	tsk = projectid +';' + i
+	 		if (validation.indexOf(tsk) == -1)
+				validation.push(tsk)						
+		 		 						
+		 }				 				
+	}		
+} 
+
+
+</script>
+	{% load planner_tags %}
+			<form id="Timesheet_new" name="Timesheet_new" action="/timesheetnew/save/" method="POST" />
+			<h3 id="date_str">Date : {{ date_text|convert_to_date_object|date:"jS F, Y"  }}
+    		<input type="hidden" id="datepicker"/></h3>
+    		<input type="hidden" id="date" name="date" value={{ date_text }}/>
+    		<h3 id="total_time_spent"> Total Hours Spent:<input type ='text' id="total" value="{{time_spent}}" readonly="readonly"/></h3>
+
+    <table class="tablesorter">
+    		<thead>
+  					<tr>  
+  							<th style="size:20px"> Project  	</th>
+  							<th style="size:20px"> Tasks  	</th>
+  							<th style="size:20px"> Time-from	</th>
+  							<th style="size:20px"> Time-to  	</th>
+  					</tr>  			
+  			</thead>	
+  			<tbody>
+  			{% for each_pjt in projects %} 
+    	<tr>    	
+    	<td>{{each_pjt.name}} <!-- <img src="/static/css/images/icon_addlink.gif" title="Add" onclick="addtask();"/> --></td>	
+ 		 <td> 
+ 		 	{% for sel_tsk in each_pjt.sel_task %}
+ 		 		<select id="{{each_pjt.id}}_task{{ forloop.counter }}" name="{{each_pjt.id}}_task{{ forloop.counter }}" style="width:250px"onchange="RemoveDisabled(this,{{each_pjt.id}},{{ forloop.counter }})"><option value =''>-------------------------Task-----------------------------</option>
+					{% for each_tsk in each_pjt.Task %}<option {% if sel_tsk.task == each_tsk.id %} selected="selected" {% endif %}  value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+				</select>
+				<br>
+			{% endfor %}
+			{% if each_pjt.sel_task|length|add:1 < 5 %}
+ 		 		<select id="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:1 }}" name="{{each_pjt.id}}_task{{each_pjt.sel_task|length|add:1}}" style="width:250px"onchange="RemoveDisabled(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:1}})"><option value =''>-------------------------Task-----------------------------</option>
+					{% for each_tsk in each_pjt.Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+				</select>
+				<br>
+			{% endif %}
+			{% if each_pjt.sel_task|length|add:2 < 5 %}
+				<select id="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:2 }}" name="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:2 }}" style="width:250px"onchange="RemoveDisabled(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:2}})"><option value =''>-------------------------Task-----------------------------</option>
+					{% for each_tsk in each_pjt.Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+				</select>
+				<br>
+			{% endif %}
+			{% if each_pjt.sel_task|length|add:3 < 5 %}
+				<select id="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:3 }}" name="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:3 }}" style="width:250px"onchange="RemoveDisabled(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:3}})"><option value =''>-------------------------Task-----------------------------</option>
+					{% for each_tsk in each_pjt.Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+				</select>
+				<br>
+			{% endif %}
+			{% if each_pjt.sel_task|length|add:4 < 5 %}
+				<select id="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:4 }}" name="{{each_pjt.id}}_task{{ each_pjt.sel_task|length|add:4 }}" style="width:250px"onchange="RemoveDisabled(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:4}})"><option value =''>-------------------------Task-----------------------------</option>
+					{% for each_tsk in each_pjt.Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+				</select>
+				<br>
+			{% endif %}
+		</td> 
+ 		<td> 
+ 		
+	 		{% for sel_tsk in each_pjt.sel_task %}
+	 			<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ forloop.counter }}" id="{{each_pjt.id}}_HiddenValue{{ forloop.counter }}" value=0/>
+				<select id="{{each_pjt.id}}_Timefrom{{ forloop.counter }}" name="{{each_pjt.id}}_Timefrom{{ forloop.counter }}" style="width:70px">
+				{% for each_time in times %} <option {% if sel_tsk.timefrom == each_time %} selected="selected" {% endif %}   value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endfor %}
+			{% if each_pjt.sel_task|length|add:1 < 5 %}
+	 			<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:1 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:1 }}" value=0/>
+				<select id="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:1 }}" name="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:1 }}" style="width:70px"disabled>
+				<option value =''> select</option> 
+				{% for each_time in times %} <option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+			{% if each_pjt.sel_task|length|add:2 < 5 %}
+				<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:2 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:2 }}" value=0/>
+				<select id="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:2 }}" name="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:2 }}" style="width:70px"disabled>
+				<option value =''>select</option>
+				{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+			{% if each_pjt.sel_task|length|add:3 < 5 %}
+				<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:3 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:3 }}" value=0/>
+				<select id="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:3 }}" name="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:3 }}" style="width:70px"disabled>>
+				<option value =''>select</option>
+				{% for each_time in times %}<option  value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+			{% if each_pjt.sel_task|length|add:4 < 5 %}
+				<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:4 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:4 }}" value=0/>
+				<select id="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:4 }}" name="{{each_pjt.id}}_Timefrom{{ each_pjt.sel_task|length|add:4 }}" style="width:70px"disabled>>
+				<option value =''>select</option>
+				{% for each_time in times %}<option  value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+		 </td>
+	  	<td> 
+	  			{% for sel_tsk in each_pjt.sel_task %}
+	 				<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ forloop.counter }}" id="{{each_pjt.id}}_HiddenValue{{ forloop.counter }}" value=0/>
+					<select id="{{each_pjt.id}}_Timeto{{ forloop.counter }}" name="{{each_pjt.id}}_Timeto{{ forloop.counter }}" style="width:70px"onchange="calcTimeto(this,{{each_pjt.id}},{{ forloop.counter }})">
+					{% for each_time in times %} <option {% if sel_tsk.timeto == each_time %} selected="selected" {% endif %}   value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endfor %}
+				{% if each_pjt.sel_task|length|add:1 < 5 %}
+	 				<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:1 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:1 }}" value=0/>
+					<select id="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:1 }}" name="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:1 }}" style="width:70px"disabled onchange="calcTimeto(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:1}})">
+					<option value =''> select</option> 
+					{% for each_time in times %} <option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}
+				{% if each_pjt.sel_task|length|add:2 < 5 %}
+					<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:2 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:2 }}" value=0/>
+					<select id="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:2 }}" name="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:2 }}" style="width:70px"disabled onchange="calcTimeto(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:2}})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}
+				{% if each_pjt.sel_task|length|add:3 < 5 %}
+					<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:3 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:3 }}" value=0/>
+					<select id="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:3 }}" name="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:3 }}" style="width:70px"disabled onchange="calcTimeto(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:3}})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option  value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}
+				{% if each_pjt.sel_task|length|add:4 < 5 %}
+					<input type="hidden" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:4 }}" id="{{each_pjt.id}}_HiddenValue{{ each_pjt.sel_task|length|add:4 }}" value=0/>
+					<select id="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:4 }}" name="{{each_pjt.id}}_Timeto{{ each_pjt.sel_task|length|add:4 }}" style="width:70px"disabled onchange="calcTimeto(this,{{each_pjt.id}},{{each_pjt.sel_task|length|add:4}})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option  value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}	   
+		</td>
+    	</tr>
+    	{% endfor %}
+    				 
+    	<tr>    	
+    	<td>Non Project Task </td>	
+ 		 <td>
+ 		 		{% for sel_tsk in sel_non_pjt_tsk %} 
+ 		 			<select id="0_task{{ forloop.counter }}" name="0_task{{ forloop.counter }}" style="width:250px"onchange="RemoveDisabled(this,0,{{ forloop.counter }})"><option value =''>-------------------------Task-----------------------------</option>
+						{% for each_tsk in Task %}<option {% if sel_tsk.nonprojecttask == each_tsk.id %} selected="selected" {% endif %} value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+					</select>
+					<br>								
+				{% endfor %}
+				{% if sel_non_pjt_tsk|length|add:1 < 5 %}
+					<select id="0_task{{ sel_non_pjt_tsk|length|add:1 }}" name="0_task{{ sel_non_pjt_tsk|length|add:1 }}" style="width:250px"onchange="RemoveDisabled(this,0,{{ sel_non_pjt_tsk|length|add:1 }})"><option value =''>-------------------------Task-----------------------------</option>
+						{% for each_tsk in Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+					</select>
+					<br>				
+				{% endif %}
+				{% if sel_non_pjt_tsk|length|add:2 < 5 %}
+					<select id="0_task{{ sel_non_pjt_tsk|length|add:2 }}" name="0_task{{ sel_non_pjt_tsk|length|add:2 }}" style="width:250px"onchange="RemoveDisabled(this,0,{{ sel_non_pjt_tsk|length|add:2 }})"><option value =''>-------------------------Task-----------------------------</option>
+						{% for each_tsk in Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+					</select>
+					<br>				
+				{% endif %}
+				{% if sel_non_pjt_tsk|length|add:3 < 5 %}
+					<select id="0_task{{ sel_non_pjt_tsk|length|add:3 }}" name="0_task{{ sel_non_pjt_tsk|length|add:3 }}" style="width:250px"onchange="RemoveDisabled(this,0,{{ sel_non_pjt_tsk|length|add:3 }})"><option value =''>-------------------------Task-----------------------------</option>
+						{% for each_tsk in Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+					</select>
+					<br>				
+				{% endif %}
+				{% if sel_non_pjt_tsk|length|add:4 < 5 %}
+					<select id="0_task{{ sel_non_pjt_tsk|length|add:4 }}" name="0_task{{ sel_non_pjt_tsk|length|add:4 }}" style="width:250px"onchange="RemoveDisabled(this,0,{{ sel_non_pjt_tsk|length|add:4 }})"><option value =''>-------------------------Task-----------------------------</option>
+						{% for each_tsk in Task %}<option value="{{each_tsk.id}}">{{ each_tsk.name }}</option>{% endfor %}
+					</select>
+					<br>				
+				{% endif %}
+		</td> 
+ 		<td>
+ 			{% for sel_tsk in sel_non_pjt_tsk %} 
+ 				<input type="hidden" id="0_HiddenValue{{ forloop.counter }}" id="0_HiddenValue{{ forloop.counter }}" value=0/>
+				<select id="0_Timefrom{{ forloop.counter }}" name="0_Timefrom{{ forloop.counter }}" style="width:70px">
+				{% for each_time in times %} <option {% if sel_tsk.nonprojecttask_timefrom == each_time %} selected="selected" {% endif %}   value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endfor %}
+			{% if sel_non_pjt_tsk|length|add:1 < 5 %}
+				<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:1 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:1 }}" value=0/>
+				<select id="0_Timefrom{{ sel_non_pjt_tsk|length|add:1 }}" name="0_Timefrom{{ sel_non_pjt_tsk|length|add:1 }}" style="width:70px"disabled>
+				<option value =''>select</option>
+				{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+			{% if sel_non_pjt_tsk|length|add:2 < 5 %}
+				<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:2 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:2 }}" value=0/>
+				<select id="0_Timefrom{{ sel_non_pjt_tsk|length|add:2 }}" name="0_Timefrom{{ sel_non_pjt_tsk|length|add:2 }}" style="width:70px"disabled>
+				<option value =''>select</option>
+				{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+			{% if sel_non_pjt_tsk|length|add:3 < 5 %}
+				<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:3 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:3 }}" value=0/>
+				<select id="0_Timefrom{{ sel_non_pjt_tsk|length|add:3 }}" name="0_Timefrom{{ sel_non_pjt_tsk|length|add:3 }}" style="width:70px"disabled>
+				<option value =''>select</option>
+				{% for each_time in times %}<option  value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+			{% if sel_non_pjt_tsk|length|add:4 < 5 %}
+				<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:4 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:4 }}" value=0/>
+				<select id="0_Timefrom{{ sel_non_pjt_tsk|length|add:4 }}" name="0_Timefrom{{ sel_non_pjt_tsk|length|add:4 }}" style="width:70px"disabled>
+				<option value =''>select</option>
+				{% for each_time in times %}<option  value="{{each_time}}">{{each_time}}</option>{% endfor %}
+				</select><br>
+			{% endif %}
+		 </td>
+	  	<td>
+	  			{% for sel_tsk in sel_non_pjt_tsk %} 
+ 					<input type="hidden" id="0_HiddenValue{{ forloop.counter }}" id="0_HiddenValue{{ forloop.counter }}" value=0/>
+					<select id="0_Timeto{{ forloop.counter }}" name="0_Timeto{{ forloop.counter }}" style="width:70px"onchange="calcTimeto(this,0,{{ forloop.counter }})">
+					{% for each_time in times %} <option {% if sel_tsk.nonprojecttask_timeto == each_time %} selected="selected" {% endif %}   value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endfor %}
+				{% if sel_non_pjt_tsk|length|add:1 < 5 %}
+					<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:1 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:1 }}"value=0/>	
+					<select id="0_Timeto{{ sel_non_pjt_tsk|length|add:1 }}" name="0_Timeto{{ sel_non_pjt_tsk|length|add:1 }}" style="width:70px"disabled onchange="calcTimeto(this,0,{{ sel_non_pjt_tsk|length|add:1 }})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}
+				{% if sel_non_pjt_tsk|length|add:2 < 5 %}
+					<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:2 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:2 }}"value=0/>	
+					<select id="0_Timeto{{ sel_non_pjt_tsk|length|add:2 }}" name="0_Timeto{{ sel_non_pjt_tsk|length|add:2 }}" style="width:70px"disabled onchange="calcTimeto(this,0,{{ sel_non_pjt_tsk|length|add:2 }})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}
+				{% if sel_non_pjt_tsk|length|add:3 < 5 %}
+					<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:3 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:3 }}"value=0/>	
+					<select id="0_Timeto{{ sel_non_pjt_tsk|length|add:3 }}" name="0_Timeto{{ sel_non_pjt_tsk|length|add:3 }}" style="width:70px"disabled onchange="calcTimeto(this,0,{{ sel_non_pjt_tsk|length|add:3 }})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %}
+				{% if sel_non_pjt_tsk|length|add:4 < 5 %}
+					<input type="hidden" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:4 }}" id="0_HiddenValue{{ sel_non_pjt_tsk|length|add:4 }}"value=0/>	
+					<select id="0_Timeto{{ sel_non_pjt_tsk|length|add:4 }}" name="0_Timeto{{ sel_non_pjt_tsk|length|add:4 }}" style="width:70px"disabled onchange="calcTimeto(this,0,{{ sel_non_pjt_tsk|length|add:4 }})">
+					<option value =''>select</option>
+					{% for each_time in times %}<option value="{{each_time}}">{{each_time}}</option>{% endfor %}
+					</select><br>
+				{% endif %} 
+	   </td>
+    	</tr>    	
+    	</tbody>
+    	    		    
+    </table>    
+    <input type="button" name="Save" value="Save" id="btnsave" name="btnsave" onclick=" CheckedSave()" />    
+    </form> 
+{% endblock %}  				

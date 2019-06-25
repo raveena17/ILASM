@@ -1,0 +1,8 @@
+* Altered design for Phase Master.
+* Created Test cases for Add, Edit and Deleting Phase, Dependency and Duplication validation.
+
+--This line, and those below, will be ignored--
+
+M    projectbudget/budgetmasters.py
+M    projectbudget/tests.py
+M    projectbudget/models.py

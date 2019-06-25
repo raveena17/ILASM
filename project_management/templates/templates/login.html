@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Enhanced Mindshare : Login</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/footer.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/loginpage.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+    <script type="application/javascript">
+	  function Init_Method(){
+        /* to store the local time zone in the base page this lines has been added*/
+        try {
+            var dateObj = new Date();
+			
+            document.getElementById("localTimeZone").value = dateObj.getTimezoneOffset();
+        }
+        catch (err) { }
+	  }
+    window.onload = function(){
+		try{
+			document.getElementById("loginusername").focus();
+		}
+		catch(err) {}
+		}
+	
+	window.onload =  Init_Method();
+		function Cancel()
+		{
+			try{
+				document.getElementById("loginusername").value="";
+				document.getElementById("loginpassword").value="";
+				document.getElementById("loginusername").focus()
+				} 
+			catch(err){}				
+			return false;							
+		}
+	  </script>
+      <style>
+        .login-error{ padding-left: 30%; padding-top:1%; float: left; text-align: center; }
+      </style>
+</head>
+<body>
+<input type="hidden" name="localTimeZone" id="localTimeZone"  />
+    <!--<div class="dots" style="float:left;"></div>-->
+    <div class="company-name" style="float:left"></div>
+    <div class="login-error">
+          {% for key, value in form.errors.items %}<div class="error">{{key|cut:"__all__"}} : {{value}}</div>{% endfor %}
+    </div>
+    <div id="company-logo"></div>
+	<div class="login-box">
+		<form action="{% url users.views.login %}" method="post">
+            {% csrf_token %}
+			<div style="top:30%">	
+				<label class="login-text">{{ form.username.label_tag }}</label>
+				{{ form.username }}
+			</div>
+			<div style="top:45%">
+				<label style="padding-right:7px;">{{ form.password.label_tag }}</label>
+				{{ form.password }}
+			</div>
+			<div id="loginbuttons">
+				<input type="image" src="/static/css/images/login_btn.png" alt="submit" />
+				<input type="image" src="/static/css/images/cancel_btn.png" onclick="return Cancel()"/>
+			</div>
+		</form>
+   </div>
+   <!--<div class="dots" style="bottom:0%; right:0%"></div>-->
+   <div id="copyright">
+   <span class="con-s-grey">&copy; 2010 Fifth Generation Technologies India (P) Ltd. All rights reserved</span>
+   </div>
+</body>
+</html>

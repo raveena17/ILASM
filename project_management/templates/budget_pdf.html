@@ -1,0 +1,104 @@
+<html><body>
+<div>	
+<h1 align="center" style="font-size:20px;">Project Budget - {{  projectbudget.project.code }}</h1>
+		
+		<div  style="font-name:Verdana;font-size:17px;background:#C0C0C0;border: 1px solid #666666;margin-left:5px;padding-top:3px;" >&nbsp;&nbsp;Project Budget</div>
+		<table style="font-name:Verdana;font-size:15px;"  id="profile_table" cellpadding="0" cellspacing="0" width="100%">
+			
+			<tr><td>&nbsp;</td></tr>
+				<tr>
+				<td>Project Name</td><td>:&nbsp;{{  projectbudget.project.name }}</td>
+				<td>Project Version</td><td>:&nbsp;{{  projectbudget.version}}</td>
+				</tr>
+				
+				<tr>
+				<td>Project Manager</td><td>:&nbsp;{{  projectbudget.project.requested_by.username }}</td>
+				<td>Client Name</td><td>:&nbsp;{{  projectbudget.project.customer.name }}</td>
+				</tr>
+				<tr>
+				<td>Business Unit</td><td>:&nbsp;{{  projectbudget.project.business_unit.name }}</td>
+				<td>Status</td><td>:&nbsp;{{  projectbudget.status.status }}</td>
+				</tr>
+				<tr>
+				<td>Business Head</td><td>:&nbsp;{{  projectbudget.business_head.username }}</td>
+				<td>Project Owner</td><td>:&nbsp;{{  projectbudget.pjt_owner.username }}</td>
+				</tr>				
+				<tr>
+				<td>Planned Start Date</td><td>:&nbsp;{{  projectbudget.planned_start_date|date:'d-m-Y' }}</td>
+				<td>Planned End Date</td><td>:&nbsp;{{  projectbudget.org_end_date|date:'d-m-Y' }}</td>
+				</tr>
+				</tr>
+				<tr>
+				<td>Revised Start Date</td><td>:&nbsp;{{  projectbudget.revised_start_date|date:'d-m-Y' }}</td>
+				<td>Revised End Date</td><td>:&nbsp;{{  projectbudget.revised_end_date|date:'d-m-Y' }}</td>
+				</tr>
+				<tr>
+				<td>Project Execution Mode</td><td>:&nbsp;{% if  projectbudget.execution_mode == 'TM' %}T&M {% else %}{{  projectbudget.execution_mode }}{% endif %}</td>
+				<td>Activity Type</td><td>:&nbsp;{{  activity_type }}</td>
+				</tr>
+				
+	 </table>		
+	 <div style="font-name:Verdana;font-size:17px;background:#C0C0C0;border: 1px solid #666666;margin-left:5px;padding-top:3px;" >&nbsp;&nbsp;Project Budget(Efforts in person-hours)</div>
+	 <table id="profile_table" id="profile_table" cellpadding="0" cellspacing="0" width="100%" style="font-size:15px;">
+			
+               <tr><td>&nbsp;</td></tr>
+				<tr>
+				<td>Activity</td><td>Location</td><td>Duration Days</td><td>PM Effort</td><td>Lead Effort</td>
+				<td>Developer Effort</td><td>Tester Effort</td>
+				<td>{{  projectbudget.other1_description }}</td>
+				<td>{{  projectbudget.other2_description }}</td>
+			 	</tr>
+			 	 {% for each in projectbudgetefforts %}
+			 	<tr>	
+			<td>{% if each.activity_type  == '1' %}{{ each.phase.phase }}{% else %}{{ each.module }} {% endif %}</td>
+			<td>{{ each.location.location }}</td><td>{{ each.duration_days }}</td><td>{{ each.pm_effort }}</td>
+			<td>{{ each.lead_effort }}</td><td>{{ each.developpper_effort }}</td><td>{{ each.tester_effort }}</td><td>{{ each.other1 }}</td><td>{{ each.other2 }}</td>	
+				
+				 </tr>
+				 {% endfor %}
+				<tr><td>&nbsp;&nbsp;</td></tr>
+	 </table>
+	 <div style="font-name:Verdana;font-size:17px;background:#C0C0C0;border: 1px solid #666666;margin-left:5px;padding-top:3px;" >&nbsp;&nbsp;Project Budget (Costs in INR)</div>
+	  <table id="profile_table" id="profile_table" cellpadding="0" cellspacing="0" width="100%" style="font-size:15px;">
+			
+			<tr><td>&nbsp;</td></tr>
+			<td>Cost Type</td><td>Cost</td>	
+			 {% for each in projectbudgetcost %}
+				
+			 <tr>
+				<td>{{ each.cost_type.cost_type }}</td>	<td>{{ each.cost }}</td>
+				
+				</tr>
+				{% endfor  %}
+	 </table>
+	
+	
+	  <table id="profile_table" id="profile_table" cellpadding="0" cellspacing="0" width="100%" style="font-size:15px;">
+			
+			
+			<tr><td colspan="2"> <div style="font-name:Verdana;font-size:17px;background:#C0C0C0;border: 1px solid #666666;margin-left:5px;padding-top:3px;" >&nbsp;&nbsp;Project Budget Threshold</div></td>
+			<td colspan="2"> <div style="font-name:Verdana;font-size:17px;background:#C0C0C0;border: 1px solid #666666;margin-left:5px;padding-top:3px;" >&nbsp;&nbsp; 	
+
+Deviation with prev version (in %)</div></td></tr>
+<tr><br></tr>
+			<tr><td>Total Efforts (hrs)</td><td>{{  projectbudget.total_effort }}</td>
+				<td> 	 Efforts Deviation </td><td>{{ threshold_effort }}</td></tr>
+			<tr><td>Total Costs (INR)</td><td>{{  projectbudget.total_cost }}</td>	
+			<td>Cost Deviation</td><td>{{ threshold_cost }}</td></tr>
+			<tr><td>Total Duration </td><td>{{  tot_duration }}</td>
+				<td>Deviation Duration </td><td>{{ deviation_duration }} </td></tr>
+	 </table>
+	 <BR>
+	  <table id="profile_table" id="profile_table" cellpadding="0" cellspacing="0" width="100%" style="font-size:15px;">
+			
+			<tr><td>&nbsp;</td></tr>
+			</tr><td><B>Remarks:</B>{{  projectbudget.remarks }}</td></tr>
+			{% if rejection_reason == '1' %}
+				</tr><td><B>Rejection Reason :</B>{{  projectbudget.rejection_reason }}</td></tr>
+				{% endif %}
+				</tr>
+				
+	 </table>
+	</div>	</body>
+	</html>
+

@@ -1,0 +1,150 @@
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.conf.urls.defaults import *
+from django.contrib import admin
+from django.contrib.auth.views import logout
+#from django.views.generic import list_detail
+from django.views.generic import TemplateView
+from django.views.generic import RedirectView
+
+from project_management.users.models import UserProfile
+from project_management.users.views import login
+from django.conf.urls import include, url
+
+from project_management.projectbudget.models import BudgetPhase
+
+import os.path
+import django_cron
+
+admin.autodiscover()
+
+try:
+    django_cron.autodiscover()
+except:
+    pass
+
+# for the calender(datepicker) widget
+urlpatterns = [
+    url(r'^jsi18n/$',
+    'project_management.i18nDate.javascript_catalog',
+    {'packages': 'django.conf'}),
+]
+
+js_info_dict = { 'packages': ('cui.translations',), }
+
+urlpatterns = [
+    url(r'^django-jsi18n/$',
+    'django.views.i18n.javascript_catalog', js_info_dict), 
+]
+
+urlpatterns = [
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^login/$', login, {'template_name': 'login.html'}),
+    url(r'^comingsoon/$', TemplateView.as_view(template = 'coming_soon.html')),
+    url(r'^recentupdates/$',TemplateView.as_view(template = 'Recent_updates.html')),
+    url(r'^re-use/$', TemplateView.as_view(template = 're-use.html')),
+    url(r'^re-use/components/$', TemplateView.as_view(template = 'Re-Use_Library.html')),
+    url(r'^5GPal/$', TemplateView.as_view(template = '5G-Pal.html')),
+    url(r'^5GPal/Policies/$', TemplateView.as_view(template = '5gpal_Policies.html')),
+    url(r'^5GPal/FxCop_and_Rules/$', TemplateView.as_view(template = '5gpal_FxCop_and_Rules.html')),
+    url(r'^5GPal/Process-templates/$', TemplateView.as_view(template = '5gpal__process-templates.html')),
+    url(r'^Mindshare/', RedirectView, {'url': '/login/'}),
+    url(r'^logout/$', logout, {'template_name': 'logout.html'}),
+    url(r'^contacts/$', login_required(list_detail.object_list),
+        {'queryset':UserProfile.objects.exclude(user__is_active = False).exclude(
+        user__is_staff = True).order_by('user__username'),
+        'template_name': 'contacts.html'}),
+    url(r'^phase/$',TemplateView.as_view(template = 'phase.html')),
+]
+
+# to load the static data
+#if settings.DEBUG:
+urlpatterns = [
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+                                {'document_root': os.path.join(settings.PROJECT_ROOT, "media")}),
+]
+
+
+urlpatterns = ['project_management.logs',
+    url(r'^Logs/', 'views.DisplayLog'),
+    url(r'^admin.ShowLog/', 'views.DisplayLogData'),
+    url(r'^GetLogDetail/', 'views.GetLog'),
+]
+
+urlpatterns = [
+    url(r'^user/', include('project_management.users.urls')),
+    url(r'^project/', include('project_management.projects.urls')),
+    url(r'^customer/', include('project_management.customer.urls')),
+    url(r'^task/', include('project_management.tasks.urls')),
+    url(r'^milestone/', include('project_management.milestone.urls')),
+    url(r'^businessunit/', include('project_management.business_unit.urls')),
+    url(r'^event/', include('project_management.notifications.urls')),
+    url(r'^announcement/', include('announcements.urls')),
+    url(r'^timesheet/', include('project_management.timesheet.urls')),
+    url(r'^timesheetnew/', include('project_management.timesheetnew.urls')),
+    url(r'^NewsLetter/', include('newsletter.urls')),
+    url(r'^conferenceroombooking/', include('project_management.conferenceroombooking.urls'))
+    #url(r'^library/',include('project_management.library.urls')),
+]
+
+urlpatterns = ['project_management.notifications',
+    url(r'^MonthlyCalendar/$', 'eventviews.MonthlyCalendar'),
+    url(r'^WeeklyCalendar/$', 'eventviews.WeeklyCalendar'),
+    url(r'^DayCalendar/$', 'eventviews.DayCalendar'),
+    url(r'^previousyear/(?P<type>\w+)/', 'eventviews.previousyear'),
+    url(r'^nextyear/(?P<type>\w+)/', 'eventviews.nextyear'),
+    url(r'^previousmonth/', 'eventviews.previousmonth'),
+    url(r'^nextmonth/', 'eventviews.nextmonth'),
+    url(r'^nextday/', 'eventviews.nextday'),
+    url(r'^previousday/', 'eventviews.previousday'),
+    url(r'^nextweek/', 'eventviews.nextweek'),
+    url(r'^previousweek/', 'eventviews.previousweek'),
+    url(r'^Event/', 'eventviews.Events'),
+    url(r'^CreateEvent/', 'eventviews.Events'),
+    url(r'^SaveEvent/', 'eventviews.saveEvent'),
+    url(r'^Eventdelete/', 'eventviews.eventDelete'),
+    url(r'^UpdateEvent/', 'eventviews.updateEvent'),
+    url(r'^EventAccess/', 'eventviews.accessEvent'),
+    url(r'^GetStage/', 'eventviews.getStage'),
+]
+
+#  Program Task (Internal Tab) URL's
+urlpatterns = ['project_management.projects',
+    url(r'^prog_task_in_pg/$', TemplateView.as_view(template =  "prog_task_in_pg.html"), name="prog_task_in_pg"),
+    #url(r'^UpdateProgramTask/', 'ProgTaskListsViews.program_task_update_pg'),
+    #url(r'^CreateProgramTask/', 'ProgTaskListsViews.createprogramtask'),
+    #url(r'^CreateContinueProgramTask/', 'ProgTaskListsViews.createandcontinueprogramtask'),
+    #url(r'^prog_task_up/', 'ProgTaskListsViews.program_task_update'),
+]
+
+urlpatterns = ['project_management.repository',
+    url(r'^repository/', 'views.RepositoryView'),
+    url(r'^repositoryUpload/', 'views.RepositoryUpload'),
+]
+
+urlpatterns = ['project_management.non_project_task',
+    #url(r'^CreateMenuTask/', 'createMenuTaskViews.CreateMenuTaskView'),
+    #url(r'^GetProjectTasklists/', 'createMenuTaskViews.GetTasklists'),
+    #url(r'^GetProjectTasklistsResources/','createMenuTaskViews.GetTasklistsResources'),
+    #url(r'^SaveCreateMenuTask/', 'createMenuTaskViews.CreateMenuTaskSave'),
+    #url(r'^SaveAndContinueCreateMenuTask/', 'createMenuTaskViews.CreateMenuTaskSaveAndContinue'),
+]
+
+urlpatterns = ['project_management.non_project_task.views',
+    #url(r'^NonProjectTaskList/', 'NonProjectTaskList'),
+    #url(r'^CreateNonProjectTask/', 'NonProjectTaskView'),
+    #url(r'^UpdateNonProjectTask/', 'NonProjectTaskView'),
+    url(r'^SaveNonProjectTask/', 'SaveNonProjectTask'),
+    url(r'^SaveAndContinueNonProjectTask/', 'SaveAndContinueNonProjectTask'),
+    #url(r'^NonProjectTaskdelete/', 'NonProjectTaskDelete'),
+]
+
+urlpatterns = ['project_management.Utility',
+    url(r'^GetPopUpDetails/', 'getPopUpDetails'),
+]
+
+urlpatterns = ['project_management.common_manager.views',
+    url(r'^MasterView/', 'MasterView'),
+    url(r'^MasterSave/', 'MasterSave'),
+    url(r'^MasterDelete/','MasterDelete'),
+]

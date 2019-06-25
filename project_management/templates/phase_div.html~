@@ -1,0 +1,39 @@
+<script>
+$(function() { 
+    $('#overlay #cancel').click(closeOverlay);
+
+    $('#overlay #save' ).click(function(){
+        var task_type = {
+                'Code':$('#overlay #dialog_code').val(),
+                'Phase':$('#overlay #dialog_phase').val()
+              };
+
+        $.ajax({ 
+            type : "POST",
+            url : "/projectbudget/phase/add/",
+            data : task_type,
+            success : alert("Success"),
+            dataType: "json"
+            });
+        });
+    });
+
+</script>
+
+<style>
+#overlay label{ color: white; }
+</style>
+
+<html>
+<head>
+    <title> Task Type </title>
+</head>
+<body id="overlay">
+    <h3><p><label> Task Type </label></p></h3>
+    <input type="hidden" name="phaseid" id="phaseid"/>
+	Code : <input type="text" size="10" name="dialog_code" id="dialog_code"/><br>
+	Phase : <input type="text" size="10" name="dialog_phase" id="dialog_phase"/><br>
+	 <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+</body>
+</html>

@@ -1,0 +1,31 @@
+/*
+    Base -Footer Styles
+*/
+
+.footer-section {
+	width: 100%;
+	float: left;
+    }
+
+.footer-line {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #dbe6ed;
+	padding-top: 10px;
+    }
+
+
+.mandatory {
+    padding-left: -113px;
+	/*padding-left: 100px;*/
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    line-height: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    color: #424F55;
+    text-decoration: none;
+    margin-left: 44%;
+	}

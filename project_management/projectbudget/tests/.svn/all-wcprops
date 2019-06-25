@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1321/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests
+END
+logintest.py
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/SVN/Mindshare/!svn/ver/1309/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests/logintest.py
+END
+costtest.py
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1320/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests/costtest.py
+END
+viewstest.py
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/SVN/Mindshare/!svn/ver/1320/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests/viewstest.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1321/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests/__init__.py
+END
+phasetest.py
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/SVN/Mindshare/!svn/ver/1320/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests/phasetest.py
+END

@@ -1,0 +1,62 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} Product Development {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+<form name="contacts" id="contacts" action="." method="post">
+<div class="wr-ar">
+<div class="update-program-hdr">
+   	<table width="100%">
+        <tr>
+     		<td width="30%"><span class="header">
+			Product Development
+		</span></td>
+     		<td width="50%"></td>
+        </tr>
+     </table>
+   </div>
+       
+<p class="documentDescription">by Ananth Ramakrishnan </p> 
+        
+    
+        <div class="plain"> 
+            
+<p> </p> 
+<div class="pullquote"><img class="image-inline" src="../../image_preview.jpg" height="192" width="214" /></div> 
+<p>Lets look around our peers and make a list of whom would we like to work with us in that crucial phase of our product delivery? Now, sit back and think about what made you pick them?</p> 
+<p> </p> 
+<p>Why are start-up companies more innovative and successful? How are they able to "<em>get things done</em>"? What happens when the same start-up grows from being a small team to a big one?</p> 
+<p> </p> 
+<p>What differentiates a good programmer from a not so good one?</p> 
+<p> </p> 
+<p>I believe the answer to all the above questions is "PRIDE". To be more specific, it is the personal pride of the individual developers [1] who are involved in the development process.</p> 
+<p>I believe the answer to all the above questions is "PRIDE". To be more specific, it is the personal pride of the individual developers [1] who are involved in the development process.</p> 
+<p> </p> 
+<p>What does pride mean for a programmer? It is the quality of the individual who refuses to call it "<em>done</em>" until he [2] has made sure he has delivered the best technical solution to the given problem. It translates to writing beautiful code, running tests to make sure all code paths are covered, not able to sleep when there is a bug in your code, documenting your code so that everybody is able to appreciate the creative process, etc.</p> 
+<p> </p> 
+<p>So, how does this pride translate to better software products? Imagine all the members involved in the development process being driven by the same pride - the developer who prides in creating great software, a tester who prides in finding obscure bugs, a support engineer who prides in closing difficult tickets,  You get the drift, right?</p> 
+<p> </p> 
+<p>Due to the nature of software products, this pride is an essential ingredient for a successful product development shop. Unlike software projects, which have a customer defining what needs to be done and giving constant feedback, a product is very dynamic and much of what you give to your products (as features) reflects your own persona.</p> 
+<p> </p> 
+<p>Thus, one of the biggest challenges in growing a product company from scratch is to retain this sense of pride as you grow up. One route that companies take is to turn towards Process. The reason is that you can teach a process, train them and make them follow it religiously. But, a process can only give you control and predictability. What it cannot possibly guarantee is the fundamental quality of that which is being produced. This fundamental quality is guaranteed only by the individual who takes that personal care.</p> 
+<p> </p> 
+<p>One caution though! The pride needs to be pragmatic. That is, we need to know the difference between pride and arrogance.</p> 
+<p> </p> 
+<p>We have got one life (discounting the theory of re-birth for a while). Its worth spending on something that we would be proud of!!</p> 
+<p><strong><br /></strong></p> 
+<p><strong>FootNotes</strong></p> 
+<p>[1] - Most of what we say here applies to everyone who works in a product.</p> 
+<p>[2] - In the fear of being branded a sexist, wherever I use "he" it applies to "she" as well</p> 
+       
+ </div> 
+</div>
+ {% endblock %} 

@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Leave Application {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; font-family:Liberation Serif;}
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right;font-family:Liberation Serif; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%; font-family:Liberation Serif; font-size: 20px; }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  font-family:Liberation Serif; font-size: 20px;}
+    .list-row { width:100%; font-family: Liberation Serif; font-size: 12px;}
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .b1{font-family: Liberation Serif;
+    font-size: 14px;}
+    .header {font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-style: normal; line-height: normal;font-weight: normal;font-variant: normal;text-transform: none;color: #000000; text-decoration: none;
+    .header link-line-bg con-white-bold {font-family: Liberation Serif; font-size: 18px;}
+    #back-leave {float: right;}
+    
+}
+</style>
+<script>
+    function CallMethod(){
+        var action = document.getElementById('recordlist').value;
+        window.location = "/leave/record/" +action;
+    } 
+
+    $(document).ready(function(){
+        $('#back-leave').click(function(){ 
+            window.location.href = "/leave/list/";
+        });
+
+        $('#generate-reports').click(function(){
+            window.location.href = "/leave/generate/"
+        })
+
+        $('#leave_consolidated').click(function(){ 
+            window.location.href = "/leave/consolidated/";
+        });
+        $('#leave_reconciliation').click(function(){ 
+            window.location.href = "/leave/reconciliation/report/";
+        });
+        $('table#users').tablesorter();
+    });
+
+
+</script>
+{% load pagination_tags %}
+    <form id="leavelist" name="leavelist" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">Leave Reports</span>
+            </div>
+            <div class="program-blue-box">
+                <div class="back-leave">
+                        <input type="button" id="generate-reports" name="generate-reports" class="b1" value="Monthly Report" style="margin-top: 1%;"/>
+
+                    <input type="button" id="leave_consolidated" name="leave_consolidated" class="b1" value="Leave Consolidated" style="float: left; margin-top: 1%;"/>
+
+                    <input type="button" id="leave_reconciliation" name="leave_reconciliation" class="b1" value="Leave Reconciliation" style="float: left; margin-top: 1%;"/>
+                    <input type="button" id="back-leave" name="back-leave" class="b1" value="<<< Back" style="float: right; margin-top: 1%;"/>
+                </div>
+            </div>
+            <div id="msg1"> 
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                    {% endfor %}
+                {% endif %}
+            </div>   
+        </div>  
+
+        {% if requestlist %} 
+            <div class="list-header">
+                <span class="header">Leave Records</span>
+            </div>
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Select</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">S.No</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Username</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From-Date</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">To-Date</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">No-of-days</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Leave Nature</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Approve-by</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Status</th>
+
+                    </tr>
+                </thead>
+
+                <tfoot class="footer">
+                    <tr><td colspan="3">
+                        <div class="footer-buttons">
+                                
+                            </div>
+                        <td colspan="10">
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if requestlist.has_previous %}
+                                        <a href="?request_page={{ requestlist.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                   {% for n in requestlist.paginator.page_range %}
+                                        {% if requestlist.number == n %}
+                                          <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                        {% elif n > requestlist.number|add:'-2' and n < requestlist.number|add:'4' %}
+                                        <span class="page-item"><a class="page-link" href="?request_page={{ n }}">{{ n }}</a></span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if requestlist.has_next %}
+                                        <a href="?request_page={{ requestlist.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </td>
+                        <center>
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                    {% for leave in requestlist %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="leave_pk" name="leave_pk" value="{{leave.pk}}" />
+                                <a href="/leave/update/{{leave.pk}}">View</a>
+                            </td>
+                            <td width="5%">
+                                {% if is_paginated %}
+                                    {{ page_obj.start_index|add:forloop.counter0 }}
+                                {% else %}
+                                   {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td width="10%">{{ leave.empid }}</td>
+                            <td width="10%">{{ leave.leave_from |date:"N d, Y" }}</td>
+                            <td width="10%">{{ leave.leave_to |date:"N d, Y"}}</td>
+                            <td width="10%">{{ leave.no_of_days }}</td>
+                            <td width="10%">{{ leave.leave_nature }}</td>
+                            <td width="10%">{{ leave.approved_by }}</td>
+                            
+                                {% if request.user.username == leave.empid %}
+                                    {% if leave.approval_status == 'Approved' %}
+                                        <td width="10%">Approved</td>
+                                    {% elif leave.approval_status == 'Rejected' %}
+                                        <td width="10%">Rejected</td>
+                                    {% elif leave.approval_status == 'Cancelled' %}
+                                        <td width="10%">Cancelled</td>
+                                    {% else %}
+                                        <td width="10%"><b>Waiting for approval</b></td>
+                                    {% endif %}
+                                            
+                                {% elif request.user.username != leave.approved_by %}
+                                    {% if leave.approval_status == 'Approved' %}
+                                        <td width="10%">Approved</td>
+                                    {% elif leave.approval_status == 'Rejected' %}
+                                        <td width="10%">Rejected</td>
+                                    {% elif leave.approval_status == 'Cancelled' %}
+                                        <td width="10%">Cancelled</td>
+                                    {% else %}
+                                        <td width="10%">Pending </td>
+                                    {% endif %}
+                                {% endif %} 
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <br><br><br>
+
+
+        {% if short_leave_requestlist %} 
+            <div class="list-header">
+                <span class="header">Short Leave Records</span>
+            </div>
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Select</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">S.No</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Username</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From-Date</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Reason</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Approve-by</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">No-of-hours</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Status</th>
+
+                    </tr>
+                </thead>
+
+
+                <tfoot class="footer">
+                    <tr><td colspan="3">
+                        <div class="footer-buttons">
+                                
+                            </div>
+                        <td colspan="10">
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if short_leave_requestlist.has_previous %}
+                                        <a href="?short_leave_requestlist_page={{ short_leave_requestlist.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                   {% for n in short_leave_requestlist.paginator.page_range %}
+                                        {% if short_leave_requestlist.number == n %}
+                                          <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                        {% elif n > short_leave_requestlist.number|add:'-2' and n < short_leave_requestlist.number|add:'4' %}
+                                        <span class="page-item"><a class="page-link" href="?short_leave_requestlist_page={{ n }}">{{ n }}</a></span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if short_leave_requestlist.has_next %}
+                                        <a href="?short_leave_requestlist_page={{ short_leave_requestlist.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </td>
+                        <center>
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                    {% for shortleave in short_leave_requestlist %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="shortleave_pk" name="shortleave_pk" value="{{shortleave.request_id}}" />
+                                <a href="/leave/shortleave/update/{{shortleave.request_id}}/">View</a>
+                            </td>
+                            <td width="5%">
+                                {% if is_paginated %}
+                                    {{ page_obj.start_index|add:forloop.counter0 }}
+                                {% else %}
+                                   {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td width="10%">{{ shortleave.empid }}</td>
+                            <td width="10%">{{ shortleave.leave_date |date:"N d, Y" }}</td>
+                            <td width="10%">{{ shortleave.leave_reason }}</td>
+                            <td width="10%">{{ shortleave.approved_by }}</td>
+                            <td width="10%">{{ shortleave.no_of_hours }}</td>
+                            
+                                {% if request.user.username == shortleave.empid %}
+                                    {% if shortleave.approval_status == 'Approved' %}
+                                        <td width="10%">Approved</td>
+                                    {% elif shortleave.approval_status == 'Rejected' %}
+                                        <td width="10%">Rejected</td>
+                                    {% elif shortleave.approval_status == 'Cancelled' %}
+                                        <td width="10%">Cancelled</td>
+                                    {% else %}
+                                        <td width="10%"><b>Waiting for approval</b></td>
+                                    {% endif %}
+                                            
+                                {% elif request.user.username != shortleave.approved_by %}
+                                    {% if shortleave.approval_status == 'Approved' %}
+                                        <td width="10%">Approved</td>
+                                    {% elif shortleave.approval_status == 'Rejected' %}
+                                        <td width="10%">Rejected</td>
+                                    {% elif shortleave.approval_status == 'Cancelled' %}
+                                        <td width="10%">Cancelled</td>
+                                    {% else %}
+                                        <td width="10%">Pending </td>
+                                    {% endif %}
+                                {% endif %} 
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        </div>
+    </form>
+
+{% endblock %}
+

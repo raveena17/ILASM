@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Business Unit {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+</style>
+<script>
+$(document).ready(function(){
+    $('#create-customer').click(function(){ 
+        window.location.href = "/businessunit/create/"
+    });
+    $('#delete').click(function(){
+        if(confirm('are you sure you want to delete selected?')){
+            document.getElementById('customerlist').action = "/businessunit/delete/";
+        }
+        else{
+            return false;
+        }
+    })
+    $('table.tablesorter').tablesorter();
+});
+</script>
+{% load pagination_tags %}
+    <form id="customerlist" name="customerlist" action="" method="POST" />
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">Business Unit List</span>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+            <div class="program-blue-box">
+                {% comment %}
+                    <div class="create-button">
+                    {% if perms.business_unit.add_customer %}
+                        <input type="button" id="create-customer" name="create-customer" class="b1" value="Create Business Unit" />
+                    {% endif %}
+                {% endcomment %}
+                </div-->
+            </div>
+            {% autopaginate customer_list %}
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold">Select</th>
+                        <th class="header link-line-bg con-white-bold">S.No</th>
+                        <th class="header link-line-bg con-white-bold">Company</th>
+                        <th class="header link-line-bg con-white-bold">Type</th>
+                    </tr>
+                </thead>
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="3">
+                            <div class="footer-buttons">
+                        {% comment %}
+                            {% if perms.business_unit.delete_customer %}
+                                <input type="submit" value="Delete" id="delete" name="delete" class="b1" />
+                                <input type="button" value="Select All" id="select_all" name="select_all" class="b1" onclick="return doCheck('customerlist');"  />
+                                <input type="button" value="Clear All" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('customerlist');"  />
+                            {% endif %}
+                            </div>
+                        </td>
+                    {% endcomment %}
+                        <td colspan="5">
+                          {% paginate %}  
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                         {% for customer in customer_list %}
+                            <tr class="list-row">
+                                <td width="6%">
+                                    <input type="checkbox" id="customer_pk" name="customer_pk" value="{{customer.pk}}" />
+                                    <a href="businessunit/update/id=customer.pk/">View</a>
+                                </td>
+                                <td width="5%">
+                                    {% if is_paginated %}
+                                        {{ page_obj.start_index|add:forloop.counter0 }}
+                                    {% else %}
+                                       {{ forloop.counter }}
+                                    {% endif %}
+                                </td>
+                                <td width="15%">{{ customer.name }}</td>
+                                <td width="10%">{{ customer.url }}</td>
+                            </tr>
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% endblock %}

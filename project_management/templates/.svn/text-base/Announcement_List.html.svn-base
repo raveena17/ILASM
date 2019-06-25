@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} All Announcements {% endblock %}
+{% block programcontent %} {% endblock %}
+{% block programmenu %} {% endblock %}
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+<script type="application/javascript">
+	function setRedirection(action){
+	var formObj = document.getElementById("listAnnouncement");
+	var newAttr = document.createAttribute("action");
+	newAttr.nodeValue = action;	
+	formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+	formObj.setAttributeNode(newAttr);
+}
+
+function fromToDateCheck(mydate1,mydate2){    
+  var valid = false;
+    if (Date.parse(mydate1) > Date.parse(mydate2)) {				
+		$('.imgClass').hide();
+		      
+        }
+		
+}
+$(document).ready(function(){
+
+
+//var selObj = document.getElementById('id_createddate');
+//  for (var i=0; i<document.getElementById('id_createddate').options.length; i++) {
+//    //selObj.options[i].selected = true;
+//	mydate1 = new Date(selObj.options[i].value);
+//	var date1 = new Date(mydate1.getMonth()+"/"+mydate1.getDate()+"/"+mydate1.getFullYear());
+//	alert(date1);
+//	var date2 = new Date((mydate1.getMonth()+1)+"/"+mydate1.getDate((mydate1.setDate(mydate1.getDate()+2)))+"/"+mydate1.getFullYear());
+//	alert(date2);
+//	alert(selObj.options[i].value);
+//	fromToDateCheck(date1,date2);
+ 
+
+// mydate1 = new Date($('#hdn1_announcement_date').val());
+//
+//var date1 = new Date(mydate1.getMonth()+"/"+mydate1.getDate()+"/"+mydate1.getFullYear());
+//
+////s = mydate1.setDate(mydate1.getDate()+2);
+//var date2 = new Date((mydate1.getMonth()+1)+"/"+mydate1.getDate((mydate1.setDate(mydate1.getDate()+2)))+"/"+mydate1.getFullYear());
+////alert(date2);
+////mydate2 = new Date();
+////expirydate = mydate2.getDate();
+//fromToDateCheck(date1,date2);
+ 
+});
+</script>
+
+<div style="float:left;">
+<h3>Announcements</h3>
+<label class="Arial-12-maroon" style="padding-left:35px;">{{msg}}</label>
+</div>
+
+<div style="float:right;padding-top:10px;">
+{% if user.is_superuser %}
+<form method="post" action="." id="listAnnouncement" name="listAnnouncement">
+<input name="create" type="submit" id="create" value="Create Announcement" class="b1" onclick="setRedirection('/announcement/create/');" />
+
+</form>
+{% endif %}
+</div>
+<table class="program-blue-box" style="width:100%;padding-left:10px;">
+<tr><td style="padding-top:15px;padding-bottom:20px;">
+<div style="display:none">
+	<select id="id_createddate" name="id_createddate"> 
+		{% for each in datevalue %}	
+		<option style="width:60px" id = {{each.pk}}>{{each.creation_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</option>
+		{% endfor %}
+		</select>
+	
+
+</div>
+    <ul>
+        {% for announcement in announcement_list %}
+           <input type = "hidden" id="hdn_announcement_date" value="{{announcement.creation_date}}"/>
+		   <input type = "hidden" id="hdn1_announcement_date" value="{{announcement.creation_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}"/>
+				
+            {% if user.is_superuser %}
+			{% if announcement.is_approved %}
+			 <li>				
+				<a style="text-decoration:none;" href="/announcement/update/?ids={{ announcement.pk }}">
+	            <span class="con-grey">{{ announcement.title  }}</span></a>
+				<a href="/announcement/delete/?msg=''&ids={{ announcement.pk }}" onclick="return confirm('Are you sure you want to delete?');getQueryValue();">
+	            <span>&nbsp;&nbsp;Delete</span></a>
+				{% ifequal announcement.display_image 'Show' %}
+				<img id = "id_new" class="imgClass" src="/static/css/images/new_icon2.gif" width="15" height="15" style="padding-top:8px"/>
+				{% endifequal %}
+			  </li>
+			{% else %}
+				{% if not announcement.is_approved %}
+			  <li>				
+				<a style="text-decoration:none;" href="/announcement/update/?ids={{ announcement.pk }}">
+	            <span class="con-grey">{{ announcement.title  }}</span></a>
+				<label style="">( Waiting for approval )</label>				
+				<a href="/announcement/delete/?msg=''&ids={{ announcement.pk }}" onclick="return confirm('Are you sure you want to delete?');getQueryValue();">
+	            <span>&nbsp;&nbsp;Delete</span></a>
+	        	</li>    
+				{% endif %}
+		{% endif %}
+            {% else %}{% if user == announcement.approved_by %}
+			<li>
+				<a style="text-decoration:none;" href="/announcement/update/?ids={{ announcement.pk }}">
+	            <span class="con-grey">{{ announcement.title  }}</span></a>
+				{% if announcement.is_approved %}
+				<img src="/static/css/images/new_icon2.gif" class="imgClass" id="id_new" width="15" height="15" style="padding-top:8px"/>
+				{% endif %}
+				{% ifequal user announcement.approved_by %}
+				{% if not announcement.is_approved %}
+				<label style="">Waiting for approval</label>
+				{% endif %}	
+			    {%endifequal %}
+				</li>
+			{% else %}{% if announcement.is_approved %}
+			<li>
+				<a style="text-decoration:none;" href="/announcement/view/?ids={{ announcement.pk }}">
+	            <span class="con-grey">{{ announcement.title }}</span></a>
+				<img id = "id_new" src="/static/css/images/new_icon2.gif" class="imgClass" width="15" height="15" style="padding-top:8px"/> 
+				</li>
+            {% endif %}{% endif %}{% endif %}
+			
+			
+        {% endfor %}
+		
+		{% for key, value in announcement_list.items %}
+		
+		<li> {{key}} - {{value}}</li>
+		
+		{% endfor %}
+		
+    </ul>
+
+</td></tr>
+</table>
+
+{% endblock %}
+

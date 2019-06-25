@@ -1,0 +1,7 @@
+Hello {{reporting_senior_name}},
+
+Please check the Leave Form: {{full_domain}} 
+
+
+Regards,
+{{request_user}}

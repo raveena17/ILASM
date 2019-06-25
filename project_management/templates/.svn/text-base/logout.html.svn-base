@@ -1,0 +1,28 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %} 
+{% block script %}{% endblock %}
+{% block title %}Enhanced Mindshare{% endblock %} 
+{% block header-section %} {% endblock %}
+{% block submenu %}{% endblock %}
+{% block programcontent %} {% endblock %}
+{% block programmenu %} {% endblock %} 
+{% block taskmenu %} {% endblock %} 
+{% block sidemenu %} {% endblock %}
+{% block contentdata %}
+
+<div>    
+    <table width="100%" style="text-align: center;">
+        <tr><td class="Arial-12-grey">You have been logged out.</td></tr>
+        <tr>
+            <td class="Arial-12-grey">
+                <a class="arial-12-gray-bold" name="login" title="Login again" href="/login/">Login again</a>
+            </td>
+        </tr>
+    </table>  
+</div>
+{% endblock %} 
+ {% block rightmenu %}
+ {% endblock %} 

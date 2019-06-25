@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style> body { font-family: Liberation Serif; font-size: 13px} table { border-collapse: collapse; width: 100%; margin-bottom: 20px; } table { border-left: 0; } th, td { text-align: left; padding: 8px; } table, td { border: 1px solid #3a3637; } table, td { border-bottom: 0; border-top: 0; border-right: 0 } .table-bordered>thead>tr>th { background-color: lightgray; color: black; } </style>
+
+   </head>
+
+   <body style="font-family: Liberation Serif;">
+      <div style="padding-bottom:15px;">
+         <div style="display: flow-root;">
+         	<pre>Hello {{reporting_senior}},<br><br>I have applied for {{type}} leave starting from {{from_date}} to {{to_date}} (Total days: {{no_of_days}}).<br>Reason: {{reason}}<br><br>I kindly request you to approve the same.
+            </pre>
+            <h style="font-family: Liberation Serif; font_size: 14px"><b>Leave Details:</b></h>
+            <table class="table-bordered " style="border-bottom: 1px solid #333; border-left: 0; border-collapse: collapse; width: 50%; font-size: x-small; margin-bottom: 20px;margin-right:101%">
+               <thead>
+                  <tr><tr>
+                     <th style="padding: 5px; border: 1px solid #333; background-color: lightgray; color: black;">Leave Type</th>
+                     <th style="padding: 5px; border: 1px solid #333; background-color: lightgray; color: black;">Current Balance</th>
+                     <th style="padding: 5px; border: 1px solid #333; background-color: lightgray; color: black;">Applied For</th>
+                     <th style="padding: 5px; border: 1px solid #333; background-color: lightgray; color: black;">Balance After Approval</th>
+                     <!-- <th style="padding: 5px; border: 1px solid #333; background-color: lightgray; color: black;">LOP</th> -->
+                  </tr></tr>
+               </thead>
+               <tbody>
+               	{% for data in datas %}
+                  <tr><tr>
+                     <td style="padding: 5px; border: 1px solid #3a3637; background-color: white; color: black;"> {{ data.leave_type }} </td>
+                     <td style="padding: 5px; border: 1px solid #3a3637; background-color: white; color: black;"> {{ data.current_balence }} </td>
+                     <td style="padding: 5px; border: 1px solid #3a3637; background-color: white; color: black;"> {{ data.appied_for }} </td>
+                     <td style="padding: 5px; border: 1px solid #3a3637; background-color: white; color: black;"> {{ data.balence_after_approval }} </td>
+                     <!-- <td style="padding: 5px; border: 1px solid #3a3637; background-color: white; color: black;"> {{ data.lop }} </td> -->
+                  </tr></tr>
+                {% endfor %}
+               </tbody>
+            </table>
+            <pre><br>Best Regards,<br>{{user}}<br>{{now}} </pre>
+         </div>
+      </div>
+   </body>
+</html>

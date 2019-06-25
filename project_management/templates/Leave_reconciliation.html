@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="application/javascript" src="/static/js/table2excel.js"></script>
+
+{% endblock %}
+{% block title %} Leave Application {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+
+
+<style>
+
+form { padding: 10px; }
+    .header{text-align: left; left: 182px;margin-left: 20px; font-family:Arial, Helvetica, sans-serif;}
+ 
+    .field { width: 59%; float:left; min-height: 46px;}
+
+    .label { width: 21%; float: left; min-height: 35px; margin-left: 10px; font-family:Liberation Serif;font-size: 15px;}
+    #report {
+    position: relative;
+    float: left;
+    margin-left: 8%;
+    right: 7%;
+    }
+
+    .submit-button{padding-top: 10px; padding-bottom: 10px; width: 64%; float: left;font-family:Liberation Serif;  margin-left: 12%;}
+
+    input[type=select]{ width:185px;}
+
+    .list { width: 100%; }
+    .list-header { width: 100%; padding-top: 10px; font-family:Liberation Serif;}
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right;font-family:Liberation Serif; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%; font-family:Liberation Serif; font-size: 20px; }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  font-family:Liberation Serif; font-size: 20px;}
+    .list-row { width:100%; font-family: Liberation Serif; font-size: 12px;}
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .b1{font-family: Liberation Serif;
+    font-size: 14px;}
+    input[type=text] {
+    width: 154px;
+    background-color: white;
+    }
+    select{
+        border: 1px solid #ccc;
+        width: 163px;
+        background-color: white;
+    }
+ 
+</style>
+
+<script>
+
+    $(document).ready(function(){
+        $('#report1').click(function(){ 
+            window.location.href = "/leave/reconciliation/report/";
+        });
+    });
+
+
+    function ResultsToTable(){    
+        
+        if($("#reconciliation_tab").is(":visible")) {
+            $("#reconciliation_tab").table2excel({
+                exclude: ".noExl",
+                name: "reconciliation_tab"
+            });
+        }
+    }
+
+  
+</script>
+
+
+{% load pagination_tags %}
+<div class="header">Leave Reconciliation</div><br><br>
+    <form id="generate" name="leavelist" action="" method="POST" />
+        {% csrf_token %}
+
+        {% for field in reconciliation_form %}
+            <div class="label">{{field.label}}: </div>
+            <div class="field">{{field}}</div>
+        {% endfor %} 
+        
+        <div class="submit-button">
+            <input type="submit" id="report" name="save1" value="Report">
+            <input type="button" id="convertExcel" name="save1" value="Export To Excel" onclick="ResultsToTable()">
+        </div>
+
+
+        {% if reconciliation_data %} 
+            
+            <div>
+                <table id="reconciliation_tab" class="tablesorter">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <!-- <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">User ID</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">UserName</th> -->
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From-Date</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">To-Date</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">No Of Days</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Leave Type</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Status</th>
+                            
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Personal</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Sick</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Earned</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Compoff</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">LOP</th>
+                            
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">CPersonal</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">CSick</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">CEarned</th>
+                            
+                        </tr>
+                    </thead>
+
+
+
+                    <tfoot class="footer">
+                        <tr><td colspan="3">
+                            <div class="footer-buttons">
+                                    
+                                </div>
+                            <td colspan="10">
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if fetch_reconciliation.has_previous %}
+                                            <a href="?reconciliation_page={{ fetch_reconciliation.previous_page_number }}">previous</a>
+                                        {% endif %}
+
+                                       {% for n in fetch_reconciliation.paginator.page_range %}
+                                            {% if fetch_reconciliation.number == n %}
+                                              <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                            {% elif n > fetch_reconciliation.number|add:'-2' and n < fetch_reconciliation.number|add:'4' %}
+                                            <span class="page-item"><a class="page-link" href="?reconciliation_page={{ n }}">{{ n }}</a></span>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if fetch_reconciliation.has_next %}
+                                            <a href="?reconciliation_page={{ fetch_reconciliation.next_page_number }}">next</a>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </td>
+                            <center>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+
+                        {% for leave in reconciliation_data %}
+                            <tr class="list-row">
+                                <!-- <td width="10%">{{ leave.empid }}</td>
+                                <td width="10%">{{ leave.emp }}</td> -->
+                                <td width="10%">{{ leave.fdate}}</td>
+                                <td width="10%">{{ leave.tdate}}</td>
+                                <td width="10%">{{ leave.nod }}</td>
+                                <td width="10%">{{ leave.ltype }}</td>
+                                <td width="10%">{{ leave.status }}</td>
+                                <td width="10%">{{ leave.Personal }}</td>
+                                <td width="10%">{{ leave.Sick }}</td>
+                                <td width="10%">{{ leave.Earned }}</td>
+                                <td width="10%">{{ leave.Compoff }}</td>
+                                <td width="10%">{{ leave.LOP }}</td>
+                                <td width="10%">{{ leave.CPersonal }}</td>
+                                <td width="10%">{{ leave.CSick }}</td>
+                                <td width="10%">{{ leave.CEarned }}</td>
+                                
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+    </form>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+<script type="application/javascript">
+$(function() { 
+    $('#project_group_overlay #cancel').click(closeOverlay);
+
+    $('#project_group_overlay #save' ).click(function(){
+        var project_group = {
+                'project_id': window.location.search.substring('ids').split("=")[1],
+                'name':$('#project_group_overlay #id_name').val(),
+                'project_group_id':$('#project_group_overlay #project_group_id').val(),
+              };
+        var addProjectGroup = function(json){
+            if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+            else{
+                $("#id_parent option[value='"+ json[0].id +"']").remove();
+                $('#id_parent').prepend('<option value="'+json[0].id+'">'+json[0].name+'</option>');
+                closeOverlay();
+            }
+            }
+        $.ajax({ 
+            type : "POST",
+            url : "/project/group/",
+            data : project_group,
+            success : addProjectGroup,
+            dataType: "json"
+            });
+        });
+    });
+
+</script>
+<style>
+#project_group_overlay label{ color: white; }
+</style>
+<html>
+<head>
+    <title> Project Group</title>
+</head>
+<body id="project_group_overlay">
+    <h3><p><label> Project Group </label></p></h3>
+    <h4><p><label> {{form.errors}} </label></p></h4>
+    <label>Name*</label>: {{form.name}}
+    <div style="padding-left:45px;">
+    <input type="hidden" id="project_group_id" name="project_group_id" 
+        value="{% if project_group_id %}{{project_group_id}}{% endif %}" />
+    <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+    </div>
+</body>
+</html>

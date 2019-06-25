@@ -1,0 +1,18 @@
+@charset "utf-8";
+.Arial-12-maroon
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: bold;
+	font-variant: normal;
+	text-transform: none;
+	color: Red;
+	text-decoration: none;
+}
+
+.multi-select-box {
+	height: 105px;
+	width: 204px;
+}

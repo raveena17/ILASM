@@ -1,0 +1,837 @@
+
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/reimbursement.css" rel="stylesheet" type="text/css"  />
+    <link href="/static/css/reimbursement.css" rel="stylesheet" type="text/css" media="print" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style type="text/css">
+      #create {
+        position: relative;
+        float: right;
+        right: 64%;
+        margin-top: 11%;
+    }
+    </style>
+{% endblock %}
+
+{% block script %}
+     
+
+{% endblock %}
+{% block programcontent %} {% endblock %}
+{% block programmenu %}{% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+    <div class="header" style="left:15%">Reimbursement</div>
+
+    <form  id="reimbursement_form" name="reimbursement_form" action="" enctype="multipart/form-data" method="POST">
+      {% load reimbursement_tags %}
+      {% csrf_token %}
+      <div class='reimbursement'>
+
+        
+        {% if reimbursementModelForm.initial.id %}
+          <div>
+            <div class='label'>{{reimbursementModelForm.name.label_tag}}</div><div class="field">{{reimbursementModelForm.name}}</div>
+          </div>
+        {% endif %}
+
+
+        <div>
+          <div class='label'>{{reimbursementModelForm.approver.label_tag}}</div><div class="field">{{reimbursementModelForm.approver}}</div>
+        </div>
+
+
+          <div class="status" hidden>
+            <div class='label'>{{reimbursementModelForm.status.label_tag}}</div><div class="field">{{reimbursementModelForm.status}}</div>
+          </div>
+
+
+
+        <div>
+          <div class='label'>{{reimbursementModelForm.type.label_tag}}</div><div class="field">{{reimbursementModelForm.type}}</div>
+        </div>
+
+        <div class='report_type'>
+          <div class='label'>{{type_form.report.label_tag}}</div><div class="field">{{type_form.report}}</div>
+        </div>
+
+        <div class='special_approval'>
+          {% if reimbursementModelForm.initial.id %}
+            {% load reimbursement_tags %}
+              {% if request.user|has_group:"Corporate Admin"  %}
+                <div class='label'>{{reimbursementModelForm.special_approval.label_tag}}</div><div class="field">{{reimbursementModelForm.special_approval}}</div>
+              {% endif %}
+              {% if reimbursementModelForm.approver.value == request.user.id %}
+                {% if not request.user|has_group:"Corporate Admin"  %}
+                  <div class='label'>{{reimbursementModelForm.special_approval.label_tag}}</div><div class="field">{{reimbursementModelForm.special_approval}}</div>
+                {% endif %}
+              {% endif %}
+          {% endif %}
+        </div>
+      
+
+        
+        <div class="cvr_div">
+        <h4 id='client_tittle'>Client visit report</h4>
+          <table id='cvr_table' border="1">
+            <thead>
+              <th>{{ clientVisitReport_form.prepared_by.label_tag }}</th>
+              <th>{{ clientVisitReport_form.client_name.label_tag }}</th>
+              <th>{{ clientVisitReport_form.visit_location.label_tag }}</th>
+              <th>{{ clientVisitReport_form.from_date.label_tag }}</th>
+              <th>{{ clientVisitReport_form.to_date.label_tag }}</th>
+              <th>{{ clientVisitReport_form.status.label_tag }}</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="right">{{ clientVisitReport_form.prepared_by }}</td>
+              <td>{{ clientVisitReport_form.client_name }}</td>
+              <td>{{ clientVisitReport_form.visit_location }}</td>
+              <td>{{ clientVisitReport_form.from_date }}</td>
+              <td>{{ clientVisitReport_form.to_date }}</td>
+              <td id="dd">{{ clientVisitReport_form.status }}</td>
+            </tr>
+          </tbody>
+          </table>
+          </div>
+
+            {{ formset.management_form }}
+          {% for form in formset.forms%}
+            {% for field in form.hidden_fields %}
+              {{field}}  
+            {% endfor %}
+          {% endfor %}
+      </div>
+          <div>
+            <h4 class="expenses">Expenses</h4>
+            <div>
+              <p id="travel_remark" hidden><span class="red-star" style="color: red">★</span>Only third class AC</p>
+              <div class="amount_label">{{reimbursementModelForm.total_amount.label_tag}}</div>
+              {{reimbursementModelForm.total_amount}}
+            </div>
+          
+        
+        
+        <table id="allowance">
+            
+            <thead>
+                {% for form in formset.forms %}
+                    {% if forloop.first %}
+                      <th> {{form.date.label_tag}} </th>
+                      <th> {{form.category.label_tag}} </th>
+                      <th> {{form.description.label_tag}} </th>
+                      <th> {{form.expenditure.label_tag}} </th>
+                      <th> <label>Budget</label> </th>
+                      <th> {{form.bill_availability.label_tag}} </th>
+                      <!-- <th hidden> {{form.bill_checking.label_tag}} </th> -->
+                      
+                      {% if reimbursementModelForm.initial.id %}
+
+                        {% load reimbursement_tags %}
+
+
+
+                        {% if request.user|has_group:"Corporate Admin"%}
+                          {% if reimbursementModelForm.name.value != request.user.id %}
+                            {% if reimbursementModelForm.initial.id %}
+                              {% for value, text in reimbursementModelForm.status.field.choices %}
+                                {% if value == reimbursementModelForm.status.value %}
+                                  {% if text == 'Approved' or text == 'Processed' or text == 'Verified' %}
+                                    <th>{{form.bill_location.label_tag}}</th>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %} 
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+
+
+
+
+
+                        {% if reimbursementModelForm.name.value != request.user.id %}
+                          {% if request.user|has_group:"Corporate Admin"%}
+                            <!-- <th> {{form.bill_checking.label_tag}} </th> -->
+                          {% endif %}
+                          {% endif %}
+
+                        {% if reimbursementModelForm.name.value == request.user.id %}
+                          {% for value, text in reimbursementModelForm.status.field.choices %}
+                            {% if value == reimbursementModelForm.status.value %}
+                              {% if text == 'Pending' %}
+                                <th> {{form.DELETE.label_tag}} </th>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% else %}
+                        <th> {{form.DELETE.label_tag}} </th>
+                      {% endif %}
+
+                    {% endif %}
+                  {% endfor %}
+            </thead>
+            <tbody >
+                {% for form in formset.forms %}
+                    <tr>
+                      <td> {{form.date}} </td>
+                      <td> {{form.category}} </td>
+                      <td> {{form.description}} </td>
+                      <td> {{form.expenditure}} </td>
+                      <td> <input type="text" id="budget" disabled="true"> </td>
+                      <td> {{form.bill_availability}} </td>
+                      <!-- <td hidden> {{form.bill_checking}} </td> -->
+                      
+                      {% if reimbursementModelForm.initial.id %}
+
+                        {% if request.user|has_group:"Corporate Admin"%}
+                          {% if reimbursementModelForm.name.value != request.user.id %}
+                            {% if reimbursementModelForm.initial.id %}
+                              {% for value, text in reimbursementModelForm.status.field.choices %}
+                                {% if value == reimbursementModelForm.status.value %}
+                                  {% if text == 'Approved' %}
+                                    <td><span class="glyphicon glyphicon-paperclip"></span>{{form.bill_location}}
+                                    <label class ="file-name"></label></td>
+                                  {% endif %}
+                                  {% if text == 'Processed' %}
+                                    <td <td style='max-width: 100px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;'><a href="/static/files/{{form.instance.bill_location}}" download>{{form.instance.bill_location}}</a></td>
+                                  {% endif %}
+                                  {% if text == 'Verified' %}
+                                    <td><span class="glyphicon glyphicon-paperclip"></span>{{form.bill_location}}
+                                    <label class ="file-name"></label></td>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %} 
+                            {% endif %}
+                          {% endif %}
+                        {% endif %}
+
+
+                      {% if reimbursementModelForm.name.value != request.user.id %}
+                        {% if request.user|has_group:"Corporate Admin"%}
+                          <!-- <td> {{form.bill_checking}} </td> -->
+                        {% endif %}
+                        {% endif %}
+
+                        {% if reimbursementModelForm.name.value == request.user.id %}
+                          {% for value, text in reimbursementModelForm.status.field.choices %}
+                            {% if value == reimbursementModelForm.status.value %}
+                              {% if text == 'Pending' %}
+                                <td> {{form.DELETE}} </td>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% else %}
+                        <td> {{form.DELETE}} </td>
+                      {% endif %}
+                      <!-- <td> {{form.bill_checking}} </td> -->
+
+
+                    </tr>
+            </tbody>
+               {% endfor %}
+        </table>
+        
+      
+
+      {% if not reimbursementModelForm.initial.id %}
+        <input  type="submit" value="Add Row" name="add-row" id="add-row" />
+        <INPUT  type="button" value="Delete Row" name="delete-row" onclick="deleteRow('allowance')" id="delete"/><br><br>
+      {% else %}
+        {% if reimbursementModelForm.name.value == request.user.id %}
+          {% for value, text in reimbursementModelForm.status.field.choices %}
+            {% if value == reimbursementModelForm.status.value %}
+                {% if text == 'Pending' %}
+                  <input  type="submit" value="Add Row" name="add-row" id="add-row" />
+                  <INPUT  type="button" value="Delete Row" name="delete-row" onclick="deleteRow('allowance')" id="delete"/><br><br>
+                {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+
+        <div >
+          <div class='label'>{{reimbursementModelForm.notes.label_tag}}</div><div class="field">{{reimbursementModelForm.notes}}</div>
+        </div>
+
+      
+
+      {% if not reimbursementModelForm.initial.id  %}
+
+        <center><button type="submit" id="create">Submit</button></center> 
+        <p value='{{reimbursementModelForm.initial.id}}' id='id' hidden> {{reimbursementModelForm.initial.id}} </p> 
+      
+      {% else %}
+        
+        <p value='{{reimbursementModelForm.initial.id}}' id='id' hidden> {{reimbursementModelForm.initial.id}} </p>
+      
+      {% endif %}
+
+      {% if reimbursementModelForm.initial.id %}
+        {% if reimbursementModelForm.name.value == request.user.id %}
+          {% for value, text in reimbursementModelForm.status.field.choices %}
+            {% if value == reimbursementModelForm.status.value %}
+             {% if text == 'Pending' %}
+                <center><button type="submit" name="request-user" id="update">Update</button></center>
+             {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% elif reimbursementModelForm.approver.value == request.user.id %}
+          {% load reimbursement_tags %}
+            {% if request.user|has_group:"Corporate Admin"%}
+              {% for value, text in reimbursementModelForm.status.field.choices %}
+                {% if value == reimbursementModelForm.status.value %}
+                  {% if text == 'Pending' %}
+                    <center><a href = "/reimbursement/approve/{{reimbursementModelForm.initial.id}}">
+                                <input type="button" value="Approve" id='approve'></a>
+                    <a href = "/reimbursement/reject/{{reimbursementModelForm.initial.id}}">
+                                <input type="button" value="Reject" id="reject"></a></center>
+                  {% elif text == 'Approved' %}
+                  {% else %} 
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for value, text in reimbursementModelForm.status.field.choices %}
+                {% if value == reimbursementModelForm.status.value %}
+                  {% if text == 'Pending' %}
+                     <center><a href = "/reimbursement/approve/{{reimbursementModelForm.initial.id}}">
+                                <input type="button" value="Approve" id='approve'></a>
+                    <a href = "/reimbursement/reject/{{reimbursementModelForm.initial.id}}">
+                                <input type="button" value="Reject" id="reject"></a></center>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+        {% else %}
+        {% endif %}
+
+        {% if reimbursementModelForm.initial.id %}
+          {% if reimbursementModelForm.name.value != request.user.id %}
+          {% if request.user|has_group:"Corporate Admin"%}
+              {% for value, text in reimbursementModelForm.status.field.choices %}
+                {% if value == reimbursementModelForm.status.value %}
+                  {% if text == 'Approved' %}
+                    <center><button type="submit" name="verify" id="update">Update</button>
+                      <a href = "/reimbursement/reject/{{reimbursementModelForm.initial.id}}">
+                        <input type="button" value="Reject" id="reject"></a>
+                      </center>
+                  {% endif %}
+                  {% if text == 'Verified' %}
+                    <center><button type="submit" name="process" id="update">Update</button></center>
+                  {% endif %}
+                  {% if text == 'Processed' or text == 'Verified' %}
+                    <input type='button' id='print_button' value='Print'>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+        {% endif %}
+        {% endif %}
+      {% endif %}
+
+
+      <div>
+          <div class='label'>{{reimbursementModelForm.client_visit_report.label_tag}}</div><div class="field">{{reimbursementModelForm.client_visit_report}}</div>
+      </div>
+      
+      <!-- <img src="{{user.reimbursementModelForm.bill_location.url}}" width='240'> -->
+      </div>
+    
+
+    
+    </form>
+
+    <!-- <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.8.3.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.9.1.min.js"></script> -->
+    <script type="application/javascript" src="/static/js/jquery-2.0.2.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-ui.js"></script>
+    <script type="application/javascript" src="/static/js/table2excel.js"></script>
+
+
+    <script language="javascript">
+
+
+      $('#id_name').attr('disabled','disabled');
+
+
+        
+
+      function deleteRow(tableID){
+        delete_row()
+      }
+
+      // $(document).ready(function () {
+      //   delete_row()
+      // });
+
+      function delete_row(){
+        try{
+          var table = $("#allowance")[0]
+
+          var row = $(table).find('tbody').find('tr')[0]
+          var td = $(row).find('td').length
+          var tbody_length = $(table).find('tbody').length
+          var tbody = $(table).find('tbody')
+          if (td == 8){
+            
+            for (body=0; body < tbody_length; body++){
+              var val = $(tbody).eq(body).find('tr').find('td').eq(7).find('input')[0]
+              var expenditure = $(tbody).eq(body).find('tr').find('td').eq(3).find('input').val()
+              if (val.checked == true){
+                if($(tbody).length > 1 ){
+                  $(tbody).eq(body).find('tr').hide()
+                  $(tbody).eq(body).find('tr').find('td').eq(3).find('input').val('')
+                  var total_meaning = $("#id_total_amount").val() - expenditure;
+                  $("#id_total_amount").val(total_meaning)
+                }
+                else{
+                  alert("Cant't delete all rows")
+                }
+                
+              }
+
+            }
+          }
+          else if(td == 7){
+            for (body=0; body < tbody_length; body++){
+              var val = $(tbody).eq(body).find('tr').find('td').eq(6).find('input')[0]
+              var expenditure = $(tbody).eq(body).find('tr').find('td').eq(3).find('input').val()
+              if (val.checked == true){
+                if($(tbody).length > 1 ){
+                  $(tbody).eq(body).find('tr').hide()
+                  $(tbody).eq(body).find('tr').find('td').eq(3).find('input').val('')
+                  var total_meaning = $("#id_total_amount").val() - expenditure;
+                  $("#id_total_amount").val(total_meaning)
+                }
+                else{
+                  alert("Cant't delete all rows")
+                }
+                
+              }
+
+            }
+          }
+          else{
+
+          }
+          
+        }catch(e) {
+          alert(e);
+        }
+
+      }
+      $(document).ready(function(){
+        if(document.getElementById('approve')){
+          var cvr_status = $('#cvr_status').val()
+          if(cvr_status == 'Pending'){
+            $('#approve').hide()
+          }
+        }
+        if(document.getElementById('approve')){
+          var cvr_status = $('#cvr_status').val()
+          if(cvr_status == 'Rejected'){
+            $('#approve').hide()
+          }
+        }
+    });
+
+
+      var id = "{{reimbursementModelForm.instance.id}}"
+      
+      var isTrue = $.isNumeric(id)
+      if (isTrue){
+        $('.status').show();
+      }
+      var isName = "{{reimbursementModelForm.name.value}}"
+      if($.isNumeric(isName)){
+        if(isName != "{{request.user.id}}"){
+          $('#id_report').attr('disabled','disabled');
+        }
+      }
+
+      function set_query_set(selectedValue){
+
+        var types = [];
+
+        $.ajax({
+          url : '/reimbursement/type/',
+          type : "GET",
+          async: false,
+          data : {"type" : selectedValue},
+          success : function(data){
+            types = data;
+              }
+            });        
+        return types;
+
+      }
+
+      var type = $('#id_type :selected').text();
+      if (type == 'Travel'){
+        var data = []
+        data = set_query_set(type)
+
+        $.each(data, function(index, result){
+          var type="<option name='travel' value="+result.id +">"+result.client_name__name + ":" + result.from_date +"</option>";
+          $(type).appendTo('#id_report');
+        });
+        $('.report_type').show()
+
+        var report = $('#id_client_visit_report').val()
+
+        var id = "{{reimbursementModelForm.initial.id}}";
+        if($.isNumeric(id)){
+          if(report){
+            $.each(data, function(index, result){
+              if(result.id == report){
+                $('select[name="report"] option[value='+ result.id +']').attr("selected",result.client_name__name + ":" + result.id );
+              }
+            });
+            
+          }
+          var report = $('#id_report').val();
+          if(report == ''){
+            $('.report_type').hide()
+          }
+        }
+        else{
+          selectedValue = '{{selectedValue}}'
+          $.each(data, function(index, result){
+              if(result.id == selectedValue){
+                $('select[name="report"] option[value='+ result.id +']').attr("selected",result.client_name__name + ":" + result.id);
+              }
+          });
+        }
+      }
+      else{
+        $("#id_report").empty(); 
+        $('.report_type').val('')
+        $('.report_type').hide()
+        $('#cvr_table').hide()
+        $('#client_tittle').hide()
+        $('#id_report').val('')
+        $('#id_prepared_by').val('')
+        $('#id_client_name').val('')
+        $('#id_visit_location').val('')
+        $('#id_from_date').val('')
+        $('#id_to_date').val('')
+        $('#cvr_status').val('')
+            
+      }
+
+
+      $('select[name=type]').change(function(e){
+
+        var selectedValue = $('#id_type :selected').text();
+
+        if (selectedValue == 'Travel'){
+        
+          var data = []
+          data = set_query_set(selectedValue)
+
+          $.each(data, function(index, result){
+            var type="<option name='travel' value="+result.id +">"+result.client_name__name  + ":" + result.from_date +"</option>";
+            $(type).appendTo('#id_report');
+          });
+          $('.report_type').show()
+        }
+        else{
+          $("#id_report").empty(); 
+          $('.report_type').val('')
+          $('.report_type').hide()
+          $('#cvr_table').hide()
+          $('#client_tittle').hide()
+          $('#id_report').val('')
+          $('#id_prepared_by').val('')
+          $('#id_client_name').val('')
+          $('#id_visit_location').val('')
+          $('#id_from_date').val('')
+          $('#id_to_date').val('')
+          $('#cvr_status').val('')
+        }
+
+
+
+      });
+
+      var selectedValue = $('select[name=report]').val()
+      var name = $('option:selected', 'select[name=report]').attr('name')
+      if (selectedValue){
+        cvr(name, selectedValue)
+      }
+      
+
+      $('select[name=report]').change(function(e){
+        var name = $('option:selected', this).attr('name')
+        var selectedValue = $('#id_report').val();
+        $.ajax({
+          url : '/reimbursement/report/',
+          type : "GET",
+          data : {"type" : selectedValue, 'name':name},
+          success : function(data){
+            if(data){
+              $.each(data, function(index, result){
+              $("#id_prepared_by").val(result.prepared_by);
+              $("#id_client_name").val(result.client_name__name);
+              $("#id_visit_location").val(result.visit_location);
+              $("#id_from_date").val(result.from_date);
+              $("#id_to_date").val(result.to_date);
+              if(result.is_approved == true){
+                $(".status").val('Approved')
+              }
+              else if(result.is_rejected== true){
+                $(".status").val('Rejected')
+                $('#corporate-approve').hide()
+                $('#manager-approve').hide()
+              }
+              else{
+                $('#corporate-approve').hide()
+                $('#manager-approve').hide()
+                $(".status").val('Pending')
+
+              }
+              
+              $('#cvr_table').show();
+              $('#client_tittle').show();
+              $("#id_total_amount").css("margin-top", "10%");
+              // range_date(result.from_date, result.to_date)
+            });
+              }
+            }
+          });
+      });
+
+      function range_date(form, to){
+
+        // $( ".datepicker" ).datepicker({
+        //   dateFormat:"yy-mm-dd"
+        //   minDate : form,
+        //   maxDate :to
+        // });
+
+      }
+
+      $( function() {
+        $( ".datepicker" ).datepicker({
+          dateFormat:"yy-mm-dd"
+        });
+      });
+
+      function cvr(name, selectedValue){
+        $.ajax({
+          url : '/reimbursement/report/',
+          type : "GET",
+          async : false,
+          data : {"type" : selectedValue, 'name':name},
+          success : function(data){
+
+            if(data){
+              $.each(data, function(index, result){
+              $("#id_prepared_by").val(result.prepared_by);
+              $("#id_client_name").val(result.client_name__name);
+              $("#id_visit_location").val(result.visit_location);
+              $("#id_from_date").val(result.from_date);
+              $("#id_to_date").val(result.to_date);
+              if(result.is_approved == true){
+                $(".status").val('Approved')
+              }
+              else if(result.is_rejected== true){
+                $(".status").val('Rejected')
+                $('#approve').hide()
+              }
+              else{
+                $(".status").val('Pending')
+              }
+              
+              $('#cvr_table').show();
+              $('#client_tittle').show();
+              $("#id_total_amount").css("margin-top", "10%");
+            });
+              }
+            }
+          });
+      }
+
+      $(document).ready(function () {
+        $("#allowance").on('input', '.expenditure', function () {
+        var calculated_total_sum = 0;
+        $("#allowance .expenditure").each(function () {
+          var get_textbox_value = $(this).val();
+          if ($.isNumeric(get_textbox_value)) {
+            calculated_total_sum += parseFloat(get_textbox_value);
+            }                  
+          });
+        $("#id_total_amount").val(calculated_total_sum);
+       });
+      });
+      
+      var status = $('#id_status :selected').text();
+      if(status != 'Pending'){
+        $('#id_report').prop('disabled', 'disabled');
+      }
+            var table = $("#allowance")[0]
+            var tbody_length = $(table).find('tbody').length
+            var tbody = $(table).find('tbody')
+            count = 0;
+            for (body=0; body < tbody_length; body++){
+              // for (body=0; body < tbody_length; body++){
+                var type = $(tbody).eq(body).find('tr').find('td').eq(1).find('select').attr('type', 'type-' + count)
+                var budget = $(tbody).eq(body).find('tr').find('td').eq(4).find('input').attr('budget','budget-' + count)
+                var file = $(tbody).eq(body).find('tr').find('td').eq(6).find('select').attr('file', 'file_upload_' + count)
+                count++
+              // }
+            }
+          
+          var type = $('select').val()
+            if (type == ''){
+              $('#budget').attr('placeholder', " ")
+            }
+            else{
+              get_budjet(type)
+            }
+
+            $(document).ready(function () {
+
+              for (body=0; body < tbody_length; body++){
+                var val = $(tbody).eq(body).find('tr').find('td').eq(1).find('select').val()
+                var type = $(tbody).eq(body).find('tr').find('td').eq(1).find('select').attr("type")
+                var budget = $(tbody).eq(body).find('tr').find('td').eq(4).find('input').attr('budget')
+                if (val == ''){
+                  $(tbody).eq(body).find('tr').find('td').eq(4).find('input').attr('placeholder', '')
+                }
+                else{
+                  set_budjet(budget, val)
+                }
+            }
+            })
+
+
+
+          $("select").on("change", function() {
+            var type = $(this).attr("type");
+            var val = $(this).val()
+            get_budjet(type, val)
+            
+          });
+
+
+          function get_budjet(type, val){
+
+            for (body=0; body < tbody_length; body++){
+              var row_type = $(tbody).eq(body).find('tr').find('td').eq(1).find('select').attr('type')
+              if(type == row_type){
+                var budget = $(tbody).eq(body).find('tr').find('td').eq(4).find('input').attr('budget')
+                if (val == ''){
+                  $('input[budget="' + budget + '"]').attr('placeholder', '')
+                }
+                else{
+                  set_budjet(budget, val)
+                }
+              }
+            }
+
+          }
+
+
+          function set_budjet(budget, val) {
+
+            $.ajax({
+            url : '/reimbursement/catagory/budjet/',
+            type : "GET",
+            async : false,
+            success : function(data){
+              $.each(data, function(index, result){      
+                if(val == result.id){
+                  $('input[budget="' + budget + '"]').attr('placeholder', result.budget)
+                }          
+                                 
+              });
+              
+              
+              }
+            });
+
+            }
+
+            $(function() {
+              $('#reimbursement_form').submit(function(e) {
+
+                var tbody_length = $(table).find('tbody').length
+                var tbody = $(table).find('tbody')
+                var count = 0
+                var result = true;
+                while(count < tbody){
+                  var val = $(tbody).eq(count).find('tr').find('td').eq(7).find('input')[0]
+                  var expenditure = $(tbody).eq(count).find('tr').find('td').eq(3).find('input').val()
+                  if (val.checked == true){
+                    alert('delete checked entries before submission')
+                    result = false;
+                    break
+                  }
+                }return result
+              });
+            });
+
+
+           $(document).ready(function () {
+              var table = $("#allowance")[0]
+              var tbody_length = $(table).find('tbody').length
+              var tbody = $(table).find('tbody')
+              count = 0;
+              for (body=0; body < tbody_length; body++){
+                  var img = $(tbody).eq(body).find('tr').find('td').eq(6).find('span').attr('upload', count)
+                  var file = $(tbody).eq(body).find('tr').find('td').eq(6).find('input').attr('upload', count)
+                  var label = $(tbody).eq(body).find('tr').find('td').eq(6).find('label').attr('upload', count)
+                  count++
+              } 
+            });  
+
+
+          $(".glyphicon").on("click", function(){
+            var upload = $(this).attr('upload')
+            $('input[upload="' + upload + '"]').trigger('click')
+            var  file = $('input[upload="' + upload + '"]').attr('id')
+            var id = "#";
+            var res = id.concat(file);
+            var file_name = $(res)[0].files[0]
+            $('label[upload="' + upload + '"]').text(file_name.name);
+          });
+
+          function printData()
+            {
+              $('#id_prepared_by').attr('value', $('#id_prepared_by').val())
+              $('#id_client_name').attr('value', $('#id_client_name').val())
+              $('#id_visit_location').attr('value', $('#id_visit_location').val())
+              $('#id_from_date').attr('value', $('#id_from_date').val())
+              $('#id_to_date').attr('value', $('#id_to_date').val())
+              $('#cvr_status').attr('value', $('#cvr_status').val())
+               var divToPrint=document.getElementById("reimbursement_form");
+               newWin= window.open("");
+               newWin.document.write('<link rel="stylesheet" href="/static/css/reimbursement.css" type="text/css" />')
+               newWin.document.write(divToPrint.outerHTML);
+
+               newWin.print();
+               newWin.close();
+            }
+
+
+            $('#print_button').on('click',function(){
+              //   $("#allowance").table2excel({
+              //     exclude: ".noExl",
+              //     name: "reimbursement"
+              // });
+            printData();
+            })
+    
+    </script>
+
+    {% endblock %}

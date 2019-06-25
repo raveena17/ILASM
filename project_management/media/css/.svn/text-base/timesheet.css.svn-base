@@ -1,0 +1,23 @@
+noscript { background: darkseagreen url('/static/img/admin/icon_alert.gif') no-repeat scroll 10px 0.5em; }
+#id_project { width: 200px; }
+h3#date_str { display:inline; }
+#content { height:540px; width:66%; position:relative; overflow:auto; float:left; margin:10px; } 
+.column { float:left; }
+.time { border:None; text-align:center; vertical-align:middle; height:20px; background:#EFEFEF; width:100%;padding:5px; }
+.ui-widget-content { border:None; background:#EFEFEF; height:30px; min-height:30px; vertical-align:top; } 
+.ui-widget-content > input { width:91%; text-align:left; border:inherit; height:inherit; background:inherit; }
+.ui-widget-content > a { width:10px; color:#707070; padding:5px; float:right; }
+/*.ui-widget-content > label { min-width:65px; border:inherit; height:inherit; background:inherit; }*/
+#datepicker { float:left; }
+#total_time_spent { width: 16%; margin-left:30px; padding: 5px; display:inline; background-color:yellow; }
+div#set_of_tasks { left:74%; position:absolute; width:225px; height:550px; overflow:auto; }
+div#set_of_tasks > h3 { background: #E0E8F3; }
+div#set_of_tasks > ul > li { font-size: 0.8em; padding-top: 7px; padding-bottom: 7px; }
+div#set_of_tasks > ul > li:nth-child(even) { background: #E0E7EF; }
+
+#task_overlay { color:#efefef; height:150px; }
+.contentWrap { height:441px; }
+.apple_overlay { background-image:url(/static/css/images/overlay_black.png); display:none; width:675px; padding:35px;
+         font-size:11px; }
+.apple_overlay div.close { background-image:url(/static/css/images/close.png); position:absolute; right:5px; top:5px;
+         cursor:pointer;  height:35px;  width:35px;  }

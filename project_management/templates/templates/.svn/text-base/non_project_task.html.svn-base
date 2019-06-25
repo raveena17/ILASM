@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script src="http://cdn.jquerytools.org/1.1.2/full/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+{% endblock %}
+
+{% block title %} Task {% endblock %}
+
+{% block contentdata %}
+    <style>
+    .label{ width: 32%; float: left; }
+    .field{ width: 50%; float: left; }
+    .element{ width: 68%; float: left; }
+    #id_assigned_resources { width: 66%; min-height: 50px; }
+    #id_sub_tasks {width: 100%; min-height: 60px; }
+    #id_notes { width: 600px; height: 100px; }
+    .entry-form { width: 100%; padding-top: 10px; }
+    .SaveAndCancel{ width: 100%; clear: both; }
+    form{ padding: 10px; }
+    input[type=text] { width: 180px; }
+    select { width: 190px; }
+    #add_task_type, #delete_task_type { height: 21px; }
+    #add_task_type { background-image: url(/static/css/images/add.png); }
+    #edit_task_type { background-image: url(/static/css/images/edit.png); }
+    #delete_task_type { background-image: url(/static/css/images/delete.png); }
+
+    #overlay {
+        color:#efefef; 
+        height:450px; 
+        } 
+
+    .contentWrap { 
+        height:441px; 
+        overflow-y:auto; 
+        }
+
+    .apple_overlay {        
+            background-image:url(/static/css/images/overlay_black.png); 
+            display:none;
+            width:350px;        
+            padding:35px;
+            font-size:11px;
+          }
+
+    /* default close button positioned on upper right corner */
+    .apple_overlay div.close {
+        background-image:url(/static/css/images/close.png);
+        position:absolute; right:5px; top:5px;
+        cursor:pointer;
+        height:35px;
+        width:35px;
+        }
+
+    a:active {outline:none;}
+
+    .dialog-overlay { 
+        background-color:#fff; 
+        display:none; 
+        width:350px; 
+        padding:15px; 
+        text-align:left; 
+        border:2px solid #333; 
+                             
+        opacity:0.8; 
+            -moz-border-radius:6px; 
+            -webkit-border-radius:6px; 
+            -moz-box-shadow: 0 0 50px #ccc; 
+            -webkit-box-shadow: 0 0 50px #ccc; 
+        } 
+    </style>
+
+    <script>
+    var closeOverlay = function(){
+        $("a[rel]").each(function(){
+            $(this).overlay({oneInstance: false, api: true}).close();
+            });
+    }
+
+    function remove_unselected_onload() {
+        /*Remove unselected options from all the role select boxes.*/
+        $('select#id_assigned_resources option:not(:selected)').remove();
+        $('select#id_sub_tasks option:not(:selected)').remove();
+    }
+
+
+    function selectall_onsubmit() {
+        $('form#task').submit(function() {
+            $('#id_assigned_resources').find('option').each(function() {
+                $(this).attr('selected', 'selected');
+            });
+
+            $('#id_sub_tasks').find('option').each(function() {
+                $(this).attr('selected', 'selected');
+            });
+        });
+    }
+
+    $(document).ready(function(){
+        convertDate('id_start_date');
+        convertDate('id_end_date');
+        $('#id_start_date').attr('class', 'vDateField');
+        $('#id_end_date').attr('class', 'vDateField');
+        $("a[rel]").overlay({ 
+            expose: 'transparent', 
+            effect: 'apple', 
+            onBeforeLoad: function() { 
+            var wrap = this.getContent().find(".contentWrap"); 
+            wrap.load(this.getTrigger().attr("href")); 
+            } 
+        });
+
+        $('#id_type').change(function(){
+            $('#EditTaskType').attr('href', '/task/manage_type/'+ $('#id_type').val() +'/');
+        });
+
+        $('#delete_task_type').click(function(){
+          type_id =  $('#id_type').val();
+          if(type_id != ''){
+            $.ajax({ 
+                type : "POST",
+                url : "/task/delete_type/"+ type_id +"/",
+                success : function(){
+                            task_deleted_id =   $("#id_type").val();
+                            $('#id_type option[value =' + task_deleted_id + ']').remove();
+                            alert(gettext('Task type deleted successfully'));
+                            } ,
+                error: function(){ alert(gettext('Task type is dependent. Cannot be deleted.')); },
+                });
+            }
+            else{
+                alert(gettext('Select a task type to delete'));
+            }
+        });
+
+       /* remove_unselected_onload(); */
+        
+        /* resource assign overlay
+        $('#member_add').overlay({ 
+            autoOpen: false,
+            expose: { color: '#333', loadSpeed: 200, opacity: 0.9 },
+            closeOnClick: true 
+        });
+
+        $('#select').click(function(){
+            var project_team = []
+            $('select#id_assigned_resources option').each(function(i, task_member){
+                project_team[i] = $(task_member).val();
+                });
+            $('select#prospect_team').find('option').filter(':selected').each(function(i, team_member){
+                if($.inArray($(team_member).val(), project_team) == -1){
+                    $('#id_assigned_resources').append(
+                    "<option value=\"" + $(team_member).val() + "\">" + $(team_member).text() + "</option>");
+                    }
+                });
+            $('#member_add').overlay().close()
+
+        });
+
+        $('#dialog-form #cancel').click(function(){
+            $('#member_add').overlay().close()
+        });
+
+        $('#member_delete').click(function(){
+            $('#id_assigned_resources').find('option').filter(':selected').remove();
+        });*/
+        
+
+        /* selectall_onsubmit(); */
+
+        $('input#cancel').click(function(){
+            window.location.href= '{% url tasks.views.non_project_task_list %}';
+            });
+    });
+    </script>
+
+    <form id="task" name="task" action="" method="POST" />
+        <div class="header">Non Project Task </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+            {% endfor %}
+        {% endif %}
+        {{form.errors}}
+        <div class="entry-form" >
+            {% for field in form %}
+                <div class="field">
+                    <div class="label">{{field.label_tag}} :</div>
+                    <div class="element" >{{field}}
+                        {% ifequal field.name 'type' %}
+                            <a href="/task/create_type/" rel="#overlay"><img src="/static/css/images/add.png" title="add task type" /></a>
+
+                            <a href="" id="EditTaskType" rel="#overlay"><img src="/static/css/images/edit.png" title="edit task type"  /></a>
+                            
+                            <a href="" id="delete_task_type"><img src="/static/css/images/delete.png" title="delete task type" id="delete_type"/></a>
+                            
+                            {# This is a popup for Create and Edit Task Type. #}
+                            <div class="apple_overlay" id="overlay">
+                                <!-- the external content is loaded inside this tag -->
+                                <div class="contentWrap"></div>
+                            </div>
+
+                        {% endifequal %}
+                        {% ifequal field.name 'assigned_resources' %}
+                            <input type="button" rel='#dialog-form' value="Add" id="member_add" />
+                            <input type="button" value="Delete" id="member_delete" />
+                            {# This is a popup for assigning task to members. #}
+                            <div id="dialog-form" class="dialog-overlay" title="Project Team Members">
+                                <form>
+                                    <select id="prospect_team" multiple="multiple">
+                                        {% for user in field.field.queryset %}
+                                            <option value="{{ user.pk }}">{{ user.username }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                                <input type="button" id="select" name="select" value="select" />
+                                <input type="button" id="cancel" name="cancel" value="cancel" />
+                            </div>
+                            <input type="hidden" value="{{ field.field.queryset }}">
+                        {% endifequal %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div class="SaveAndCancel">
+            <input type="submit" id="save" name="save" value="save"/>
+            <input type="button" id="cancel" name="cancel" value="cancel" />
+        </div>
+    </form>
+{% endblock %}

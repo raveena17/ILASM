@@ -1,0 +1,10 @@
+Hello {{reporting_senior_name}},
+
+
+Please check the ClientVisitReport form: {{full_domain}}
+ 
+or {{public_domain}}
+
+
+Regards,
+{{request_user}}

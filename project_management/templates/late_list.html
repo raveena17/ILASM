@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Late Attendance Entry {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%;  padding-top: 60px; }
+    .footer-buttons {float: left;}
+    .page-number{ float: right; }
+    .SaveAndCancel{ width: 100%;  clear: both; }
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  font-size: 14px;
+  padding: 8px;
+}
+
+/*#monthList {
+    position: absolute;
+    left: 20%;
+    bottom: 78%;
+    font-size: 13px;
+    
+}*/
+
+</style>
+
+
+{% load pagination_tags %}
+    <form id="lateentrylist" class="lateentrylist"  name="lateentrylist" action="" method='POST'/>
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header"><th>Late Attendance</th></span>
+            </div>
+        </div>
+        
+        <br><br><br><br>
+
+        <select id="monthList"   name="monthList" value="" style=" margin-left: 7%; width: 9%; font-size: small;"></select><br><br>
+
+        <div id='LoginModal' style="height:500px;width:600px;overflow:auto;overflow-x:hidden;overflow-y:auto;">
+           
+            <table align="center" style=" width: 76%;">
+            
+                
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Late Entry Count</th>
+                </tr>
+
+                
+                {% for employees in employee_list %}
+                <tr>
+                    <td  name="name">{{employees.username}}</td>
+                    <input type="hidden" class="ids" id=empid_{{forloop.counter0}} value={{employees.id}}>
+                    <td ><input type="number" id=count_{{forloop.counter0}} name="{{employees.id}}" value={{employees.lateCount}}></td>  
+                 </tr>   
+                {% endfor %}
+            </table>
+
+            
+
+        </div>
+        <input type="submit" id="save" name="save"  value="Save" style=" margin-left: 7%; width: 7%; font-size: small;">
+        
+
+
+   </form>
+
+
+<script type="text/javascript">
+
+// To get 'x' months from the current month
+
+function getLastMonths(n) {
+        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    var months = new Array();
+    
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth();
+    
+    var i = 0;
+    do {
+        months.push(monthNames[month]+' '+year);
+        // months.push(year+monthNames[month]);
+        if(month == 0) {
+            month = 11;
+            year--;
+        } else {
+            month--;
+        }
+        i++;
+    } while(i < n);
+    return months;
+    
+}
+
+
+function writeMonthOptions() {   
+    
+   var optionValues = getLastMonths(3);
+   var dropDown = document.getElementById("monthList");
+    
+   for(var i=0; i<optionValues.length; i++) {
+       var key = optionValues[i].slice();
+       var value = optionValues[i];
+       dropDown.options[i] = new Option(value, key);
+    }
+    
+}
+
+writeMonthOptions();
+
+
+
+// Ajax to get the form data
+
+$(document).on('submit', '.lateentrylist', function(){
+$.ajax({ 
+    type: $(this).attr('method'), 
+    url: '/leave/late_attendance/',
+    data: $(this).serialize(),
+    context: this,
+    success: function(data) {
+        $('#LoginModal').html(data);
+    }
+    });
+    return false;
+});
+
+</script>
+
+<script type="text/javascript">
+
+// To keep the selected dropdown value
+
+$( document ).ready(function() {
+    var selectedMonth = "{{Selectedmonth}}";
+    $("#monthList").val(selectedMonth).attr("selected",true);
+  });
+
+
+// To display the value on change
+
+$("#monthList").change(function(){
+    var MonthId = $("#monthList").val();
+    var currentMonth = "{{currentMonth}}";
+    if(MonthId == currentMonth){
+      ChangedDropDownValue();
+    } else{
+      ChangedDropDownValue();
+    }
+});
+
+function ChangedDropDownValue(){
+  var loginId1 = $("#monthList").val();
+  x = loginId1.split(' ')
+  month = x[0]
+  year = x[1]
+  if( loginId1 != 0 ){
+    $.ajax({
+      url : "/leave/late_attendance/"+month+'/'+year,
+      type : 'GET',
+      async: false,
+      success : function(data){ 
+        $("#monthList").val(loginId1).attr("selected",true);
+        window.location = "/leave/late_attendance/"+month+'/'+year;
+        
+          
+      }
+    });  
+              
+  }
+}
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

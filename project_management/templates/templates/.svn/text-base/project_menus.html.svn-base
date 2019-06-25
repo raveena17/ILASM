@@ -1,0 +1,54 @@
+{% comment %} templates that contain program menus {% endcomment %}
+<style>
+    div.project { min-width:50%;}
+    div.project p {line-height: 80%;}
+    div.project P:first-letter { font-weight: bold; float:left; font-size: 360%;  }
+    div.project P:first-line { font-weight: bold; float:left; font-size: 110%; }
+</style>
+<div class="project-info">
+    <div>
+        <div class="project"><p> {{project.name}} </p> <!-- <span>{{project.code}}<span> </div> -->
+    </div>
+    <div>
+        <div class="project-attributes"> Type of Project : {{project.project_type.name}} </div>
+        <div class="project-attributes">
+            Planned Start Date : {{project.schedules.planned_start_date|date:"m-d-Y"|cut:"01-01-2000"|cut:"01-01-1900"}}
+        </div>
+        <div  class="project-attributes">
+            Planned End Date : {{project.schedules.planned_end_date|date:"m-d-Y"|cut:"01-01-2000"|cut:"01-01-1900"}}
+        </div> 
+    </div>
+</div>
+<div style="clear:both"></div>
+<div class="sub-menu">
+    <div class="sub-menu-btn">
+        <a href="/project/home/?ids={{project.code}}">Home</a>
+    </div>
+
+    {% if perms.tasks.add_task or perms.tasks.change_task %}
+        <div class="sub-menu-btn">
+            <a href="/task/list/?pid={{project.code}}">Task</a>
+        </div>
+    {% endif %}
+    
+    {% if perms.milestone.add_milestone or perms.milestone.change_milestone %}
+        <div class="sub-menu-btn">
+            <a href="/milestone/list">Milestone</a>
+        </div>
+    {% endif %}
+
+    <!--div class="sub-menu-btn1">
+        <a href="/AlertConfiguration/">Alert Configuration</a>
+    </div-->
+
+    {% if perms.projects.change_project %}
+        <div class="sub-menu-btn1" >
+            <a href="/project/update/?ids={{project.code}}">Update Project</a>
+        </div>
+    {% endif %}
+    {% if perms.projects.add_project %}
+	<div class="sub-menu-btn1" >
+            <a href="/project/printdetails/{{project.id}}/">Print Project details</a>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,22 @@
+<table id="users1" class="tablesorter">
+    <thead class="list-header-panel">
+        <tr>
+            <th class="header link-line-bg con-white-bold">Leave Type</th>
+            <th class="header link-line-bg con-white-bold">Current Balance</th>
+            <th class="header link-line-bg con-white-bold">Applied For</th>
+            <th class="header link-line-bg con-white-bold">Balance After Approval</th>
+            <th class="header link-line-bg con-white-bold">LOP</th>
+        </tr>
+    </thead>
+    <tbody>  
+         {% for data in data_set %}
+            <tr class="list-row">
+                <td width="10%">{{ data.leave_type }}</td>
+                <td width="10%">{{ data.current_balence }}</td>
+                <td width="10%">{{ data.appied_for }}</td>
+                <td width="10%">{{ data.balence_after_approval }}</td>
+                <td width="10%">{{ data.lop }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

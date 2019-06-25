@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/select2-amc-min.css" rel="stylesheet" type="text/css" />
+  
+
+    <style type="text/css">
+        select.select2 {
+            position: absolute;
+            visibility: hidden;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+
+  <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    
+    <script type="application/javascript" src="/static/js/jquery-date.js"></script>
+    <script type="application/javascript" src="/static/js/select2.js"></script>
+    <link href="/static/css/jquery-daterange-ui.css" rel="stylesheet" type="text/css" />
+    <script type="application/javascript" src="/static/js/jquery-daterange-ui.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/additional-methods.min.js"></script>
+  
+    <style type="text/css">
+        
+        form { padding: 10px; }
+        .header{position: absolute; text-align: left; left: 188px;}
+        .element { width: 100%; min-height: 30px; }
+        .field { width: 59%; float:left; min-height: 46px;}
+        .label { width: 21%; float: left; min-height: 35px; margin-left: 10px;}
+        input[type=text]{ width:185px;}
+        input[type=date]{ width:185px; background-color: white}
+        input[type=number]{ width:185px;}
+        select { width: 170px;  background-color: white}
+        #report_form{position: absolute; top: 150px;     width: 80%;
+}
+        .class_Repeat {position: absolute; text-align: right; left: 440px; top: 150px; width: 90px;}
+        .class_Frequency{text-align: left; left: 520px; top: 150px;-+}
+        .select2-container .select2-choice {width: 184px;}
+        #s2id_id_customer_name{background-color: #fff}
+        #s2id_id_frequency{position: absolute; left: 80px; width: 200px;}
+        .select2-choices .select2-search-choice{height: 9px; width: auto;}
+        .select2-container{width: 195px;}
+        #id_remarks{width: 185px;height: 55px;}
+        select {width: 193px; background-color: white}
+        #id_description{width: 33%; height: 79px; "}
+
+    </style>
+    <script type="text/javascript">
+
+        function save(){
+            $('#report_form').submit();
+        }
+
+
+
+
+        $( function() {
+            var dateformat = "yyyy-mm-dd",
+            from = $("#id_amc_start_date").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                dateFormat: "yy-mm-dd"
+              })
+            
+        }); 
+
+        
+        $(document).ready(function(){
+        $('#id_frequency').click(function(){ 
+            changeDate();     
+        });
+    
+    });
+
+
+        function changeDate() {
+            if ($('#id_frequency').val() != ''){
+                var frequencyPeriod = Number($('#id_frequency').val());
+                var mydate = $('#id_amc_start_date').val().split('-');
+                year = +(mydate[0]);
+                month = +(mydate[1]) - 1;
+                day = +(mydate[2]);
+                var date1 = new Date(year, month, day);
+                date1.setMonth(date1.getMonth() + frequencyPeriod);
+                if ((date1.getMonth() + 1) <= 9)
+                    monthDisplay = '0' + (date1.getMonth() + 1);
+                else
+                    monthDisplay = date1.getMonth() + 1;
+
+                if (date1.getDate() <= 9)
+                    dateDisplay = '0' + date1.getDate();
+                else
+                    dateDisplay = date1.getDate();
+                mydate3 = date1.getFullYear() + '-' + monthDisplay+ '-' +dateDisplay ;
+                $('#id_amc_end_date').val(mydate3);
+            }
+        }
+
+        
+        
+    $(document).ready(function(){
+        $('#close').click(function(){ 
+            window.location.href = "/AMC/list/"
+        });
+
+        $("#id_client_name").select2({
+              placeholder: "Select the customer",
+              allowClear: true
+            });
+
+        $("#id_project").select2({
+          placeholder: "Select the project",
+          allowClear: true
+        });
+    });
+
+
+
+</script>
+
+{% endblock %}
+{% block programcontent %} {% endblock %}
+{% block programmenu %}{% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+    <div class="header">AMC Report</div>
+    
+    <form  id="report_form" name="report_form"  action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in Amc_form %}
+            <!-- {% ifequal field.name 'client_name' %}
+                <div class="label" name="client name" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %}
+
+            {% ifequal field.name 'project' %}
+                <div class="label" name="project" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %}
+            {% ifequal field.name 'description' %}
+                <div class="label" name="description" >{{field.label}}: </div><div class="field1">{{field}}</div>
+            {% endifequal %}
+
+            {% ifequal field.name 'amc_start_date' %}
+                <div class="label" name="start date" type="date" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %}
+            {% ifequal field.name 'frequency' %}
+                <div class="label" name="frequency" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %}
+            {% ifequal field.name 'amc_end_date' %}
+                <div class="label" name="end date" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %}
+            {% ifequal field.name 'is_active' %}
+                <div class="label" name="is_active" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %}
+            {% ifequal field.name 'document' %}
+                <div class="label" type="file" name="file" >{{field.label}}: </div><div class="field">{{field}}</div>
+            {% endifequal %} -->
+
+            <div class="class_{{field.label}}" id="id_{{field.label}}">
+                <div class="label">{{field.label}}: </div><div class="field">{{field}}</div>
+            </div>
+
+        {% endfor %}
+        
+        <input type="submit" value="Submit" style="position: absolute; left:145px; bottom: -25px"></input>
+        <input type="button" id="close"  value="Close" style="position: absolute; left:205px; bottom: -25px"></input>
+
+        {% if data != None %}
+            {% if today >= renew_date %}
+                <a href="/AMC/renew/{{amc_id}}/"><input type="button" id='renew' value="Renew" style="position: absolute; left:258px; bottom: -25px"></input></a>
+            {% endif %}
+        {% endif %}
+
+    </form>
+{% endblock %}
+        

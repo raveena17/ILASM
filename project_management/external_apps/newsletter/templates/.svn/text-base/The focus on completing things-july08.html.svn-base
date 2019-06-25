@@ -1,0 +1,51 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} The focus on completing things {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+<form name="contacts" id="contacts" action="." method="post">
+<div class="wr-ar">
+<div class="update-program-hdr">
+   	<table width="100%">
+        <tr>
+     		<td width="30%"><span class="header">
+			The focus on completing things
+		</span></td>
+     		<td width="50%"></td>
+        </tr>
+     </table>
+   </div>
+		<div class="plain"> 
+					
+			<p><strong>PVJ</strong></p> 
+			<p style="text-align: justify;"><b><i></i></b></p> 
+			<p style="text-align: justify;"><b><i>We are working on it, It's almost done, We are making progress</i></b></p> 
+			<p style="text-align: justify;">Sounds familiar??  I am sure we all have heard these statements often and have probably expressed it ourselves too equally often.  Nothing wrong with the statements by themselves  what is of concern is their repeated use!   Too often does one see activities staying in a semi-complete state for inexplicably long periods of time, without any apparent owner or focus or indication on when will they be completed.</p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;">Which brings me to the topic of this column <b><i>the focus on completing things</i></b>.  All of us take up multiple tasks in professional life, in personal life, in social life etc.  If we look back, I am sure we will all find tasks we take pride in having completed on time and tasks which we regret not having completed.   If we look deeper, we will probably also find that only the former resulted in value and benefits to whoever we associated with, be it the customer, employer, family member, friend or colleague.  A job not done within a reasonable time is of little value to the end-recipient; beyond a certain threshold, it just loses all value.</p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;">When we multi-task, the priority that we attach to the latest task taken up is often at the cost of completing whatever we were previously doing till then.  That does not mean we shy away from multi-tasking, which is not a choice available in real life! Neither should completion be taken too literally sometimes we can take the task to a logical stage from where someone else can easily take over or we can ensure a proper handover to another person who can complete it.   But retaining ownership is key if we start a task, we can take credit and feel proud about it only if we see it through to completion with end-to-end ownership.  In process language, that is also called <b>tracking to closure</b> and it is also a critical component of every project management framework.</p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;">Yes, we all have multiple constraints and commitments in life I cannot think of anything we do in life that is not governed by the triple constraints of time, quality and cost.  What we need to do is create within ourselves a mindset for ownership to task completion and consider every completed task as a personal success (and, as a corollary, every task not completed as some sort of a failure).  If we can not do it ourselves, we should proactively take the help of others and not wait for it.  Most importantly, we need to get passionate about doing it, set our own goals, roll up our sleeves &amp; dirty our hands whenever needed, follow up relentlessly and even get upset if things don't happen.  There are many tools and techniques available to help us in task tracking and completion but without ownership and passion, it is improbable that we will be able to manage the constraints successfully and say with pride it is 100% complete.</p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;">So, the next time someone asks you about the status of what you are doing, don't just say I am working on it <strong>do also try to state when you would be completing it</strong>.</p> 
+			<p><b> </b></p> 
+		 
+		</div> 
+	</div>
+	{% endblock %} 

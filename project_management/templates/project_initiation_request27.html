@@ -1,0 +1,989 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/static/css/ui.tabs.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.theme.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.core.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/projectInitiation.css" rel="stylesheet" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="/static/js/ui.core.js"></script>
+    <script type="application/javascript" src="/static/js/ui.tabs.js"></script>
+    <script type="application/javascript" src="/static/js/projectinitiationrequest.js"></script>
+{% endblock %}
+
+{% block title %} Plan Project {% endblock %}  
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+{% url projects.views.program_view as  project_url %}
+{% url projects.views.ProgramDisplayList as project_list_url %}
+{% url create_customer as customer_view_url %}
+{% url update_customer as update_customer_url %}
+<style>
+div.project { min-width:50%;}
+div.project p {line-height: 80%;}
+div.project P:first-letter { font-weight: bold; float:left; font-size: 360%;  }
+div.project P:first-line { font-weight: bold; float:left; font-size: 110%; }
+
+form { padding: 10px; }
+.element { width: 100%; min-height: 30px; }
+.label { width: 20%; float:left; }
+.field { width: 80%; float: left; }
+.initiationHeader{ padding-top: 10px; padding-bottom: 10px; }
+#id_objective { width: 550px; height: 200px; }
+.SaveOrCancel { width: 100%;}
+select { width: 185px; }
+/*input[type="text"] { width: 175px; }*/
+input[type="text"] { width: 162px; }
+
+ #overlay {
+        color:#efefef; 
+        height:150px; 
+        } 
+
+    .contentWrap { 
+        height:441px; 
+        }
+
+    .apple_overlay {        
+            background-image:url(/static/css/images/overlay_black.png); 
+            display:none;
+            width:250px;        
+            padding:35px;
+            font-size:11px;
+          }
+    .business_apple_overlay {        
+            background-image:url(/static/css/images/black.png); 
+            display:none;
+            width:650px;    
+            padding:35px;
+            font-size:11px;
+          }
+
+    /* default close button positioned on upper right corner */
+    .apple_overlay div.close,.business_apple_overlay div.close, .customer_overlay div.close, .customer_contact_overlay div.close {
+        background-image:url(/static/css/images/close.png);
+        position:absolute; right:5px; top:5px;
+        cursor:pointer;
+        height:35px;
+        width:35px;
+    }
+    .customer_overlay{
+        background-image:url(/static/css/images/black.png); 
+        display:none;
+        width:650px;    
+        padding:35px;
+        font-size:11px;
+    }
+
+    .customer_contact_overlay{
+        background-image:url(/static/css/images/black.png); 
+        display:none;
+        width:720px;
+        padding-left:40px;
+        padding-top: 10px;
+        font-size:11px;
+    }
+    
+    a:active {outline:none;}
+
+    .dialog-overlay { 
+        background-color:#fff; 
+        display:none; 
+        width:350px; 
+        padding:15px; 
+        text-align:left; 
+        border:2px solid #333; 
+                             
+        opacity:0.8; 
+            -moz-border-radius:6px; 
+            -webkit-border-radius:6px; 
+            -moz-box-shadow: 0 0 50px #ccc; 
+            -webkit-box-shadow: 0 0 50px #ccc; 
+        }
+   
+           
+</style>
+
+<script>
+
+$(document).ready(function(){
+
+var oList = document.getElementById("id_requested_by");
+var oOption = oList.options[0]; //Parkhead
+oList.removeChild(oOption);
+
+    if($('#mnuProject').attr('id') != undefined)
+    {
+    $('#mnuProject').css({'background':'#1bc2ec'});
+     var mnua = $('#mnuProject').children();
+     $(mnua[0]).css({'color':'white','font-weight':'bold'});
+    }
+    $('#is_waiting_for_approval').hide();
+
+    $('#id_rejection_reason_div').hide();
+    $('#reject_div').hide();
+    $('#id_unbilled_reason_div').hide();
+    $('#id_billed_type_div').hide();
+    $('#fixed_price_div').hide();
+    $('#time_management_div').hide();
+    $('#support_div').hide();
+    $('#other_div').hide();
+    $('.billingDetails').hide();
+    
+
+
+
+    convertDate('id_expected_start_date');
+    convertDate('id_expected_end_date');
+    convertDate('id_initiation_request_date');
+    convertDate('id_approved_date');
+    var Estimated_Effort= Math.ceil( $('#id_planned_effort').val() )
+    $('#id_planned_effort').val(Estimated_Effort)
+    // url call
+
+    $('#client_add').click(function(){
+      window.location.href = "/customer/create/";
+        });
+
+    if($('#id_name').val() == "" ){
+        <!-- $('#id_approved_by').val('31'); -->
+        $('#id_business_unit').val('34');
+        $('#id_approval_type_0').val('internal').attr('checked',true);
+        <!-- $('#id_project_type').val('17'); -->
+        $('#id_requested_by').val('{{user.pk}}')
+       
+    }
+    else
+    {       
+            if ('{{project.approval_type}}' != '')
+            {
+                if('{{ project.approval_type }}' == 'internal')
+                       $('#id_approval_type_0').val('internal').attr('checked',true);
+                else
+                     $('#id_approval_type_1').val('external').attr('checked',true);
+             }
+            else{
+            
+                if('{{ approval_type }}' == 'internal')
+                       $('#id_approval_type_0').val('internal').attr('checked',true);
+                else
+                     $('#id_approval_type_1').val('external').attr('checked',true);
+            }
+       }
+
+
+
+
+    getURL1 =  window.location.href.split("?");
+    if (getURL1.length > 1)
+    {
+      getURL = window.location.href.split("reject=");
+        if((getURL[1] == "True") || ($('#isrejected').val() == "True")){
+        $('#id_rejection_reason_div').show();
+        
+       }
+    }
+    $('#id_project_no_div').hide();
+    if (getURL1.length > 1)
+    {
+      getURL = window.location.href.split("approve=");
+        if((getURL[1] == "True") || ($('#isapproved').val() == "True")){
+        $('#id_project_no_div').show();
+        $('#id_approval_type_0').show();
+        $('#id_approval_type_1').show();
+        }
+
+    } else
+    {
+      getURL = window.location.href.split("approve=");
+        if(($('#isapproved').val() == "") && (getURL[1] == "False")){
+        $('#id_customer').val('5');
+        $('#id_project_owner').val('31');
+        }
+    }
+
+
+    $('#reject_save').click(function() {
+             $('#id_rejection_reason_div').show(); 
+             $("#save_div").hide(); 
+             $("#reject_div").show(); 
+    });
+
+    
+    $('#id_billed_type').change(function(){
+      changeCategory();
+    });
+
+
+    $('#id_billing_category_1').click(function() {
+        // $('#id_unbilled_reason_div').show();
+        $('#fixed_price_div').hide();
+        $('.billingDetails').hide();
+        $('#id_billed_type_div').hide();
+        
+    });
+
+    $('#id_billing_category_0').click(function() {
+        $('#id_unbilled_reason_div').hide();
+        $('.billingDetails').hide();
+        $('#id_billed_type_div').show();
+
+    });
+
+
+    
+
+    $('#id_project_no').attr('readonly', 'true');
+    $('#id_initiation_request_date').attr('readonly', 'true');
+    $('#id_approved_date').attr('readonly', 'true');
+    
+    $('#id_other_project_type').hide();
+    $('#id_project_type').change(function(){
+        if ($('#id_project_type option:selected').text() == 'Others'){
+            $('#id_other_project_type').show();
+        }
+        else{
+            $('#id_other_project_type').hide();
+        }
+    });
+
+});
+
+
+
+function changeCategory() {
+  if ($("#id_billing_category_0").is(":checked")){
+      if ($('#id_billed_type').val() == 'FP'){
+        // createStageElement()
+
+      $('.billingDetails').show();
+      $('#milestone').show();
+      $('#time-based').hide();
+      $('#specified-dates').hide();
+      $('#mile').show();
+      $('#time').hide();
+      $('#spec').hide();
+      $('#id_unbilled_reason_div').hide();
+    }
+     
+    if ($('#id_billed_type').val() == 'TM'){
+      $('.billingDetails').show();
+      $('#time-based').show();
+      $('#milestone').hide();
+      $('#specified-dates').hide();
+      $('#time').show();
+      $('#mile').hide();
+      $('#spec').hide();
+      $('#id_unbilled_reason_div').hide();
+    }
+    
+    if ($('#id_billed_type').val() == 'SP'){
+      $('.billingDetails').show();
+      $('#time-based').hide();
+      $('#milestone').hide();
+      $('#specified-dates').show();
+      $('#time').hide();
+      $('#mile').hide();
+      $('#spec').show();
+      $('#id_unbilled_reason_div').hide();
+     
+    }
+    if ($('#id_billed_type').val() == 'OR'){
+      $('#id_unbilled_reason_div').show();
+      $('.billingDetails').hide();
+      $('#mile').hide();
+      $('#time').hide();
+      $('#spec').hide();
+    }
+    if ($('#id_billed_type').val() == 'UB'){
+      $('#id_unbilled_reason_div').hide();
+      $('.billingDetails').hide();
+      $('#mile').hide();
+      $('#time').hide();
+      $('#spec').hide();
+    }
+  }
+}
+  
+function validation()
+{
+        
+         $('#isapproved').val('0');
+         $('#ex_appr').val('0');
+         $('#isrejected').val('0');
+         fromdate = $('#id_expected_start_date').val()
+         todate = $('#id_expected_end_date').val()
+         days = date_validation(fromdate, todate) 
+         if (days > 0){
+                alert('Expected end date should be greater than Expected start date')
+                }
+         else{
+         $('#InitiationRequest').submit();
+         }
+}
+
+
+function date_validation(fromdate, todate) {
+        fromdate = fromdate.split('-')
+        todate = todate.split('-')
+        fdate = new Date(parseInt(fromdate[2], 10),parseInt(fromdate[0], 10),parseInt(fromdate[1], 10));
+        tdate = new Date(parseInt(todate[2], 10),parseInt(todate[0], 10),parseInt(todate[1], 10));
+        difference = fdate - tdate
+        days = Math.round(difference/(1000*60*60*24));
+        return days
+} 
+
+
+function show ()
+{
+ alert($('#is_waiting_for_approval').attr('checked'));
+}
+
+function printMe(divID)
+{ 
+  var disp_setting="toolbar=yes,location=no,directories=yes,menubar=yes,header=no,footer = no,"; 
+      disp_setting+="scrollbars=yes, left=100, top=25"; 
+  var content_vlue = document.getElementById(divID).innerHTML; 
+
+  var docprint=window.open("","",disp_setting); 
+   docprint.document.open(); 
+   docprint.document.write('<html>');   
+   
+   
+   docprint.document.write('<link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />');
+   docprint.document.write('<link href="/static/css/forms.css" rel="stylesheet" type="text/css" />');
+   
+   docprint.document.write('</head><body onLoad="self.fprint()"><center>');
+    
+   docprint.document.write(content_vlue);
+   
+   docprint.document.write('</center></body></html>'); 
+   docprint.document.close(); 
+   docprint.focus();
+   
+  
+}
+
+function external_appr(){
+res = confirm('Are you sure you want to do the final approval?');
+if (res == true )
+        {
+         $('#ex_appr').val('1');
+         $('#isapproved').val('1');
+         $('#isrejected').val('0');
+         if ('{{ project.approval_type }}' == 'external')
+            $('#prj_category').css("display",'true'); 
+         $('#InitiationRequest').submit()
+         }
+}
+
+
+function internal_appr(){
+res = confirm('Are you sure you want to approve this project internally?');
+if (res == true )
+        {
+            $('#ex_appr').val('0');
+            $('#isapproved').val('1');
+            $('#isrejected').val('0');
+            if ('{{ project.approval_type }}' == 'internal')
+                 // alert('{{ project.approval_type }}');
+                 $('#prj_category').css("display",'true');
+            $('#InitiationRequest').submit()
+        }
+}
+
+
+// function Save_bill(){
+// res = confirm('Are you sure you want to save the billing details?');
+// if (res == true )
+//         {
+//           $('#isapproved').val('0');
+//           $('#ex_appr').val('0');
+//           $('#isrejected').val('0');
+//           if ($("#id_category_0").is(":checked")) {
+//             $('#id_category_0').val('Monthly').attr('checked',true);
+//           }else{
+//             $('#id_category_1').val('Bi-Monthly').attr('checked',true);
+//           }
+
+//           $('#InitiationRequest').submit()
+//         }
+// }
+
+
+function billing_submit(){
+    if ($("#id_billing_category_0").is(":checked")) {
+        $('#id_approval_type_0').val('Billed').attr('checked',true);
+        $('#bill_category').css("display",'true');
+        alert($('#id_billing_category_0').val());
+        }
+    else{
+        $('#id_billing_category_1').val('Unbilled').attr('checked',true);
+        $('#ex_appr').val('0');
+        $('#isapproved').val('0');
+        $('#isrejected').val('0');
+        $('#id_unbilled_reason_div').show();
+        $('#bill_category').css("display",'true');
+        alert($('#id_billing_category_1').val())
+    }
+
+    alert('START');
+    $('#InitiationRequest').submit()
+
+}
+
+
+
+function CancelReject(){
+  var x = $('#isapproved').val()
+  alert (x);
+  console.log(x)
+  if (x != 'False') {
+    alert("Approved project can't be rejected")
+  }else{
+    if($('#id_rejection_reason').val() == '')
+        alert('Please give rejection reason')
+    else
+      res = confirm('Are you sure you want to reject this project?');
+      if (res == true )
+        $('#isrejected').val('1');
+        $('#ex_appr').val('0');
+        $('#isapproved').val('0');
+        $('#prj_category').css("display",'true'); 
+        $('#InitiationRequest').submit()
+  }
+
+}
+
+
+
+function CancelRequest(){
+     window.location.href = '/projects/requestlist/';
+}
+</script>
+<div class="project"><p> {{project.name}}</p></div>
+<form id="InitiationRequest" name ="InitiationRequest" action="" method="POST">
+  {% csrf_token %}
+<div>
+<div class="header initiationHeader">
+    Project Initiation Request
+</div>
+<div class="label"><input type="hidden" id="isapproved" name="isapproved" value="{{is_approved}}" /></div>
+<div class="label"><input type="hidden" id="isrejected" name="isrejected" value="{{is_rejected}}" /></div>
+<div style="font-size: 14px; background-color: limegreen;"><center><b>{{msg}}</b></center></div>
+
+<div class="error">{{request_form.errors}}</div><br><br>
+<div class="label" style="display:none" id='projectname'>{{request_form.name}}</div>
+<div class="element">
+    <div class="label">{{request_form.requested_by.label_tag}}</div>
+    <div class="field">{{request_form.requested_by}}</div>
+</div>
+
+<div class="element">
+    <div class="label">{{schedules_form.initiation_request_date.label_tag}}</div>
+    <div class="field">{{schedules_form.initiation_request_date}}</div>
+</div>
+
+<div class="element">
+    <div class="label">{{request_form.business_unit.label_tag}} </div>
+    <div class="field">{{request_form.business_unit}}</div>
+</div>
+
+
+<div class="element">
+    <div class="label">{{request_form.name.label_tag}}</div>
+    <div class="field">{{request_form.name}}</div>
+</div>
+
+{% if perms.projects.add_project %}
+
+<div class="element">
+    <div class="label">{{request_form.customer.label_tag}}</div>
+    <div class="field">{{request_form.customer}} <input type= "button" id="client_add"  name = "client_add" value = "+" /></div>
+</div>
+<div class="element">
+    <div class="label">{{request_form.project_owner.label_tag}}</div>
+    <div class="field">{{request_form.project_owner}}</div>
+</div>
+
+{% endif %}
+<div class="element">
+    <div class="label">{{request_form.approval_type.label_tag}}</div>
+    {% if not project.id %}
+    <div class="field">{{request_form.approval_type}}</div>
+    {% else %}
+     <div id="prj_category" class="field" style="display:none;" >{{request_form.approval_type}}</div>
+    <div class="field"><input type="radio" checked="checked" value="{{project.approval_type}}" />&nbsp;&nbsp;&nbsp;{{project.approval_type}}</div>
+    {% endif %}
+</div>
+
+
+<div class="element">
+    <div class="label">{{request_form.project_type.label_tag}}</div>
+    <div class="field">{{request_form.project_type}}</div>
+</div>
+
+<div class="element">
+    <div class="label">{{schedules_form.expected_start_date.label_tag}}</div>
+    <div class="field">{{schedules_form.expected_start_date}}</div>
+</div>
+
+<div class="element">
+    <div class="label">{{schedules_form.expected_end_date.label_tag}}</div>
+    <div class="field">{{schedules_form.expected_end_date}}</div>
+</div>
+
+<div class="element">
+    <div class="label">{{request_form.planned_effort.label_tag}}</div>
+    <div class="field">{{request_form.planned_effort}}</div>
+</div>
+<div class="element">
+    <div class="label">{{request_form.objective.label_tag}}
+    </div>
+   <div class="field"> [Hints- Try to Address all the questions below while writing down the objectives:<br/>
+         The main purpose of the project?<br/>
+        <ul><li>Is there a problem that the project intends to solve?</li>
+        <li>Who benefits from the outcome?</li>
+        <li>Are there various people who have stake in the outcome of the project and does their goal differ?</li>
+        <li>Specify the Success Criteria of the Project]</li></ul>
+         {{request_form.objective}}
+     </div>
+</div>
+
+<div class="element">
+    <div class="label" hidden>{{request_form.approved_by.label_tag}}</div>
+    <div class="field" hidden>{{request_form.approved_by}}</div>
+</div>
+
+
+
+{% if perms.projects.add_project %}
+
+    <div class="element">
+        <div class="label">{{schedules_form.approved_date.label_tag}}</div>
+        <div class="field">{{schedules_form.approved_date}}</div>
+    </div>
+    
+    
+    {% if project.name and not project.rejection_reason %}  
+            
+            {% if project.is_approved == 0 and perms.projects.add_project %}
+              <div class="element" id="bill_category_div">
+                <div class="label">{{request_form.billing_category.label_tag}}</div>
+                <div class="field">{{request_form.billing_category}}</div>        
+            </div>
+            {% endif %}
+    {% endif %}
+
+
+{% for role in  user.groups.all %}
+      {% if role.name == 'CEO' %}
+        {% if msg != 'Project initiated successfully' %}
+
+
+  <div class="element" id="id_billed_type_div">
+      <div class="label">{{request_form.billed_type.label_tag}} *</div>
+      <div class="field">{{request_form.billed_type}}</div>
+  </div>
+
+  <div class="element" id="id_unbilled_reason_div">
+      <div class="label">{{request_form.unbilled_reason.label_tag}} *</div>
+      <div class="field">{{request_form.unbilled_reason}}</div>
+  </div>
+
+  <div class="element" id="id_project_no_div">
+      <div class="label" >{{request_form.project_no.label_tag}}</div>
+      <div class="field">{{request_form.project_no}}</div>
+  </div> 
+
+  <div class="element" id="id_rejection_reason_div">
+      <div class="label">{{request_form.rejection_reason.label_tag}} *</div>
+      <div class="field">{{request_form.rejection_reason}}</div>
+  </div>
+
+  <div class="element" id="is_waiting_for_approval">
+      <div class = "label">{{request_form.is_waiting_for_approval.label_tag }} </div>
+      <div class="field">{{ request_form.is_waiting_for_approval }} </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+<br><br><br>
+
+          <form id="BillingRequest" name ="BillingRequest" action="" method="POST">
+          <table id="billing_detail1" width="100%">
+          <tr><td style="height:30px"></td></tr>
+          <input type="hidden" name="StageFormCount" id="StageFormCount" value="1" />
+          <input type="hidden" name="SpecificDatesFormCount" id="SpecificDatesFormCount" value="1" />
+              <tr>
+              <td style="background-color: #E8E8E8">
+              <div class="billingDetails">
+                  <table width="100%" >
+                      <tr><td><span class="sub-header">Billing Details</span></td></tr>
+              <tr><td>
+              <div id="tabs">
+
+                      <center><li id="mile" style=" background-color: lightgray;"><a href="#milestone"><span class="con-grey Arial-12-grey"><b style="margin-right: 18%; font-size: medium; font-family: cursive;">Fixed Price</b></span></a></li></center>
+                      <center><li id="time" style=" background-color: lightgray;"><a href="#time-based"><span class="con-grey Arial-12-grey"><b style="margin-right: 18%; font-size: medium; font-family: cursive;">Time & Management</b></span></a></li></center>
+                      <center><li id="spec" style=" background-color: lightgray;"><a href="#specified-dates"><span  class="con-grey Arial-12-grey"><b style="margin-right: 18%; font-size: medium; font-family: cursive;">Support</b></span></a></li></center><br>
+                  
+                  <div id="milestone">
+                    <table width="100%">
+                        <tr>
+                          <td width="90%">
+                              <table id="stageTable" style=" width: 100%; ">
+
+
+                                <tr width = "100%">
+                                      
+                                      <td>
+                                        <span class="con-grey Arial-12-grey"><b>Planned Days</b></span>
+                                        <span class="con-grey Arial-12-grey" style="margin-left: 8.5%;"><b>Milestone</b></span>
+                                        <span class="con-grey Arial-12-grey" style="margin-left: 11%;"><b>Date</b></span>
+                                        <span class="con-grey Arial-12-grey" style="margin-left: 27.2%;"><b>Percentage</b></span>
+                                      </td>
+                                  </tr> 
+                                  <div class="append">
+                                  {{ milestone_form.management_form }} 
+                                  {% for each in milestone_form.forms %}
+                                    <tr id="row{{forloop.counter}}" class="milestoneRows">
+                                      {{each.errors}}
+                                      {{each.id}}
+                                      
+                                      <td style=" width: 100%; ">
+                                         <span class="con-grey Arial-12-grey" style="width: 173px;"> {{each.planned_days}}</span>
+                                         <span class="con-grey Arial-12-grey"> {{each.milestone}}</span>
+                                         <span class="con-grey Arial-12-grey"> {{each.from_date}}</span>
+                                         <span class="con-grey Arial-12-grey" style="width: 168px;"> {{each.percentage}}</span>
+                                      </td>
+                                     <tr>
+                                  {% endfor %}
+                                </div>
+
+                            </table>
+                       </td>
+                       <td style="float: right;">
+                          <input type="button" name="add" id="btnadd" value="+" style="margin-top: 10px" class="b1"  onclick="createStageElement()" />
+                          <input type="button" name="add" id="btnadd" value="-" style="margin-top: 10px" class="b1"  onclick="removeStageElement();" />
+                       </td>
+                     </tr>
+                    
+                  </table>
+                </div>
+
+
+                <div id="time-based">
+                  <table id="id_invoice_dates" width="100%">
+                      <tr>
+                        <td width="80%">
+                          <table id="id_invoice_date">
+
+                            <tr width = "100%">
+                              <td>
+                                <span class="con-grey Arial-12-grey" ><b>From Date </b></span>
+                                <span class="con-grey Arial-12-grey" style="margin-left: 32%;"><b> To Date </b></span>
+                                <span class="con-grey Arial-12-grey" style="margin-left: 33%;"><b> Category</b></span>
+                              </td>
+                            </tr>
+                            <div class="append">
+                              {{ time_based_form.management_form }} 
+                              {% for each in time_based_form.forms %}
+                              <tr id="rows{{forloop.counter}}" class="timeManagementRows">
+                                {{each.id}}
+
+                                <td style=" width: 100%;">
+                                   <span class="con-grey Arial-12-grey"> {{each.from_date}}</span>
+                                   <span class="con-grey Arial-12-grey"> {{each.to_date}}</span>
+                                   <span class="con-grey Arial-12-grey"> {{each.category}}</span>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                            </div>
+                           </table>
+                        </td>
+                        <td>
+                          <input type="button" name="add" id="btnadd" value="+" style="margin-top: 10px" class="b1"  onclick="createTimeBasedElement()"/>
+                          <input type="button" name="add" id="btnadd" value="-" style="margin-top: 10px" class="b1"  onclick="removeTimeBasedElement();"/>
+                        </td>
+                    </tr>
+                  </table>
+                </div>
+
+                <div id="specified-dates">
+                    <table width="100%">
+                        <tr>
+                            <td width="60%">
+                                <table width="100%" id="SpecificDatesTable">
+                                    <tr>
+                                        <td class="con-grey LabelField Arial-12-grey">
+                                          <span class="con-grey Arial-12-grey"><b>From Date</b></span>
+                                        </td>
+
+                                        <td class="con-grey LabelField Arial-12-grey" >
+                                         <span class="con-grey Arial-12-grey" style=" margin-left: -1000%; "><b>To Date</b></span>
+                                        </td>
+
+                                       
+                                    </tr>
+                                    {{ specific_dates_form.management_form }}
+                                    {% for each in specific_dates_form.forms %}
+                                    {{each.id}}
+                                    <tr id="rowsd{{forloop.counter}}" class="timeManagementRows">
+                                        <td style=" width: 100%; ">
+                                           <span class="con-grey Arial-12-grey"> {{each.from_date}}</span>
+                                           <span class="con-grey Arial-12-grey"> {{each.to_date}}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr></tr>
+                                </table>
+                            </td>
+                            <td>
+                        <input type="button" name="add" id="btnadd" value="+" style="margin-top: 10px" class="b1"  onclick="createSpecificDatesElement()" />
+                        <input type="button" name="add" id="btnadd" value="-" style="margin-top: 10px" class="b1"  onclick="removeSpecificDatesElement();" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+              </div>
+                 </td>                            
+               </tr>
+           </table>
+              </div>
+              </td>
+              </tr>
+           </table>
+
+
+        {% endif %}
+       {% endif %}
+      
+  {% endfor %}
+{% endif %}
+
+
+
+
+
+
+
+
+
+<br><br><br>
+
+<div id="save_div" class="SaveOrCancel">
+    <input type="hidden" id="ex_appr" name="ex_appr" />
+        {% if project.name and not project.rejection_reason %}  
+            
+            {% if project.is_approved == 0 and perms.projects.add_project %}
+                <input type="button" value="Approve" id="Save" name="save" class="b1" onclick="internal_appr()"/>
+                <input type="button" value="Reject" id="reject_save" name="save" class="b1"/>
+            {% endif %}
+
+
+            {% if project.approval_type == 'external' and project.ex_approval == 0 and  perms.projects.add_project %}
+                <input type="button" value="Customer Approval" id="Save" name="save" class="b1" onclick="external_appr()"/>
+            {% endif %}
+
+
+        {% else %}
+
+          {%  if not project.rejection_reason   and msg != 'Project initiated successfully' %}
+              <input type="button" value="Submit" id="Save" name="save" class="b1" onclick="validation();"/>
+            {% endif %}
+        {% endif %}
+
+
+        <!-- {% if perms.projects.add_project %}
+                 <input type="button" value="Print" id="Print" name="print" class="b1" onclick="printMe('Initiate_page');"  />
+                 <input type="button" value="Print Finance Details" id="PrintFinance" name="PrintFinance" class="b1" onclick="printMe('Initiate_Page2');"  />
+        {% endif %} -->
+
+        <input type="button" value="Close" id="Cancel" name="Cancel" class="b1" onclick="CancelRequest();" />
+        <input type="button" value="Print" id="Print" name="print" class="b1" onclick="printMe('Initiate_page');"  />
+</div>
+
+
+
+<div id="reject_div" class="SaveOrCancel">
+
+  {% for role in  user.groups.all %}
+      {% if role.name == 'CEO' %}
+        {% if msg != 'Project initiated successfully' %}
+              <input type="button" value="Submit" id="Save" name="save" class="b1" onclick="CancelReject();"/>
+              <input type="button" value="Close" id="Cancel" name="Cancel" class="b1" onclick="CancelRequest();" />
+        {% endif %}
+      {% endif %}
+  {% endfor %}
+
+ <!-- 
+    {% if msg == 'Project initiated successfully' %}
+      {% if perms.projects.add_project %}
+               <input type="button" value="Print" id="Print" name="print" class="b1" onclick="printMe('Initiate_page');"  />
+               <input type="button" value="Print Finance Details" id="PrintFinance" name="PrintFinance" class="b1" onclick="printMe('Initiate_Page2');"  />
+      {% endif %}
+    {% endif %}
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+</form>
+
+<div id="Initiate_page" style="display:none;" >
+    <table width="100%">
+        <tr><td><img id = "logo" src = "/static/css/images/logo_mindshare.gif"  width="100" height="100" /></td></tr>
+        <tr><td colspan="2" align="center"><span style="font-size:xx-large; font-weight:bold"> Project Initiation Request</span><br/><br/></td></tr>
+    </table>
+    
+    <table width="100%" border="2" style="border-style:solid">
+         <tr style="border-style:solid">
+            <td style="background-color:lightgrey; width:55%; border-right-style:solid" >Requested by</td>
+            <td style="border-left-style:solid"><input type="text" value="{{project.requested_by}}" /><br/></td>
+        </tr>
+       
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Requested on</td>
+            <td style="border-left-style:solid">{{schedules.initiation_request_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}<br/></td>
+        </tr>
+
+        <tr style="border-style:solid">
+           <td style="background-color:lightgrey; border-right-style:solid" >Business unit</td>
+           <td style="border-left-style:solid">{{project.business_unit}}<br/></td>
+         </tr>
+    </table>
+    <br/>
+    <br/>
+
+    <table width="100%"  border="2"  style="border-style:solid">
+        <tr  style="border-style:solid">
+            <td style="background-color:lightgrey; width:55%; border-right-style:solid" >Project Name</td>
+            <td style="border-left-style:solid">{{project.name}}<br/></td>
+        </tr>
+        
+        <tr  style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Client Details</td>
+            <td style="border-left-style:solid">{{project.customer}}<br/></td>
+        </tr>
+        
+         <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Project Owner</td>
+            <td style="border-left-style:solid">{{project.project_owner}}<br/></td>
+        </tr>
+        
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Project Category</td>
+            <td>{{project.approval_type}}<br/></td>
+        </tr>
+        
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Project Type</td>
+            <td style="border-left-style:solid">{{project.project_type}}<br/><br/></td>
+        </tr>
+        
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Expected Start Date</td>
+            <td style="border-left-style:solid">{{schedules.expected_start_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}<br/></td>
+        </tr>
+        
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Expected End Date</td>
+             <td>{{schedules.expected_end_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}<br/></td>
+        </tr>
+        
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid" >Estimated Efforts(man-days)</td>
+            <td style="border-left-style:solid">{{project.planned_effort}}<br/></td>
+        </tr>
+    </table>
+    <br/>
+
+    <table width="100%">
+        <tr><td><b>Project Objective(s):</b></td></tr>
+        <tr style="border-style:solid" ><td><p>{{project.objective}}</p></td></tr>
+    </table>
+     <br/>
+
+
+    <table width="100%">
+        <tr><td><b>Approval Details</b></td></tr>
+    </table>
+
+
+    <table width="100%" border="2"  style="border-style:solid">
+         <tr style="border-style:solid">
+            <td style="background-color:lightgrey; width:55%; border-right-style:solid">Approved by</td>
+            <td style="border-left-style:solid">{{project.approved_by}}<br/></td>
+        </tr>
+        
+         {% if project.is_approved %}
+        <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid">Project Id</td>
+            <td style="border-left-style:solid">{{project.project_no}}<br/></td>
+
+        </tr>
+        
+        {% endif %}
+        
+         <tr style="border-style:solid">
+            <td style="background-color:lightgrey; border-right-style:solid">Approval Date</td>
+            <td style="border-left-style:solid">{{schedules.approved_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}<br/></td>
+        </tr>
+         
+    </table>
+</div>
+
+
+<div id = 'Initiate_Page2' style="display:none">
+    <table width="100%">
+    <tr><td><img id = "logo" src = "/static/css/images/logo_mindshare.gif"  width="100" height="100" /></td></tr>
+    </table>
+    <table style="border:solid">
+        <tr width="100%" style="border-style:solid"><td width="15%" style="border-left-style:solid"><b>Project Name:</b></td><td width="16%" style="border-left-style:solid">{{project.name}}</td><td width="12%" style="border-left-style:solid"><b>Start Date:</b></td><td width="16%" style="border-left-style:solid">{{schedules.expected_start_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}</td><td width="10%" style="border-left-style:solid"><b>Client Name</b></td><td width="35%" style="border-left-style:solid">{{project.customer}}</td></tr>
+        <tr width="100%" style="border-style:solid"><td style="border-left-style:solid"><b>Project No</b></td><td style="border-left-style:solid">{{project.project_no}}</td><td style="border-left-style:solid"><b>End Date</b></td><td style="border-left-style:solid">{{schedules.expected_end_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}</td><td style="border-left-style:solid"><b>Address</b></td><td width="19%" style="border-left-style:solid">{{addressClient}}</td></tr>
+    </table>
+    <br/>
+    <table width="100%" class="landscape"><tr><td align="left"><h1><b>Financial Details:</b></h1></td></tr></table>
+    <table width="100%" style="border:solid" >
+    <table width="100%" >
+        <tr  style="border-style:solid"><td style="width:5%;border-left-style:solid"><b>Order Date:</b></td><td style="width:5%;border-left-style:solid"></td><td  style="width:3%;border-left-style:solid"><b>No:</b></td><td style="width:5%;border-left-style:solid"></td><td  style="width:5%;border-left-style:solid"><b>Order Value</b></td><td style="width:5%;border-left-style:solid"></td></tr>
+    </table>
+    <table  width="100%" style="height:20%" >
+        <tr><th colspan="3"  style="border-left-style:solid"><h2>Milestone</h2></th><th colspan="3" style="border-left-style:solid;border-right-style:solid"><h2>Invoice Details</h2></th><th colspan="3" style="border-right-style:solid"><h2>Payment Details</h2></th></tr>
+        <tr  style="border-style:solid"><td style="border-left-style:solid"><b>Name</b></td><td style="border-left-style:solid;border-right-style:solid"><b>Project Date</b></td><td style="width:10%"><b>Amount</b></td><td style="border-left-style:solid"><b>Inv.Dt</b></td><td style="border-left-style:solid"><b>Inv.No</b></td><td style="border-left-style:solid"><b>Inv.Amt</b></td><td style="border-left-style:solid"><b>Recd.Dt</b></td><td style="border-left-style:solid"><b>Recd.Amt</b></td><td style="border-left-style:solid"><b>Balance</b></td></tr>
+        <tr style="width:100%;height:40%;border-style:solid"><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td><td style="width:10%;height:10%;border-left-style:solid"></td></tr>
+    </table>
+    </table>
+</div>
+
+{% endblock %}

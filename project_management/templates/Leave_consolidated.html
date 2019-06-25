@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="application/javascript" src="/static/js/table2excel.js"></script>
+
+{% endblock %}
+{% block title %} Leave Consolidated {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; font-family:Liberation Serif;}
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%; font-family:Liberation Serif; font-size: 20px; }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  font-family:Liberation Serif; font-size: 20px;}
+    .list-row { width:100%; font-family: Liberation Serif; font-size: 12px;}
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .b1{font-family: Liberation Serif;
+    font-size: 14px;}
+    .header {font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-style: normal; line-height: normal;font-weight: normal;font-variant: normal;text-transform: none;color: #000000; text-decoration: none;
+    .header link-line-bg con-white-bold {font-family: Liberation Serif; font-size: 18px;}
+    table.tablesorter {
+        font-family: arial;
+        background-color: #CDCDCD;
+        margin: 10px 0pt 15px;
+        font-size: 8pt;
+        width: 60%;
+        text-align: left;
+        margin-left: 12%;
+    }
+</style>
+<script>
+
+    $(document).ready(function(){
+        $('#back-leave').click(function(){ 
+            window.location.href = "/leave/record/";
+        });
+        $('table#consolidate').tablesorter();
+    });
+
+    function ResultsToTable(){    
+        
+        if($("#consolidate").is(":visible")) {
+            $("#consolidate").table2excel({
+                exclude: ".noExl",
+                name: "consolidate"
+            });
+        }
+    }
+
+</script>
+{% load pagination_tags %}
+    <form id="leavelist" name="leavelist" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">Leave Consolidated</span>
+            </div>
+            <div class="program-blue-box">
+                <div class="back-leave">
+                    <input type="button" id="back-leave" name="back-leave" class="b1" value="<<< Back" style="float: right; margin-top: 1%;"/></a>
+
+                    <input type="button" id="convertExcel" name="save1" class="b1" value="Export To Excel" onclick="ResultsToTable()" style="float: left; margin-top: 1%;">
+                </div>
+            </div>
+        </div>  
+
+        {% if consolidated_list %} 
+            
+            <div>
+            <!-- <div style="width: 48%; margin-left: 12%; margin-top: 6%;"> -->
+                <table id="consolidate" class="tablesorter">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">User Name</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Earned</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Personal</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Sick</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot class="footer">
+                        <tr><td colspan="3">
+                            <div class="footer-buttons">
+                                    
+                                </div>
+                            <td colspan="10">
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if consolidated_list.has_previous %}
+                                            <a href="?consolidate_page={{ consolidated_list.previous_page_number }}">previous</a>
+                                        {% endif %}
+
+                                       {% for n in consolidated_list.paginator.page_range %}
+                                            {% if consolidated_list.number == n %}
+                                              <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                            {% elif n > consolidated_list.number|add:'-2' and n < consolidated_list.number|add:'4' %}
+                                            <span class="page-item"><a class="page-link" href="?consolidate_page={{ n }}">{{ n }}</a></span>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if consolidated_list.has_next %}
+                                            <a href="?consolidate_page={{ consolidated_list.next_page_number }}">next</a>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </td>
+                            <center>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+
+                        {% for leave in consolidated_list %}
+                            <tr class="list-row">
+                                <td width="10%">{{ leave.username }}</td>
+                                <td width="10%">{{ leave.earned }}</td>
+                                <td width="10%">{{ leave.personal }}</td>
+                                <td width="10%">{{ leave.sick }}</td>
+                                
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        </div>
+    </form>
+
+{% endblock %}
+

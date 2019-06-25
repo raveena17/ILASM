@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/django_cron
+END
+base.py
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/django_cron/base.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/django_cron/__init__.py
+END
+signals.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/django_cron/signals.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/django_cron/models.py
+END
+README.txt
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/django_cron/README.txt
+END

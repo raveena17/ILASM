@@ -1,0 +1,69 @@
+<script type="application/javascript" src="/static/js/wz_tooltip.js"></script>
+<script type="application/javascript" src="/static/js/tip_centerwindow.js"></script>
+<script type="application/javascript" src="/static/js/tip_followscroll.js"></script>
+
+<script>
+function showUser(user)
+{
+    var form = this;
+    var data = {}
+    $.ajaxSettings.cache = false;
+    getdata = user;
+    $.getJSON("/GetPopUpDetails/?user=" + getdata,
+        function(json) {
+            data =''
+            for (obj in json[0]){
+               data += '\t' + obj
+            }
+            document.getElementById('UserTitle').value = json[0].title;
+            document.getElementById('UserName').value = json[0].name;
+            document.getElementById('UserEmail').value = json[0].email;
+            document.getElementById('Role').value = json[0].role;
+            document.getElementById('UserOffice').value = json[0].office;
+            document.getElementById('UserExtn').value = json[0].extn;
+            document.getElementById('UserMobile').value = json[0].mobile;
+            document.getElementById('UserNotes').value = json[0].notes;
+        });
+        try{ TagToTip('userPopUp'); }
+        catch(err){}
+}
+
+function hideUser() { UnTip(); }
+</script>
+
+<div  style="display: none;" name="userPopUp" id="userPopUp">
+    <table class="program-name-form-box" style="border: medium double gray;border-collapse: separate; border-spacing: 10pt 5pt; width: 330px;height:120px;">
+        <tr>
+            <td class="con-grey"> User Name </td>
+            <td> <input type="text" readonly name="UserName" style="width: 200px" id="UserName" > </td>
+        </tr>
+        <tr>
+            <td class="con-grey"> Job Title </td>
+            <td> <input type="text" readonly name="UserTitle" style="width: 200px" id="UserTitle"> </td>
+        </tr>
+        <tr>
+            <td class="con-grey"> Email </td>
+            <td> <input type="text" readonly name="UserEmail" style="width: 200px" id="UserEmail" > </td>
+        </tr>
+        <tr>
+            <td class="con-grey"> Privilege </td>
+            <td> <input type="text" readonly name="Role" style="width: 200px" id="Role" > </td>
+        </tr>
+        <tr>
+            <td class="con-grey"> Office No. </td>
+            <td> <input type="text" readonly name="UserOffice" style="width:138px" id="UserOffice">
+                 <input type="text" readonly name="UserExtn" style="width:50px" id="UserExtn" >
+            </td>
+        </tr>
+        <tr>
+            <td class="con-grey"> Mobile </td>
+            <td> <input type="text" readonly name="UserMobile" style="width: 200px" id="UserMobile" > </td>
+        </tr>
+        <tr>
+            <td class="con-grey"> Notes </td>
+            <td> <textarea type="text" readonly name="UserNotes" style="width: 200px;height:70px;" id="UserNotes">
+                 </textarea>
+            </td>
+        </tr>
+    </table>
+</div>

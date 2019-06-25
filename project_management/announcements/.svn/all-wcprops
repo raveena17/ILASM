@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/SVN/Mindshare/!svn/ver/1366/trunk/src/PayIT/payit/apps/updated_code/project_management/announcements
+END
+admin.py
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/announcements/admin.py
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/SVN/Mindshare/!svn/ver/1366/trunk/src/PayIT/payit/apps/updated_code/project_management/announcements/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/announcements/__init__.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/announcements/models.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/announcements/urls.py
+END

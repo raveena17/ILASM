@@ -1,0 +1,7 @@
+from project_management.alert.tests.viewstest import *
+from project_management.alert.tests.logintest import *
+
+__test__ = {
+    'Alert_TESTS':AlertTest,
+    'LOGIN_TESTS':LoginTest,    
+}

@@ -1,0 +1,53 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} The Sub Prime Crisis {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+<form name="contacts" id="contacts" action="." method="post">
+<div class="wr-ar">
+<div class="update-program-hdr">
+   	<table width="100%">
+        <tr>
+     		<td width="30%"><span class="header">
+			The Sub Prime Crisis
+		</span></td>
+     		<td width="50%"></td>
+        </tr>
+     </table>
+   </div>
+		<div class="plain"> 
+					
+			<p align="left" style="text-align: left;"><strong>V.Kadal Amudham</strong></p> 
+			<p align="left" style="text-align: left;"><strong></strong></p> 
+			<p align="left" style="text-align: left;"><strong></strong></p> 
+			<p align="left" style="text-align: left;"></p> 
+			<p align="left" style="text-align: left;"><strong></strong></p> 
+			<p class="MsoBodyText">By this time all of us might have come across this crisis.  But many of us may not know what the root cause of this crisis is and how it affects businesses all over the world.</p> 
+			<p>The financial market, the operation of banks and how they make money and how they lose, is a very complex process. <strong>But here I am trying to put in simple terms the crisis called Sub-Prime, the major one in recent decades</strong>. Still I do not know why it is called Sub-Prime.</p> 
+			<p>The real estate sector of U.S. is considered as most stable in the world. This was a big assumption by all the banks, investors, funds managers, and above all, the rating agencies and until recently it went wrong in the U.S. Before the crisis, U.S. banks were providing loans called the NINJA loan, to buy property. NINJA stands for <b>N</b>o <b>I</b>ncome <b>N</b>o <b>J</b>ob <b>A</b>sset.  Without checking for the repaying capability of the client, the banks were ready to lend loan to purchase property to any U.S. citizen. Banks took the risk, assuming, even if he/she did not repay, the bank can recover the loan by selling the property and still make a profit.</p> 
+			<p>Individuals took the loan under the supposition that if they could manage somehow to pay EMI (Equated Monthly Instalment) for few months, and then sell the house at a higher price to repay the bank loan, they can still make a profit.</p> 
+			<p>So it had become a win-win situation for a bank and its client. Banks were happy to issue the loans and clients were happy to take it and buy a house. Unlike in India, once the loan has been finalized and property has been bought, the loan-issuing bank sells this loan to somebody else. The loan becomes a tradable instrument and hence, it changes many hands and huge amounts are transacted based on this. Many of our Indian banks also invested in these kinds of instruments.</p> 
+			<p></p> 
+			<p></p> 
+			<p align="center"><img class="image-inline" src="../../copy_of_subprimecrisis.PNG" height="163" width="571" /></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;"></p> 
+			<p style="text-align: justify;">To cap it, the rating agencies in the U.S. gave very good ratings for these NINJA loans. But what really happened was that the price of real estate properties in the U.S. started to fall. This fall was up to 10%. So people started surrendering the loans and their properties. Eventually, banks were not getting the revenue and once the prices fell it was difficult to sell the properties and arrest the losses. So in this process most of the leading banks in the U.S. and all over the world lost heavily.</p> 
+			<p style="text-align: justify;">Somebody even estimated that for every dollar loss to the bank, $10 would not be available for business lending. The estimated amount, not available for business transactions, will be around $2 Trillion. (Sorry, I do not know how many zeros for a trillion.)</p> 
+			<p style="text-align: justify;">The CEO of Citi Bank, the largest in the U.S., had to resign after this crisis. As per the market rumors, both Singapore and Saudi Arabia agreed to provide financial assistance to the tune of 10 Billion Dollars, to save the bank from going bankrupt.The car sales, which are one of the economic indicators for the U.S., went down by 10%. This downward trend was due to the increase in oil prices as a result of the depreciation in the U.S. dollar.</p> 
+			<p style="text-align: justify;">The crisis affected our stock market to a huge extent. Now it is affecting our real estate industry. It has not affected software industry much. But the full impact will be felt in the coming months only. Already, many leading IT companies have not recruited the newly selected engineering graduates, since many of them are not sure about the future trends.</p> 
+			<p style="text-align: justify;"><strong>Only time can tell how the U.S. and its dependant economies will manage this crisis and come back to normalcy.</strong></p> 
+			<p align="left" style="text-align: left;"></p> 
+		 
+		</div>
+	</div>
+	{% endblock %} 

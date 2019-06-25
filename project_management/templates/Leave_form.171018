@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/select2-amc-min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-date.js"></script>
+    <script type="application/javascript" src="/static/js/select2.js"></script>
+    <link href="/static/css/jquery-daterange-ui.css" rel="stylesheet" type="text/css" />
+    <script type="application/javascript" src="/static/js/jquery-daterange-ui.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/additional-methods.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+</style>
+{% endblock %}
+
+{% block title %} Task {% endblock %}
+
+{% block contentdata %}
+    <style>
+        form { padding: 10px; }
+        .header{text-align: left; left: 182px;margin-left: 20px; font-family:Liberation Serif;}
+        .element { width: 100%; min-height: 30px; }
+        .field { width: 59%; float:left; min-height: 46px;}
+ 
+        .label { width: 21%; float: left; min-height: 35px; margin-left: 10px; font-family:Liberation Serif;font-size: 15px;}
+        input[type=text]{ width:185px;}
+        input[type=date]{ width:185px; background-color: white}
+        input[type=number]{ width:185px;}
+        select { width: 170px;  background-color: white}
+        #report_form{position: absolute; top: 150px;}
+        .class_Repeat {position: absolute; text-align: right; left: 440px; top: 150px; width: 90px;}
+        .class_Frequency{position: absolute; text-align: left; left: 520px; top: 150px;-+}
+        #id_remarks{width: 185px;height: 55px;}
+        /*#id_empid.readonly*/
+        #id_empid{'readonly': True}
+        #id_half{margin-left: -28%;}
+        #id_short{margin-left: -28%;}
+        textarea{
+                border: 1px solid #ccc;
+                width: 32%;}
+        select {width: 193px; background-color: white}
+    </style>
+
+    <script>
+
+        var _holidays = [];
+
+        function getDate( element ) {
+          var date;
+          try {
+            date = $.datepicker.parseDate( 'yy-mm-dd', element.value );
+          } catch( error ) {
+            date = null;
+          }
+          
+          return date;
+        }
+
+        function holidays ( date ) {
+          var day = date.getDay();
+          var dateString = jQuery.datepicker.formatDate('yy-mm-dd', date);
+          if( ( day > 0 && day < 6 ) &&  _holidays.indexOf(dateString) == -1 ){
+            return [ true, "" ]
+          }
+          else{
+            return [ false, "" ]
+          }
+        }        
+
+        $(document).ready(function(){
+
+          $('#cancel').click(function(){
+              window.location.href = "/leave/list/";
+          });
+
+          $.ajax({
+              url : '/leave/holiday/',
+              type : "GET",
+              async: false,
+              success : function(data){
+                window._holidays = (data);
+                var dateformat = "yy-mm-dd",
+                from = $("#id_leave_from").datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    dateFormat: "yy-mm-dd",
+                    beforeShowDay: holidays
+                  }).on( "change", function() {
+                      to.datepicker( "option", "minDate", getDate(this ));
+                  }),
+                  
+                to = $( "#id_leave_to" ).datepicker({
+                  defaultDate: "+1w",
+                  changeMonth: true,
+                  dateFormat: "yy-mm-dd",
+                  beforeShowDay: holidays
+                })
+                .on( "change", function() {
+                  from.datepicker( "option", "maxDate", getDate( this ) );
+                });  
+
+                $("#id_leave_date").datepicker({
+                  defaultDate: "+1w",
+                  changeMonth: true,
+                  dateFormat: "yy-mm-dd",
+                  beforeShowDay: holidays
+                });            
+              }
+          });
+
+          $("#id_leave_from").on("change",function(){
+            updateAppliedFor();
+            calculateLop();
+          });
+          $("#id_leave_to").on("change",function(){
+            updateAppliedFor();  
+            calculateLop();           
+          });
+
+          $('#checkbox-value').text($('#checkbox1').val());
+
+          $("#checkbox1").on('change', function() {
+            if ($(this).is(':checked')) {
+              $(this).attr('value', 'true');
+              updateAppliedFor();
+            } else {
+              updateAppliedFor();
+              $(this).attr('value', 'false');
+            }
+            calculateLop();
+            $('#checkbox-value').text($('#checkbox1').val());
+          });
+
+          $("select#id_leave_nature").change(function(){
+            calculateLop();
+          });
+            
+        });
+
+    function calculateLop(){
+      var no_of_days = $("#id_no_of_days").val();
+      var leave_nature = $("#id_leave_nature").val();
+      if( no_of_days != 0 ){
+        $.ajax({
+          url : '/leave/get_lop/?leave_nature='+leave_nature+"&no_of_days="+no_of_days,
+          type : "GET",
+          async: false,
+          success : function(data){
+            $('#id_lop').val(data["lop"]);
+          }
+        });            
+      }
+    }
+
+    function updateAppliedFor(){
+        var is_halfday = $("#checkbox1").attr('value');
+        var from_date = $("#id_leave_from").val();
+        var to_date = $("#id_leave_to").val();
+        if( (to_date != null && from_date != null) && is_halfday == 'false' ){
+          var count = 0;
+          var fromDate = new Date(from_date);
+          var toDate = new Date(to_date);
+          for (var d = fromDate; d <= toDate; d.setDate(d.getDate() + 1)) {
+              var result = holidays(d);
+              if( result[0] == true ){
+                count++;
+              }
+          }
+          $('#id_no_of_days').val(count);
+        }
+        else{
+          if( is_halfday == 'true' ){
+            if( from_date != null && from_date != '' ){
+              $("#id_leave_to").val($("#id_leave_from").val());
+              $('#id_no_of_days').val(0.5);
+            }
+            else if( to_date != null && to_date != '' ){
+              $("#id_leave_from").val($("#id_leave_to").val());
+              $('#id_no_of_days').val(0.5);            
+            }
+            else{
+              $('#id_no_of_days').val(0); 
+            }            
+          }
+        }
+    }
+
+
+    function formatDate(d) {
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+
+     $(document).ready(function(){
+       $("#ShortLeave_id").click(function(){
+       //var url="http://example.com/results?choice=choice2&choice=choice4"
+       var url="/leave/short/create/";
+       var flag=false;
+       $("input:checkbox[name=choice]:checked").each(function(){
+           if(!flag)
+           {
+             url=url+$(this).val();
+             flag=true;// To trace if first query string added
+           }
+           else
+           {
+             url=url+"&choice="+$(this).val();
+           }         
+         });
+         //alert(url);
+         window.location = url;
+       });
+    });   
+            
+
+    </script>
+
+    <div class="header">Leave Application</div>
+
+    <div style="width: 100%">
+      <div style="float: left;width: 50%;">
+        <form  id="report_form" name="report_form" action="" method="POST">
+          {% csrf_token %}
+          {% for field in form %}
+              <div class="label">{{field.label}}: </div>
+              <div class="field">
+                {{field}}
+                {% if field.name == 'leave_nature' %}
+                  <input type="checkbox" name="acceptRules" class="inline checkbox" id="checkbox1" value="false">
+                  <label for="field1"><span>HalfDay</span></label>
+                  <div id="checkbox-value" style="display: none;"></div>
+                {% endif %}
+              </div>
+              
+          {% endfor %}
+
+          {% for field in short_leave_form %}
+              <div class="label">{{field.label}}: </div>
+              <div class="field">{{field}}</div>
+          {% endfor %}
+          <button type="submit" style="position: absolute; left:145px; bottom: -25px">Submit</button><br><br><br>
+        </form>
+      </div>
+      <!-- <div id="leave_report" style="float: right;width: 50%">
+        <table id="users1" class="tablesorter">
+            <thead class="list-header-panel">
+                <tr>
+                    <th class="header link-line-bg con-white-bold">Leave Type</th>
+                    <th class="header link-line-bg con-white-bold">Current Balance</th>
+                    <th class="header link-line-bg con-white-bold">Applied For</th>
+                    <th class="header link-line-bg con-white-bold">Balance After Approval</th>
+                    
+                </tr>
+            </thead>
+            <tbody>  
+                 {% for data in data_set %}
+                    <tr class="list-row">
+                        
+                        <td width="10%">{{ data.leave_type }}</td>
+                        <td width="10%">{{ data.current_balence }}</td>
+                        <td width="10%">{{ data.appied_for }}</td>
+                        <td width="10%">{{ data.balence_after_approval }}</td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div> -->
+    </div>
+
+{% endblock %}

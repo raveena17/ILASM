@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/SVN/Mindshare/!svn/ver/1387/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget
+END
+budgetmasters.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/SVN/Mindshare/!svn/ver/1311/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/budgetmasters.py
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/SVN/Mindshare/!svn/ver/1387/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/SVN/Mindshare/!svn/ver/1145/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/__init__.py
+END
+tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/SVN/Mindshare/!svn/ver/1270/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/tests.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/SVN/Mindshare/!svn/ver/1276/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/models.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1272/trunk/src/PayIT/payit/apps/updated_code/project_management/projectbudget/urls.py
+END

@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.tablesorter.js"></script> 
+
+{% endblock %}
+{% block title %} Leave Application {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%; }
+    .list-header { width: 100%; padding-top: 10px; font-family:Liberation Serif;}   
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 64%; float: left;font-family:Liberation Serif; }
+    .create-button-admin{padding-top: 10px; padding-bottom: 10px; width: 22%; float: right;font-family:Liberation Serif;}
+
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%; font-family:Liberation Serif; font-size: 20px; }
+    .list-header, .list-column { min-width: 5%; max-width: 30%; padding-top: 10px;  font-family:Liberation Serif; font-size: 20px;}
+    .list-row { width:100%; font-family: Liberation Serif; font-size: 12px;}
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .b1{font-family: Liberation Serif;
+    font-size: 14px;}
+    .header {font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-style: normal; line-height: normal;font-weight: normal;font-variant: normal;text-transform: none;color: #000000; text-decoration: none;}
+    .header link-line-bg con-white-bold {font-family: Arial, Helvetica, sans-serif; font-size: 18px;}
+    div.project { min-width:50%;}
+    div.project p {line-height: 80%;}
+    div.project P:first-letter { font-weight: bold; float:left; font-size: 360%;  }
+    div.project P:first-line { font-weight: bold; float:left; font-size: 110%; }
+    #unbilled{ color: red; }
+</style>
+
+
+<script>
+    $(document).ready(function(){
+        $('table.tablesorter').tablesorter();
+    });
+</script>
+
+<script type="text/javascript">
+       $(document).ready(function(){
+    $('#mnuBill').css({'background':'#1bc2ec'});
+     var mnua = $('#mnuBill').children();
+     $(mnua[0]).css({'color':'white','font-weight':'350'});
+});
+function printMe(divID)
+{
+var disp_setting="toolbar=yes,location=no,directories=yes,menubar=yes,header=no,footer = no,"; 
+      disp_setting+="scrollbars=yes, left=100, top=25"; 
+  var content_vlue = document.getElementById(divID).innerHTML; 
+
+  var docprint=window.open("","",disp_setting); 
+   docprint.document.open(); 
+   docprint.document.write('<html>');   
+   
+   
+   docprint.document.write('<link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />');
+   docprint.document.write('<link href="/static/css/forms.css" rel="stylesheet" type="text/css" />');
+   
+   docprint.document.write('</head><body onLoad="self.fprint()"><center>');
+    
+   docprint.document.write(content_vlue);
+   
+   docprint.document.write('</center></body></html>'); 
+   docprint.document.close(); 
+   docprint.focus(); 
+}
+</script>
+
+
+{% load pagination_tags %}
+
+{% include 'project_menus.html' %}
+
+    <form id="billlist" name="billlist" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+
+            {% if billed_type == 'FP' %}
+                
+                <table id="users1" class="tablesorter" style=" width: 45%; margin-top: 5%;margin-left: 1%; ">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Planned Days</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Milestone</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From Date</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         {% for data in datas_set %}
+                            <tr class="list-row">
+                                
+                                <td width="10%">{{ data.planned_days }}</td>
+                                <td width="10%">{{ data.milestone }}</td>
+                                <td width="10%">{{ data.from_date }}</td>
+                                <td width="10%">{{ data.percentage }}%</td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% elif billed_type == 'TM' %}
+            
+                <table id="users1" class="tablesorter" style=" width: 45%; margin-top: 5%;margin-left: 1%; ">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From Date</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">To Date</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Category</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>  
+                         {% for data in datas_set %}
+                            <tr class="list-row">
+                                <td width="10%">{{ data.from_date }}</td>
+                                <td width="10%">{{ data.to_date }}</td>
+                                <td width="10%">{{ data.category }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% elif billed_type == 'SP' %}
+
+                <table id="users1" class="tablesorter" style=" width: 45%; margin-top: 5%;margin-left: 1%; ">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From Date</th>
+                            <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">To Date</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>  
+                         {% for data in datas_set %}
+                            <tr class="list-row">
+                                <td width="10%">{{ data.from_date }}</td>
+                                <td width="10%">{{ data.to_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% elif billed_type == 'UB' %}
+
+                <br><br><tr class="list-row" id="unbilled" style="margin-left: 1%; "> No Billed </tr>
+
+            {% endif %}
+
+        <input type="button" name="cancel" id="cancel_bt" value="Cancel" onclick="javascript:history.go(-1);" class="b1" style=" margin-left: 1%;  "/>
+
+        </div>
+    </form>
+
+{% endblock %}
+
+
+
+

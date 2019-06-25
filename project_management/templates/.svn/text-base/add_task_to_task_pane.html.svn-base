@@ -1,0 +1,118 @@
+    <!--link type="text/css" href="/static/css/multiselect/ui.multiselect.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/multiselect/common.css" rel="stylesheet" />
+    <script type="application/javascript" src="/static/js/multiselect/plugins/localisation/jquery.localisation-min.js"></script>
+    <script type="application/javascript" src="/static/js/multiselect/plugins/tmpl/jquery.tmpl.1.1.1.js"></script>
+    <script type="application/javascript" src="/static/js/multiselect/plugins/blockUI/jquery.blockUI.js"></script>
+    <script type="application/javascript" src="/static/js/multiselect/ui.multiselect.js"></script-->
+    <link type="text/css" href="/static/css/jquery.toChecklist.css" rel="stylesheet" />
+    <!--script type="application/javascript" src="/static/js/jquery.toChecklist.js"></script-->
+<script>
+$(function(){
+    $('#loading').hide();
+    $("#id_tasks").toChecklist({
+        addScrollBar : true,
+        addSearchBox : true,
+        searchBoxText : 'Type here to search list...',
+        showCheckboxes : false,
+        showSelectedItems : true,
+        preferIdOverName : true,
+        maxNumOfSelections : -1,
+        // Change any of the values on the right to match the classes in your stylesheet...
+        cssChecklist            : 'checklist',
+        cssChecklistHighlighted : 'checklistHighlighted',
+        cssEven                 : 'even',
+        cssOdd                  : 'odd',
+        cssChecked              : 'checked',
+        cssDisabled             : 'disabled',
+        cssListOfSelectedItems  : 'listOfSelectedItems',
+        cssFocused              : 'focused', // This is for the li's in the checklist.
+        cssFindInList           : 'findInList',
+        cssBlurred              : 'blurred' // This is for the search boxes, when blurred.
+    });
+
+    $('#id_project').change(function(){
+        if ($('#id_project').val() != ''){
+            $('#loading').show();
+            var project = {'project': $('#id_project').val()}
+
+            function addTask(json){
+                    $("#id_tasks_checklist ul").empty();
+                    for(count = 0; count<json.length; count++)
+                    {
+                        li = $('<li tabindex="0"><input type="checkbox" value="'+ json[count].id
+                            +'" name="id_tasks[]" id="id_tasks_'+json[count].id+'" /></li>');
+                        li.append($('<label for="id_tasks_'+json[count].id+'">'+json[count].name+'</label>'));
+                        $("#id_tasks_checklist ul").append(li);
+                    }
+                    $('li:even', '#id_tasks_checklist').addClass('even');
+                    $('li:odd', '#id_tasks_checklist').addClass('odd');
+				    $('#id_tasks_checklist ul li input').css('position','absolute').css('left','-50000px');
+		            $('li:has(input)', '#id_tasks_checklist').click(check).keydown(check);
+                    $('#loading').hide();
+                }
+
+            $.ajax({ 
+                type : "POST",
+                url : "/timesheet/gettask/",
+                data : project,
+                success : addTask,
+                dataType: "json"
+                });
+            }
+        });
+
+        $('#cancel').click(function(){ closeOverlay(); });
+
+        $('#select').click(function(){
+            var checkedTask = [];
+            var i = 0;
+            $(':checkbox:checked').each(function(i){
+            checkedTask[i] = $(this).val();
+            i++;
+            });
+
+            var selectedTask = { 'tasks': checkedTask, 'project': $('#id_project').val() }
+
+            var addTaskToRightPane = function(json){
+                $("#set_of_tasks ul").empty();
+                for(count = 0; count < json.length; count++){ 
+                    li = $('<li class="draggable_task ui-draggable" id="'+json[count].id+'">'
+                            +json[count].name+'</li>');
+                    $('#set_of_tasks ul').append(li);
+            }
+
+            $('div#set_of_tasks').find('li').draggable({helper: 'clone'});
+            closeOverlay();
+            }
+
+            $.ajax({ 
+                type : "POST",
+                url : "/timesheet/addtask/",
+                data : selectedTask,
+                success : addTaskToRightPane,
+                dataType: "json"
+                });
+        });
+});
+</script>
+
+<style>
+#overlay label {color: white;}
+</style>
+<html>
+<head>
+    <title> Add Task </title>
+</head>
+<body id="overlay">
+    <div>
+    <h3><p><label>Add Task To Right Pane</label></p></h3>
+    <p>{{form.project.label_tag}}: {{form.project}} 
+        <img id="loading" src="/static/css/images/loading.gif" /></p>
+    <p> {{form.tasks}}</p>
+    <div style="padding-left:45px;">
+    <input type="button" id="select" name="select" value="select" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+    </div>
+    </div>
+</body>
+</html>

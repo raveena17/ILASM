@@ -1,0 +1,40 @@
+from django.conf.urls.defaults import *
+from django.views.generic.simple import direct_to_template
+
+urlpatterns = patterns('',
+    (r'list/$', direct_to_template, {'template': 'FiveG-NL_Archives-Home.html' }),
+    (r'april-08/$', direct_to_template, {'template': 'FiveG-NL_April08.html'}),
+    (r'july-08/$', direct_to_template, {'template': 'FiveG-NL_July08.html'}),
+    (r'march-09/$', direct_to_template, {'template': 'FiveG-NL_March09.html'}),
+    (r'june-09/$', direct_to_template, {'template': 'June09.html'}),
+    (r'april-08/warm-up-from-the-editor/$', direct_to_template, {'template': 'Warm up from the Editor-April08.html'}),
+    (r'april-08/from-the-ceos-desk/$', direct_to_template, {'template': 'From the CEOs Desk-April08.html'}),
+    (r'april-08/gift-of-the-gurus/$', direct_to_template, {'template': 'Gift of the Gurus-April08.html'}),
+    (r'april-08/product-development/$', direct_to_template, {'template': 'Product Development-April08.html'}),
+    (r'april-08/between-the-cubicles/$', direct_to_template, {'template': 'Between the cubicles-April08.html'}),
+    (r'april-08/sports/$', direct_to_template, {'template': 'Sports-April08.html'}),
+    (r'april-08/survey-of-the-month/$', direct_to_template, {'template': 'Survey of the month-April08.html'}),
+    (r'april-08/mystifier/$', direct_to_template, {'template': 'Mystifier-April08.html'}),
+    (r'april-08/jocularity/$', direct_to_template, {'template': 'Jocularity-April08.html'}),
+    (r'april-08/logo-race/$', direct_to_template, {'template': 'Logo Race-April08.html'}),
+
+    (r'july-08/warm-up-from-the-editor/$', direct_to_template, {'template': 'Warmup from the Editor-july08.html'}),
+    (r'july-08/the-focus-on-completing-things/$', direct_to_template, {'template': 'The focus on completing things-july08.html'}),
+    (r'july-08/the-sub-prime-crisis/$', direct_to_template, {'template': 'The Sub Prime Crisis-july08.html'}),
+    (r'july-08/ipl-frenzy/$', direct_to_template, {'template': 'IPL Frenzy-july08.html'}),
+    (r'july-08/mystifier/$', direct_to_template, {'template': 'Mystifier-july08.html'}),
+    (r'july-08/valparai-2013the-tea-trail/$', direct_to_template, {'template': 'Valparai The tea trail-july08.html'}),
+    (r'july-08/the-first-step-2/$', direct_to_template, {'template': 'The First step-july08.html'}),
+
+    (r'march-09/from-the-editors-desk/$', direct_to_template, {'template': 'From the Editors Desk-March-09.html'}),
+    (r'march-09/pride-rigour-and-discipline-in-software-development/$', direct_to_template, {'template': 'Pride, Rigour and Discipline in Software Development-March-09.html'}),
+    (r'march-09/in-the-lighter-vein/$', direct_to_template, {'template': 'Jest for you-March-09.html'}),
+    (r'march-09/the-financial-201cmaya201d/$', direct_to_template, {'template': 'The Financial Maya-March-09.html'}),
+    (r'march-09/trip-to-a-place-of-solace-and-comfort/$', direct_to_template, {'template': 'Trip to a place of solace and comfort-March-09.html'}),
+    (r'march-09/happenings-of-5g-family-since-the-july-2008-issue/$', direct_to_template, {'template': 'Happenings of 5G family-March-09.html'}),
+    (r'march-09/puzzle/$', direct_to_template, {'template': 'Puzzle-March-09.html'}),
+    (r'march-09/answer-to-the-5g-nl-puzzle/$', direct_to_template, {'template': 'Answer to the 5G-NL Puzzle-March-09.html'}),
+    (r'march-09/puzzleGoforit/$', direct_to_template, {'template': 'Go for it-March-09.html'}),
+    (r'march-09/the-speed-breaker/$', direct_to_template, {'template': 'Reasoning and Discovering-March-09.html'}),    
+)
+

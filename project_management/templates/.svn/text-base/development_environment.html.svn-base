@@ -1,0 +1,44 @@
+<script>
+$(function() { 
+    $('#overlay #cancel').click(closeOverlay);
+
+    $('#overlay #save' ).click(function(){
+        var dev_env = {
+                'project_id': window.location.search.substring('ids').split("=")[1],
+                'name':$('#overlay #id_name').val(),
+                'quantity': $('#overlay #id_quantity').val(),
+                'category': $('#overlay #id_category').val()
+              };
+        var addDevelopmentEnvironment = function(json){
+            if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+            else{
+                $('#id_development_environment').prepend('<option value="'+json[0].id+'">'+json[0].resource+'</option>');
+                closeOverlay();
+            }
+            }
+        $.ajax({ 
+            type : "POST",
+            url : "/project/dev_env/",
+            data : dev_env,
+            success : addDevelopmentEnvironment,
+            dataType: "json"
+            });
+        });
+    });
+
+</script>
+<style>
+#overlay label{ color: white; }
+</style>
+<html>
+<head>
+    <title> Development Environment </title>
+</head>
+<body id="overlay">
+    <h3><p><label> Development Environment </label></p></h3>
+    <h4><p><label> {{form.errors}} </label></p></h4>
+    {{form.as_p}}
+    <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+</body>
+</html>

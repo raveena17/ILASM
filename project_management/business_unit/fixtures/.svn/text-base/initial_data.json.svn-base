@@ -1,0 +1,81 @@
+[
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 1,
+	"fields": {
+		"name": "Agent"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 2,
+	"fields": {
+		"name": "Alliance"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 3,
+	"fields": {
+		"name": "Consultant"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 4,
+	"fields": {
+		"name": "Contractor"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 5,
+	"fields": {
+		"name": "Customer"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 6,
+	"fields": {
+		"name": "Distributor"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 7,
+	"fields": {
+		"name": "Partner"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 8,
+	"fields": {
+		"name": "Reseller"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 9,
+	"fields": {
+		"name": "Supplier"
+	}
+    },
+
+    {
+	"model": "business_unit.BusinessUnitType",
+	"pk": 10,
+	"fields": {
+		"name": "Vendor"
+	}
+    }
+]

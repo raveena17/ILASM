@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} {% endblock %}
+{% block taskmenus %}{% endblock %}
+
+{% block contentdata %}
+{% url projects.views.project_initiation as project_url %}
+{% url projects.views.EditProgramDisplayList as project_update_url %}
+
+<script language="javascript" type="application/javascript">
+function setFormAction(action){
+var flg = false;
+projID = '{{prog_to_up.programID}}';
+if ( projID != '' && action == '{{ project_url }}')
+    action = '{{ project_update_url }}?ids={{prog_to_up.programID}}';
+
+if (action == '{{ project_url }}?ids={{prog_to_up.programID}}')
+{
+	flg = true;
+	var formObj = document.getElementById("saveTagorProjType");
+  var newAttr = document.createAttribute("action");
+  newAttr.nodeValue = action;
+  formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+  formObj.setAttributeNode(newAttr);
+}
+else{
+	/*if(ReqValidate('name','Name')){*/
+	var formObj = document.getElementById("saveTagorProjType");
+  var newAttr = document.createAttribute("action");
+  newAttr.nodeValue = action;
+  formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+  formObj.setAttributeNode(newAttr);
+  flg = true;
+ /*}*/
+ /*else{
+ alert('Enter new name.');
+ flg = false;
+ }*/
+}
+ return flg;
+}
+
+function setNavigation(action)
+{
+window.location.href = action;
+}
+</script>
+
+<form id="saveTagorProjType" name="saveTagorProjType" method="post" action="." >
+<div class="wr-ar">
+  <div class="update-program-hdr"><span class="header">{{title}}</span></div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+   <tr>
+		<td style="width:50%;text-align:center;vertical-align:middle;">
+		<label id="msg" class="Arial-12-maroon">{{ message }}</label>
+		<input type="hidden" name="formname" id="formname" value="{{formName}}" />
+		<input type="hidden" name="pkID" id="pkID" value="{{pkID}}" />
+		<input type="hidden" name="projectID" id="projectID" value="{{prog_to_up.programID}}" />
+		</td>
+	  </tr>
+   <tr class="program-name-form-box">
+       <td align="left" valign="top">
+        <div>
+          <table width="98%" border="0" align="center" cellpadding="0" cellspacing="2">
+          <tr>
+          <td height="15px;"></td></tr>
+             {% for field in dynamicModelForm %}
+             <tr>
+	            <td style="width:13%;" >{{ field.label_tag }} </td>
+	            <td>{{ field }}</td>
+	    	</tr>
+            {% endfor %}
+			 <tr>
+			 <td colspan="2"></td>
+			 </tr>
+
+      <tr>
+        <td align="left" valign="top" class="con-grey"></td>
+        <td align="left" valign="top" style="width: 300px">
+        <input name="SaveTagOrProjType" title="Save"  type="submit" id="SaveTagOrProjType" style="margin-top:10px" value="Save" class="b1" onclick="return setFormAction('../SaveTagOrProjType/');"/>
+        <input type="button" name="cancel" id="cancel" title="Cancel"  value="Cancel" style="margin-top:10px" class="b1" onclick="setNavigation('{{ project_url }}');" />
+
+        </td>
+     </tr>
+</table>
+</div>
+    </td></tr>
+</table>
+</div>
+</form>
+
+  <div style="background-color:#dbe6ed;"> </div>
+  <div></div>
+  <div>
+            <table width="383" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="123" align="left">&nbsp;</td>
+              <td width="260" align="left"><img src="/static/css/images/spacer.gif" alt="" width="1" height="10" /></td>
+            </tr>
+
+
+           <!--  <tr>
+              <td colspan="2" align="left"><span class="con-s-grey">Marked (*) Fields are Mandatory</span></td>
+              </tr> -->
+            <tr>
+              <td align="left">&nbsp;</td>
+              <td align="left">&nbsp;</td>
+            </tr>
+          </table>
+        </div>
+{% endblock %}

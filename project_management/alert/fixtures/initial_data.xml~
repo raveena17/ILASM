@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">  
+    
+  <object pk="alertdataconfig1" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget Send for Approval (Business Head)</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">business_head.first_name,project.name,project.requested_by.first_name, modified_on,project.business_unit.name,project.delivery_centre.name,project.name,project.approval_type,project.project_type,project.schedules.expected_start_date,project.schedules.expected_end_date,project.planned_effort,project.objective</field>        
+        <field  name="subject">Project Budget is created for project  "%s" - pending for approval</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;
+   Project budget for "%s" has been initiated by "%s" on "%s" &lt;br&gt;&lt;br&gt;
+
+Business Unit     :     %s&lt;br&gt;&lt;br&gt;
+Delivery Centre   :     %s&lt;br&gt;&lt;br&gt;
+Project Name      :     %s.&lt;br&gt; &lt;br&gt;
+Project Category  :     %s&lt;br&gt;   &lt;br&gt;
+Project Type      :     %s &lt;br&gt; &lt;br&gt;
+Expected Start Date     :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date :     %s&lt;br&gt;    &lt;br&gt;
+Estimated Efforts(man-days)   :     %s&lt;br&gt;   &lt;br&gt;
+Objectives  :%s&lt;br&gt;   &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  
+  <object pk="alertdataconfig2" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget Send for Approval (Project Owner)</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">pjt_owner.first_name,project.name,project.requested_by.first_name, modified_on,project.business_unit.name,project.delivery_centre.name,project.name,project.approval_type,project.project_type,project.schedules.expected_start_date,project.schedules.expected_end_date,project.planned_effort,project.objective</field>        
+        <field  name="subject">Project Budget is created for project  "%s" - pending for approval</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;
+   Project budget for "%s" has been initiated by "%s" on "%s" &lt;br&gt;&lt;br&gt;
+
+Business Unit     :     %s&lt;br&gt;&lt;br&gt;
+Delivery Centre   :     %s&lt;br&gt;&lt;br&gt;
+Project Name      :     %s.&lt;br&gt; &lt;br&gt;
+Project Category  :     %s&lt;br&gt;   &lt;br&gt;
+Project Type      :     %s &lt;br&gt; &lt;br&gt;
+Expected Start Date     :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date :     %s&lt;br&gt;    &lt;br&gt;
+Estimated Efforts(man-days)   :     %s&lt;br&gt;   &lt;br&gt;
+Objectives  :%s&lt;br&gt;   &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  
+  <object pk="alertdataconfig3" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget Approved (Business Head)</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.requested_by.first_name,project.name,project.business_unit.name,project.delivery_centre.name,project.name,project.approval_type,project.project_type,project.schedules.expected_start_date,project.schedules.expected_end_date,project.planned_effort,project.objective,business_head.first_name,modified_on</field>        
+        <field  name="subject">Project Budget for project  "%s" - Approved</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;
+   Project budget for "%s" has been approved.&lt;br&gt;&lt;br&gt;
+
+Business Unit     :     %s&lt;br&gt;&lt;br&gt;
+Delivery Centre   :     %s&lt;br&gt;&lt;br&gt;
+Project Name      :     %s.&lt;br&gt; &lt;br&gt;
+Project Category  :     %s&lt;br&gt;   &lt;br&gt;
+Project Type      :     %s &lt;br&gt; &lt;br&gt;
+Expected Start Date     :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date :     %s&lt;br&gt;    &lt;br&gt;
+Estimated Efforts(man-days)   :     %s&lt;br&gt;   &lt;br&gt;
+Objectives  :%s&lt;br&gt;   &lt;br&gt;
+Approved By     :     %s&lt;br&gt;   &lt;br&gt;
+Approved On :     %s&lt;br&gt;    &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  
+  <object pk="alertdataconfig4" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget Approved (Project Owner)</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.requested_by.first_name,project.name,project.business_unit.name,project.delivery_centre.name,project.name,project.approval_type,project.project_type,project.schedules.expected_start_date,project.schedules.expected_end_date,project.planned_effort,project.objective,pjt_owner.first_name,modified_on</field>        
+        <field  name="subject">Project Budget for project  "%s" - Approved</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;
+   Project budget for "%s" has been approved.&lt;br&gt;&lt;br&gt;
+
+Business Unit     :     %s&lt;br&gt;&lt;br&gt;
+Delivery Centre   :     %s&lt;br&gt;&lt;br&gt;
+Project Name      :     %s.&lt;br&gt; &lt;br&gt;
+Project Category  :     %s&lt;br&gt;   &lt;br&gt;
+Project Type      :     %s &lt;br&gt; &lt;br&gt;
+Expected Start Date     :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date :     %s&lt;br&gt;    &lt;br&gt;
+Estimated Efforts(man-days)   :     %s&lt;br&gt;   &lt;br&gt;
+Objectives  :%s&lt;br&gt;   &lt;br&gt;
+Approved By     :     %s&lt;br&gt;   &lt;br&gt;
+Approved On :     %s&lt;br&gt;    &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  
+  <object pk="alertdataconfig5" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget Rejected (Project Owner)</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.requested_by.first_name,project.name,rejection_reason</field>        
+        <field  name="subject">Project Budget for project  "%s" - Rejected</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;   
+Your request for Project budget "%s" has been rejected due to  following reason(s).
+
+ Please revise your budget and send it for re-approval.&lt;br&gt;
+ &lt;br&gt;Rejecton Reason: "%s".&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object> 
+  
+  <object pk="alertdataconfig6" model="alert.AlertDataConfiguration">        
+        <field  name="name">Threshold Deviation</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.name,version</field>        
+        <field  name="subject">Project Budget - Threshold Deviation for "%s" project</field>
+        <field  name="body">
+          Hi,&lt;br&gt;&lt;br&gt;   
+
+Project budget for "%s"-Version "%s" has above 25 percentage threshold deviation with previous version
+      &lt;br&gt;&lt;br&gt;    
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>  
+  
+  
+<object pk="alertdataconfig7" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget creation Reminder(To requester)</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Reminder</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.requested_by.first_name,project.name</field>        
+        <field  name="subject">Create Project Budget for project  "%s"</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;   
+
+Please create a Project budget for "%s" within 5 days.
+      &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  
+  <object pk="alertdataconfig8" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget creation Reminder(To BusinessHead)</field>
+        <field  name="alert_type">Timer</field>
+        <field  name="action">Reminder</field>
+        <field  name="days">5</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.requested_by.first_name,project.name</field>        
+        <field  name="subject">Create Project Budget for project  "%s"</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;   
+
+Please create a Project budget for "%s" within 5 days.
+      &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  <object pk="alertdataconfig9" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project Budget creation Reminder(To Project Owner)</field>
+        <field  name="alert_type">Timer</field>
+        <field  name="action">Reminder</field>
+        <field  name="days">6</field>        
+        <field  name="subject_fields">project.name</field>
+        <field  name="body_fields">project.requested_by.first_name,project.name</field>        
+        <field  name="subject">Create Project Budget for project  "%s"</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;   
+
+Please create a Project budget for "%s" within 5 days.
+      &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+ <object pk="alertdataconfig10" model="alert.AlertDataConfiguration">        
+        <field  name="name">Time Sheet Remainder</field>
+        <field  name="alert_type">Timer</field>
+        <field  name="action">Reminder</field>
+        <field  name="days">1</field>        
+        <field  name="subject_fields"></field>
+        <field  name="body_fields"></field>        
+        <field  name="subject">Timesheet Reminder-%s</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;   
+
+It is a gentle reminder to fill-in your daily time sheet. We see that you have not yet filled-in today's time sheet and we urge you to complete it before you leave for the day.
+      &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+<object pk="alertdataconfig11" model="alert.AlertDataConfiguration">        
+        <field  name="name">PayIT Status Report</field>
+        <field  name="alert_type">Timer</field>
+        <field  name="action">Reminder</field>
+        <field  name="days">1</field>        
+        <field  name="subject_fields"></field>
+        <field  name="body_fields"></field>        
+        <field  name="subject">PayIT Status Report-%s</field>
+        <field  name="body">
+          Dear All &lt;br&gt;&lt;br&gt;   
+
+Please find the attached file for Last week PAYIT Status Report.
+      &lt;br&gt;&lt;br&gt;
+Best Regards, &lt;br&gt;
+Admin&lt;br&gt;&lt;br&gt;
+This is a system generated alert. We request you not to reply to this message.          
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+
+<object pk="alertdataconfig12" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project  Initiation Request</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields"></field>
+        <field  name="body_fields"> approved_by.first_name,name,requested_by.first_name,schedules.initiation_request_date,requested_by.first_name,schedules.initiation_request_date,business_unit.name,delivery_centre.name,name,approval_type,project_type,schedules.expected_start_date,schedules.expected_end_date,planned_effort,objective</field>        
+        <field  name="subject">Project initiation request</field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;
+   Project  %s has been has been initiated by %s on %s.&lt;br&gt;&lt;br&gt;
+
+Requested by     :     %s&lt;br&gt;&lt;br&gt;
+Requested on  :     %s&lt;br&gt;&lt;br&gt;
+Business Unit      :     %s.&lt;br&gt; &lt;br&gt;
+Delivery Centre  :     %s&lt;br&gt;   &lt;br&gt;
+Project Name      :     %s &lt;br&gt; &lt;br&gt;
+Project Category     :     %s&lt;br&gt;   &lt;br&gt;
+Project Type :     %s&lt;br&gt;    &lt;br&gt;
+Expected Start Date   :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date  :%s&lt;br&gt;   &lt;br&gt;
+Estimated Efforts(man-days)    :     %s&lt;br&gt;   &lt;br&gt;
+Objectives :    %s&lt;br&gt;    &lt;br&gt;&lt;br&gt;         
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+
+<object pk="alertdataconfig13" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project  Approval Status</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields"></field>
+        <field  name="body_fields">name,approved_by.first_name,schedules.initiation_request_date,requested_by.first_name,schedules.initiation_request_date,business_unit.name,delivery_centre.name,name,approval_type,project_type,schedules.expected_start_date,schedules.expected_end_date,planned_effort,objective</field>        
+        <field  name="subject">Project Approval Status </field>
+        <field  name="body">
+          
+   Project  %s was approved by %s upon customer approval on %s.&lt;br&gt;&lt;br&gt;
+
+
+Requested by     :     %s&lt;br&gt;&lt;br&gt;
+Requested on  :     %s&lt;br&gt;&lt;br&gt;
+Business Unit      :     %s.&lt;br&gt; &lt;br&gt;
+Delivery Centre  :     %s&lt;br&gt;   &lt;br&gt;
+Project Name      :     %s &lt;br&gt; &lt;br&gt;
+Project Category     :     %s&lt;br&gt;   &lt;br&gt;
+Project Type :     %s&lt;br&gt;    &lt;br&gt;
+Expected Start Date   :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date  :%s&lt;br&gt;   &lt;br&gt;
+Estimated Efforts(man-days)    :     %s&lt;br&gt;   &lt;br&gt;
+Objectives :    %s&lt;br&gt;    &lt;br&gt;&lt;br&gt;         
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+
+<object pk="alertdataconfig14" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project  Approval Status</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields"></field>
+        <field  name="body_fields">name,approved_by.first_name,schedules.initiation_request_date,requested_by.first_name,schedules.initiation_request_date,business_unit.name,delivery_centre.name,name,approval_type,project_type,schedules.expected_start_date,schedules.expected_end_date,planned_effort,objective</field>        
+        <field  name="subject">Project Approval Status </field>
+        <field  name="body">
+          
+   Project  %s was approved by %s pending customer approval on %s.&lt;br&gt;&lt;br&gt;
+
+
+Requested by     :     %s&lt;br&gt;&lt;br&gt;
+Requested on  :     %s&lt;br&gt;&lt;br&gt;
+Business Unit      :     %s.&lt;br&gt; &lt;br&gt;
+Delivery Centre  :     %s&lt;br&gt;   &lt;br&gt;
+Project Name      :     %s &lt;br&gt; &lt;br&gt;
+Project Category     :     %s&lt;br&gt;   &lt;br&gt;
+Project Type :     %s&lt;br&gt;    &lt;br&gt;
+Expected Start Date   :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date  :%s&lt;br&gt;   &lt;br&gt;
+Estimated Efforts(man-days)    :     %s&lt;br&gt;   &lt;br&gt;
+Objectives :    %s&lt;br&gt;    &lt;br&gt;&lt;br&gt;         
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+
+<object pk="alertdataconfig15" model="alert.AlertDataConfiguration">        
+        <field  name="name">Announcement</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields">title</field>
+        <field  name="body_fields">title</field>        
+        <field  name="subject">New Announcement-"%s"</field>
+        <field  name="body">
+          Dear All,&lt;br&gt;&lt;br&gt;  
+           
+There is a new announcement on &lt;b&gt; "%s" &lt;/b&gt;
+ &lt;br&gt;
+Please login to Mindshare to view this announcement
+      &lt;br&gt;&lt;br&gt;
+5G Corporate Team.
+&lt;br&gt;&lt;br&gt;
+&lt;i&gt;&lt;font size="2"&gt; Click here to go to &lt;/font&gt;&lt;a href="http://192.168.1.102:9073/login/" target="blank"&gt;&lt;font size="2.5"&gt; Mindshare &lt;/font&gt;&lt;/a&gt; &lt;/i&gt;
+         
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>  
+  
+  <object pk="alertdataconfig16" model="alert.AlertDataConfiguration">        
+        <field  name="name">Project  Initiation Request</field>
+        <field  name="alert_type">Event</field>
+        <field  name="action">Update</field>
+        <field  name="days">0</field>        
+        <field  name="subject_fields"></field>
+        <field  name="body_fields"> requested_by.first_name,name,schedules.initiation_request_date,requested_by.first_name,schedules.initiation_request_date,business_unit.name,delivery_centre.name,name,approval_type,project_type,schedules.expected_start_date,schedules.expected_end_date,planned_effort,objective</field>        
+        <field  name="subject">Project initiation request details </field>
+        <field  name="body">
+          Dear %s&lt;br&gt;&lt;br&gt;
+   Project  %s has been has been initiated  on %s.&lt;br&gt;&lt;br&gt;
+
+Requested by     :     %s&lt;br&gt;&lt;br&gt;
+Requested on  :     %s&lt;br&gt;&lt;br&gt;
+Business Unit      :     %s.&lt;br&gt; &lt;br&gt;
+Delivery Centre  :     %s&lt;br&gt;   &lt;br&gt;
+Project Name      :     %s &lt;br&gt; &lt;br&gt;
+Project Category     :     %s&lt;br&gt;   &lt;br&gt;
+Project Type :     %s&lt;br&gt;    &lt;br&gt;
+Expected Start Date   :     %s&lt;br&gt;   &lt;br&gt;
+Expected End Date  :%s&lt;br&gt;   &lt;br&gt;
+Estimated Efforts(man-days)    :     %s&lt;br&gt;   &lt;br&gt;
+Objectives :    %s&lt;br&gt;    &lt;br&gt;&lt;br&gt;         
+        </field>
+        <field  name="is_email">1</field>
+        <field  name="is_screen">1</field>
+        <field  name="is_active">1</field>
+        <field  name="is_lock">1</field>
+  </object>
+  
+</django-objects>
+

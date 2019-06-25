@@ -1,0 +1,225 @@
+import sys
+
+from django.conf import settings
+from datetime import datetime
+from django.http import HttpResponseRedirect, HttpResponse
+from django.template import RequestContext
+<<<<<<< .mine
+from django.http import Http404
+from django.shortcuts import render_to_response
+=======
+from django.shortcuts import render_to_response
+>>>>>>> .r1330
+from django.utils import simplejson
+
+from project_management.alert.models import *
+from project_management.projectbudget.models import *
+from project_management.Utility import EmailWithCC
+from django.contrib.auth.models import User
+
+
+MODULE = 'Alert'
+ERROR_MESSAGE = 'ERROR : %s \nLINE NUMBER : %s'
+
+def alert_check(request):
+    alert_generate(request, 'ProjectBudget', 'alertdataconfig1', '07676ed4-fcc3-11e1-9685-00167692f6f2',['smila@fifthgentech.com'])
+    json = simplejson.dumps("Mail Sent Successfully")
+    return HttpResponse(json, mimetype='application/javascript')
+
+def alert_generate(request, module_name, alert_id, record_id, to_id = [], cc_id = [], comments=''):
+    '''
+    Event alerts
+    '''
+    try:        
+        total_to_email_list = []
+        total_cc_email_list = []
+        to_id_list = []
+        subject_fields_lsit = []
+        body_fields_list = []
+        print "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+        alert_configuration = AlertDataConfiguration.objects.get(pk=alert_id)
+        if(alert_configuration.is_lock == False):
+            return "Inactive"
+        model_object = eval(module_name).objects.get(pk=record_id) 
+        
+        subject_fields = alert_configuration.subject_fields.split(',')
+        for each_subfield in subject_fields:
+            subject_fields_lsit.append(eval('model_object.' + str(each_subfield)))
+        body_fields = alert_configuration.body_fields.split(',')
+
+        for each_bodyfield in body_fields:
+            body_fields_list.append(eval('model_object.' + str(each_bodyfield)))            
+        subject_content = alert_configuration.subject % tuple(subject_fields_lsit)
+        alert_body = alert_configuration.body
+        #body_fields_list.append(request.user.first_name+' '+request.user.last_name)
+        
+        body_content = alert_body % tuple(body_fields_list)
+        
+        if(comments != ''):
+            body_content += comments
+        to_email = alert_configuration.toemail.values()
+        for each_email in to_email:
+            total_to_email_list.append(each_email.get('email'))
+
+        to_cc = alert_configuration.cc.values()
+        for each_cc in to_cc:
+            total_cc_email_list.append(each_cc.get('email'))
+
+        to_bcc = alert_configuration.bcc.values()
+        for each_bcc in to_bcc:
+            total_cc_email_list.append(each_bcc.get('email'))
+        if(len(to_id) > 0):
+            total_to_email_list = total_to_email_list + to_id
+        if(len(cc_id) > 0):
+            total_cc_email_list = total_cc_email_list + cc_id
+        total_to_email_list = filter(None, total_to_email_list)
+        total_cc_email_list = filter(None, total_cc_email_list)
+        if len(total_to_email_list) > 0:
+            total_to_email_list = reduce(lambda x, y: x + y if y[0] not in x else x, map(lambda x: [x], total_to_email_list))
+        if len(total_cc_email_list) > 0:
+            total_cc_email_list = reduce(lambda x, y: x + y if y[0] not in x else x, map(lambda x: [x], total_cc_email_list))
+        print 'total_to_email_list',total_to_email_list,total_cc_email_list
+        send_mail_flag = True       
+        if(send_mail_flag):
+            alert_transaction = AlertDataTransaction(alert_id=alert_id, record_id=record_id,
+            to_id=total_to_email_list, cc_id=total_cc_email_list,
+            body=body_content, subject=subject_content)
+            alert_transaction.save()
+            if(alert_configuration.is_email):
+                EmailWithCC().send_email(subject_content, body_content, total_to_email_list, settings.EMAIL_CONTENT_TYPE, '', '', total_cc_email_list)            
+    except:
+        errMessage = ERROR_MESSAGE % (sys.exc_info()[1], sys.exc_info()[2].tb_lineno)
+<<<<<<< .mine
+        print 'errMessage',errMessage
+        
+def list(request):
+    '''
+    List Of Alerts
+    '''
+    alertlist = AlertDataConfiguration.objects.all()   
+    return render_to_response('alertlist.html', {'alertlist': alertlist}, context_instance=RequestContext(request)) 
+        
+def edit(request,id):
+    '''
+    Alerts Edit Methods
+    '''
+    pagedata={}
+    alert = AlertDataConfiguration.objects.get(pk=id)
+    user = User.objects.filter(is_active=1).order_by('first_name')    
+    pagedata.update({'alert':alert,'user':user})
+    return render_to_response('alertconfig.html', {'pagedata': \
+        pagedata}, context_instance=RequestContext(request))
+        
+def save(request):
+    '''
+    Alerts save method
+    '''        
+    predata_dict = {}
+    alert = AlertDataConfiguration.objects.get(pk=request.POST.get('hdn_id', ''))  
+    pagedata = {}
+    record_status = request.GET.get('record_status', '')
+    is_save = request.GET.get('is_save', '')
+    if request.method == 'POST':
+        alert_dict = {'id': request.POST.get('hdn_id', ''),
+            'name': request.POST.get('alert_name', ''),
+            'alert_type': request.POST.get('alert_type', ''),           
+            'days': request.POST.get('days', '0'),
+            'frequency': request.POST.get('frequency', '0'),
+            'subject': request.POST.get('subject', ''),
+            'body': request.POST.get('body', ''),
+            'subject_fields': request.POST.get('subject_fields', ''),
+            'body_fields': request.POST.get('body_fields', ''),
+            'is_lock': request.POST.get('is_lock', ''),           
+            'modified_by_id': request.user.id,
+            'is_active': 1,
+            'is_email': 1
+                }
+    alert = AlertDataConfiguration(**alert_dict)
+    postdata_dict = save_data(request, alert)  
+    alert.save()
+    msg = "Alert configuration successfully saved"      
+    return HttpResponseRedirect('/alert/list')
+
+def save_data(request, alert):
+    alert.toemail.clear()
+    alert.cc.clear()    
+    toemail = request.POST.get('hdn_toemail', '').split(',')
+    if toemail.__contains__(''):
+        toemail.remove('')
+    for each_mail in toemail:
+        alert.toemail.add(each_mail)
+
+    cc = request.POST.get('hdn_cc', '').split(',')
+    if cc.__contains__(''):
+        cc.remove('')
+    for each_cc in cc:
+        alert.cc.add(each_cc)
+
+=======
+        print 'errMessage',errMessage
+        
+def list(request):
+    '''
+    List Of Alerts
+    '''
+    alertlist = AlertDataConfiguration.objects.all()
+    return render_to_response('alertlist.html', {'alertlist': \
+        alertlist}, context_instance=RequestContext(request)) 
+        
+def edit(request,id):
+    '''
+    Alerts Edit Methods
+    '''
+    pagedata={}
+    alert = AlertDataConfiguration.objects.get(pk=id)
+    user = User.objects.filter(is_active=1).order_by('first_name')    
+    pagedata.update({'alert':alert,'user':user})
+    return render_to_response('alertconfig.html', {'pagedata': \
+        pagedata}, context_instance=RequestContext(request))
+        
+def save(request):
+    '''
+    Alerts save method
+    '''        
+    predata_dict = {}
+    alert = AlertDataConfiguration.objects.get(pk=request.POST.get('hdn_id', ''))  
+    pagedata = {}
+    record_status = request.GET.get('record_status', '')
+    is_save = request.GET.get('is_save', '')
+    if request.method == 'POST':
+        alert_dict = {'id': request.POST.get('hdn_id', ''),
+            'name': request.POST.get('alert_name', ''),
+            'alert_type': request.POST.get('alert_type', ''),           
+            'days': request.POST.get('days', '0'),
+            'frequency': request.POST.get('frequency', '0'),
+            'subject': request.POST.get('subject', ''),
+            'body': request.POST.get('body', ''),
+            'subject_fields': request.POST.get('subject_fields', ''),
+            'body_fields': request.POST.get('body_fields', ''),
+            'is_lock': request.POST.get('is_lock', ''),           
+            'modified_by_id': request.user.id,
+            'is_active': 1,
+            'is_email': 1
+                }
+    alert = AlertDataConfiguration(**alert_dict)
+    postdata_dict = save_data(request, alert)  
+    alert.save()
+    msg = "Alert configuration successfully saved"      
+    return HttpResponseRedirect('/alert/list')
+
+def save_data(request, alert):
+    alert.toemail.clear()
+    alert.cc.clear()    
+    toemail = request.POST.get('hdn_toemail', '').split(',')
+    if toemail.__contains__(''):
+        toemail.remove('')
+    for each_mail in toemail:
+        alert.toemail.add(each_mail)
+
+    cc = request.POST.get('hdn_cc', '').split(',')
+    if cc.__contains__(''):
+        cc.remove('')
+    for each_cc in cc:
+        alert.cc.add(each_cc)
+
+>>>>>>> .r1330

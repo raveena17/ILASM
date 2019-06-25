@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/select2-amc-min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/cvr_popup.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-date.js"></script>
+    <script type="application/javascript" src="/static/js/select2.js"></script>
+    <link href="/static/css/jquery-daterange-ui.css" rel="stylesheet" type="text/css" />
+    <script type="application/javascript" src="/static/js/jquery-daterange-ui.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/additional-methods.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+
+    <script type="application/javascript" src="/static/js/select2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $("#id_empid").select2({
+              placeholder: "Select the User",
+              allowClear: true
+            });
+    })
+    </script>
+
+
+    <style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .select2-choice{width: 160px;}
+ 
+</style>
+{% endblock %}
+
+{% block title %} Apply Leave {% endblock %}
+
+{% block contentdata %}
+    <style>
+        form { padding: 10px; }
+        .header{text-align: left; left: 182px;margin-left: 20px; font-family:Arial, Helvetica, sans-serif;}
+        .element { width: 100%; min-height: 30px; }
+        .field { width: 59%; float:left; min-height: 46px;}
+ 
+        .label { width: 21%; float: left; min-height: 35px; margin-left: 10px; font-family:Liberation Serif;font-size: 15px;}
+        input[type=text]{ width: 161px; background-color: white;}
+        input[type=date]{ width:185px; background-color: white}
+        input[type=number]{ width:185px;}
+        select { width: 170px;  background-color: white}
+        #report_form{position: absolute; top: 150px;}
+        .class_Repeat {position: absolute; text-align: right; left: 440px; top: 150px; width: 90px;}
+        .class_Frequency{position: absolute; text-align: left; left: 520px; top: 150px;-+}
+        #id_remarks{width: 185px;height: 55px;}
+        input[type=number] { width: 163px; background-color: white;}
+        /*input[type=text] { width: 185px; background-color: white;}*/
+        textarea {border: 1px solid #ccc; background-color: white; width: 32%; width: 184px;height: 75px;}
+    </style>
+
+
+    
+
+
+    <script>
+        $(document).ready(function(){
+              $("#id_leave_id").on("change",function(){
+                balanceLeave();
+               });
+              $("#id_empid").on("change",function(){
+                balanceLeave();
+               });
+
+              balanceLeave();
+
+              function balanceLeave(){
+                  var leave_type = $("#id_leave_id").val();
+                  var empid = $("#id_empid").val();
+                  if( leave_type != ''){
+                    $.ajax({
+                      url : '/leave/previous_leave_balance/',
+                      type : "GET",
+                      data:{
+                          empid : $("#id_empid").val(),
+                          leave_type : $("#id_leave_id").val(),
+                          },
+                      async: false,
+                      success : function(data){
+                        $('#previous_leave_balance').val(data["leave_bal"]);
+                      }
+                    });            
+                  }
+                }
+
+        });
+
+    </script>
+
+    <div class="header">Leave Credit</div>
+
+    <div style="width: 100%">
+      <div style="float: left;width: 50%;">
+        <form  id="report_form" name="report_form" action="" method="POST">
+          {% csrf_token %}
+
+          {% for field in credit_form %}
+              <div class="label">{{field.label}}: </div>
+              <div class="field">{{field}}</div>
+          {% endfor %}
+
+
+          <div style="margin-top: 19%;">
+            <label id='previous_leave_balance_label'><span style=" width: 21%; float: left; min-height: 35px;  font-family: Liberation Serif; color: #333; font-size: 15px; ">Available Current Balance</span><input type="text" id='previous_leave_balance'  class="input-field" name="previous_balance" style="margin-left: 1%;color: blue;width: 16.5%;" readonly/></label>
+          </div><br>
+          
+          <button type="submit" style="position: absolute; left: 13%; bottom: -25px;  height: 24px;;">Save</button>
+
+          <a href = "/leave/credit/list/">
+          <input type="button" value = " Cancel " name="Cancel" style="position: absolute; left: 20%; bottom: -25px;  height: 24px; font-size: inherit;"></a>
+                        
+        </form>
+      </div>
+    </div>
+
+{% endblock %}
+    

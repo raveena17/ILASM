@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/static/css/jquery-ui-redmond-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.tabs.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.theme.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.core.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/projectInitiation.css" rel="stylesheet" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script src="http://cdn.jquerytools.org/1.1.2/full/jquery.tools.min.js"></script>
+{% endblock %}
+
+{% block title %} Plan Project {% endblock %}  
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+
+{% load admin_modify %}
+{% load user_tags %}
+
+<!--script type="application/javascript" src="/static/js/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="application/javascript" src="/static/js/ui.core.js"></script>
+<script type="application/javascript" src="/static/js/ui.tabs.js"></script-->
+
+
+<style>
+    #overlay {
+        color:#efefef; 
+        height:450px; 
+        } 
+
+    .contentWrap { 
+        height:441px; 
+        overflow-y:auto; 
+        }
+
+    .apple_overlay {        
+            background-image:url(/static/css/images/overlay_black.png); 
+            display:none;
+            width:350px;        
+            padding:35px;
+            font-size:11px;
+          }
+
+    /* default close button positioned on upper right corner */
+    .apple_overlay div.close {
+        background-image:url(/static/css/images/close.png);
+        position:absolute; right:5px; top:5px;
+        cursor:pointer;
+        height:35px;
+        width:35px;
+    }
+
+    a:active {outline:none;}
+
+    .dialog-overlay { 
+        background-color:#fff; 
+        display:none; 
+        width:350px; 
+        padding:15px; 
+        text-align:left; 
+        border:2px solid #333; 
+                             
+        opacity:0.8; 
+            -moz-border-radius:6px; 
+            -webkit-border-radius:6px; 
+            -moz-box-shadow: 0 0 50px #ccc; 
+            -webkit-box-shadow: 0 0 50px #ccc; 
+        } 
+</style>
+
+<style>
+    .heading-panel{ width: 96%; margin-left: 2%; margin-right:2%; padding-top: 5px; height: 25px; }
+    .top-decision-block { float: right;  }
+    .message{ padding-left: 200px; text-align: center; }
+    table#plandivision { border-collapse:separate; border-spacing:0px 10px; width: 100%; }
+    table#plandivision tr td { padding: 10px; background-color: #e8e8e8; }
+    #id_objective, #id_goals, #id_project_scope { width: 680px; height: 90px; }
+    .initiationdetail, .planningdetail { min-width: 50%; min-height: 30px; float: left; }
+    .teamdetail { width: 80%;float: left; }
+    .labelinitiate { width: 34%; float: left; }
+    .fieldinitiate { min-width: 18%; float: left; }
+    .help-textinitiate { width: 15%; padding-top:3px; float:inherit; color:#666666; font-size:12px; font-weight:normal !important;}
+    .label { width: 30%; float: left; }
+    .field { min-width: 45%; float: left; }
+    .help-text { width: 25%; float:inherit; color:#666666; font-size:12px; font-weight:normal !important;}
+    .decisionblock { width: 100%; padding-left: 10px; }
+    #id_development_environment{ height: 100px; }
+</style>
+
+<script>
+    var closeOverlay = function(){
+        $("a[rel]").overlay({oneInstance: false, api: true}).close();
+        }
+
+    function selectall_onsubmit() {
+        $('form#project_plan_form').submit(function() {
+            $('td#team_selection').find('option').each(function() {
+                $(this).attr('selected', 'selected');
+            });
+        });
+    }
+
+    function remove_unselected_onload() {
+        /*Remove unselected options from all the role select boxes.*/
+        $('td#team_selection select option:not(:selected)').remove();
+    }
+
+    $(document).ready(function(){    
+    if($('#mnuProject').attr('id') != undefined)
+    {
+    $('#mnuProject').css({'background':'#1bc2ec'});
+     var mnua = $('#mnuProject').children();
+     $(mnua[0]).css({'color':'white','font-weight':'bold'});
+    }
+        convertDate('id_approval_date');
+        convertDate('id_planned_start_date');
+        convertDate('id_planned_end_date');
+        convertDate('id_actual_start_date');
+        convertDate('id_actual_end_date');
+        $('#id_planned_start_date').attr('class', 'vDateField');
+        $('#id_planned_end_date').attr('class', 'vDateField');
+        $('#id_actual_start_date').attr('class', 'vDateField');
+        $('#id_actual_end_date').attr('class', 'vDateField');
+        $('input[id="cancel_plan_btn"]').click(function(){ window.location.href = $('#url_to_project_list').val(); });
+        
+        $("a[rel]").overlay({ 
+            expose: 'transparent', 
+            effect: 'apple', 
+            onBeforeLoad: function() { 
+            var wrap = this.getContent().find(".contentWrap"); 
+            wrap.load(this.getTrigger().attr("href")); 
+                } 
+            });
+
+        $('#btn_dev_env_del').click(function(){
+            if (confirm("Are you sure you want to delete the selected development environment??")){
+                var to_delete = [];
+                $('#id_development_environment :selected').each(function(i, selected){
+                    to_delete[i] = $(selected).val();
+                });
+                var deleteDevEnv = function(){ $('#id_development_environment :selected').remove();}
+                $.ajax({
+                    type : "POST",
+                    url : "/project/dev_env_delete/",
+                    data : { 'todelete': to_delete},
+                    success : deleteDevEnv
+                    });
+            }
+        });
+
+        /*
+            On submit mark options selected.
+            Add buttons for 'add + ' and 'delete - '.
+                - On click of 'add' open dialog box.
+                    Have a hidden input in the dialog form to know for which role the dialog was opened.
+                    Have two buttons in the dialog box - 'select' and 'cancel'. 
+                    - On select copy the selected options and paste them into the role select box.
+                    - On cancel close the dialog box.
+                - On click of 'delete', remove all selected options in the select box;
+        */
+
+        remove_unselected_onload();
+
+        $('input[id^="btn_add_members"]').overlay({ 
+            autoOpen: false,
+            expose: { color: '#333', loadSpeed: 200, opacity: 0.9 },
+            closeOnClick: true 
+            });
+        $('input[id^="btn_add_members"]').click(function() {
+            var element_id = $(this).attr('id');
+            $('input#select_box_id').attr('value',
+                $('#role' + $(this).attr('name')).find('select').attr('id'))//.replace(/\s+/g, '-');
+
+            $('#dialog-form #select').click(function(){
+                    var current_members = [];
+                    var select_box_id = $('#select_box_id').attr('value');
+
+                    $('select#' + select_box_id + ' option').each(function (i, team_member) {
+                        current_members[i] = $(team_member).val();
+                    });
+
+                    $('select#prospect_team').find('option').filter(':selected').each(function (i, team_member) {
+                        if($.inArray($(team_member).val(), current_members) == -1) {
+                            $('#' + select_box_id).append(
+                            "<option value=\"" + $(team_member).val() + "\">" + $(team_member).text() + "</option>");
+                        }
+                    });
+                   $('#' + element_id) .overlay().close();
+                });
+
+             $('#dialog-form #cancel').click(function(){
+                   $('#' + element_id) .overlay().close();
+                });
+        });
+
+        $('input[id^="btn_del_members"]').click(function() {
+            $('#role' + $(this).attr('name')).find('option').filter(':selected').remove();
+        });
+
+        selectall_onsubmit();
+    });
+</script>
+
+<input type="hidden" id="url_to_project_list" value="{% url projects.views.project_list %}">
+<form id="project_plan_form" action="" method = "POST">
+    {% include 'project_menus.html' %}
+    <div class="heading-panel">
+        <span class="header">Update Project Plan</span>
+        <span class="Arial-12-maroon message">{{ msg }}</span>
+        <div class="top-decision-block">
+            {% if perms.project.change_project %}
+                <input name="Save" type="submit" id="save_plan_btn" class="b1" value="Save">
+             {% endif %}
+             <input name="Cancel" type="Button" id="cancel_plan_btn" class="b1" value="Cancel">
+        </div>
+    </div>
+    <div class="program-name-form-box">
+        <div class="program-name-inside-box1">
+            <table id="plandivision">
+                <tr><td>
+                    <p><h3>Initiation Details</h3></p>
+                    {% if initiation_form %}
+                        {% for field in initiation_form %}
+                            <div class="initiationdetail" >
+                                <div class="labelinitiate"> {{ field.label_tag }}:</div>
+                                <div class="fieldinitiate"> {{ field }} </div>
+                                <div class="help-textinitiate">{{ field.help_text }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p> <h3>No initiation for this project.</h3> </p>
+                    {% endif %}
+                </td></tr>
+
+                <tr><td>
+                    <p><h3>Planning Details</h3></p>
+                    {% if plan_form %}
+                        {% for field in plan_form %}
+                            <div class="planningdetail">
+                                <div class="label"> {{ field.label_tag }}: </div><div class="field"> {{ field }} </div>
+                                {% if forloop.last %} 
+                                    <a href="/project/dev_env/" rel="#overlay">
+                                        <input type="button" id="btn_dev_env_add" class="btn_add_members" value="Add"/>
+                                    </a>
+                                    <!-- overlayed element -->
+                                    <div class="apple_overlay" id="overlay">
+                                        <!-- the external content is loaded inside this tag -->
+                                        <div class="contentWrap"></div>
+                                    </div>
+                                    <input type="button" id="btn_dev_env_del" class="btn_del_members" value="Delete"/>
+                                {% endif %}
+                                <div class="Arial-12-maroon" style="float:left;">{{ field.errors }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p><h3>No plan for this project.</h3></p>
+                    {% endif %}
+                </td></tr>
+
+                <tr><td id="team_selection">
+                    <p><h3>Team Details</h3></p>
+                    {% if team_form %}
+                        {% for field in team_form %}
+                            <div id="role{{ forloop.counter }}" class="teamdetail">
+                                <div class="label"> {{ field.label_tag }}: </div>
+                                <div class="field">
+                                    {{ field }}
+                                    <input type="button" rel='#dialog-form'  id="btn_add_members{{ forloop.counter }}" name="{{ forloop.counter }}" value="Add"/>
+                                    <input type="button" id="btn_del_members{{ forloop.counter }}" name="{{ forloop.counter }}" value="Delete"/>
+                                </div>
+                                <div class="Arial-12-maroon" style="float:left;">{{ field.errors }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p><h3>No team for this project.</h3></p>
+                    {% endif %}
+                </td></tr>
+            </table>
+            <div class="decisionblock">
+                <input name="Save" type="submit" id="save_plan_btn" class="b1" value="Save">
+                <input name="Cancel" type="Button" id="cancel_plan_btn" class="b1" value="Cancel">
+            </div>
+         </div>
+    </div>
+</form>
+<div id="dialog-form" class="dialog-overlay" title="Team Members">{# This is a popup for selecting team members. #}
+    <input id="select_box_id" type="hidden" value="">
+    <form>
+        <select id="prospect_team" multiple="multiple">
+            {% for user in user_set %}
+                <option value="{{ user.pk }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <input type="button" id="select" name="select" value="select" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+</div>
+<input type="hidden" value="{{ user_set }}">
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}{% block title %} Monthly Event Calendar {% endblock %} {% block programcontent %} {% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block programmenu %}{% endblock %} {% block submenu %}{% endblock %} 
+{% block templatemenu %}{% endblock %} 
+{% block taskmenus %}{% endblock %} 
+{% block contentdata %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+<script language="JavaScript">
+
+</script>
+<script language="JavaScript" type="text/javascript">
+	
+</script>
+
+        <div class="wr-ar">
+            <div class="program-hdr">
+               
+                <span class="header">Monthly View</span>
+            </div>
+        
+            
+            
+            <form action="/MonthlyCalendar/">
+                        <div align="center" style="padding-top: 15px; padding-bottom: 5px; padding-left: 15px;
+                            padding-right: 15px;">
+                            <table cellspacing='0' cellpadding='0' style="border:2px solid #dbe6ed;" width='100%'>
+                                <tr class="link-line-bg" style=" width: 18px;" >
+                                    <td colspan='2' align="left" class='previous' style="font-size:21px;">
+                                        <a style="text-align: left; font-weight: bold; font-size:21px;" href="/conferenceroombooking/previousyear/">
+                                            <span class="calendar-arrow">&lt;</span></a> <a style="text-align: left; font-weight: bold; font-size:22px;" href="/conferenceroombooking/previousmonth/">
+                                               <span class="calendar-arrow"> &laquo;</span></a></td>
+                                    <td colspan='3' class="menu-btn-link" align="center" style="text-align: center; font-weight: bold;
+                                        font-size:20px;">
+                                        {{ monthyear }}</td>
+                                    <td colspan='2' class='next' align="right" style="font-size:21px;">
+                                        <a href="/conferenceroombooking/nextmonth/" style="text-align: center; font-weight: bold; font-size:22px;"><span class="calendar-arrow">&raquo;</span></a>
+                                        <a style="text-align: center; font-weight: bold;font-size:21px; " href="/conferenceroombooking/nextyear/"><span class="calendar-arrow">&gt;</span></a></td>
+                                </tr>
+                                <tr style="color: Maroon;border:2px solid #dbe6ed;">
+                                    {% for day in headers %}
+                                    <th style="width: 14%;height:25px;border:2px solid #dbe6ed;text-align:center;">
+                                        {{ day|date:"l" }}</th>
+                                    {% endfor %}
+                                </tr>
+                                {% for week in calendar %}
+                                <tr style="height: 65px;border:2px solid #dbe6ed;text-align:center;">
+                                    {% for day in week %} 
+                                    <td{% if day.in_month %} style="color:Red;border:2px solid #dbe6ed;" {% else %} style="border:2px solid #dbe6ed;" {% endif %}>
+                                        <a href="/conferenceroombooking/book/?selecteddate={{day.day}}" 
+{% ifequal today day.day %} style=" background-color:yellow;font-weight: bold;color:Red;" {% else %}   style=" color:Red" {% endifequal %}>{{day.day|date:"j"}}
+									</a>
+								 {% if day.event %}		
+							     {% for daydesc in monthdata %} 
+									{% ifequal day.day daydesc.day %}
+									{% ifequal day.day daydesc.start_date %}
+									
+									   <a href="/conferenceroombooking/book/?id={{ daydesc.eventid }}"  {% if daydesc.is_approved %} style="color:#008000;font-weight: bold;" {% else %} style="color:#F4091D;font-weight: bold;" {% endif %}>{{ daydesc.desc }}</a>
+									
+									{% endifequal %}
+									{% endifequal %}
+								 {% endfor %}
+							     {% endif %}                            
+                                    
+						</td>{% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+{% endblock %}

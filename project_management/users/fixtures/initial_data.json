@@ -1,0 +1,34 @@
+[
+    {
+	"model": "users.userType",
+	"pk": 1,
+	"fields": {
+		"name": "Customer"
+	}
+    },
+
+    {
+	"model": "users.userType",
+	"pk": 2,
+	"fields": {
+		"name": "Supplier"
+	}
+    },
+
+    {
+	"model": "users.userType",
+	"pk": 3,
+	"fields": {
+		"name": "Contractor"
+	}
+    },
+
+    {
+	"model": "users.userType",
+	"pk": 4,
+	"fields": {
+		"name": "Consultant"
+	}
+    }
+]
+

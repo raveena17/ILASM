@@ -1,0 +1,72 @@
+<script type="application/javascript">
+$(function() { 
+    $('#customer_overlay #cancel').click(closeOverlay);
+
+    $('#customer_overlay #save' ).click(function(){
+        var customer_data = {
+                'customer_id':$('#customer_overlay #customerID').val(),
+                'name':$('#customer_overlay #id_name').val(),
+                'related_to': $('#customer_overlay #id_related_to').val(),
+                'url': $('#customer_overlay #id_url').val(),
+                'address_line1': $('#customer_overlay #id_address_line1').val(),
+                'address_line2': $('#customer_overlay #id_address_line2').val(),
+                'city': $('#customer_overlay #id_city').val(),
+                'state': $('#customer_overlay #id_state').val(),
+                'pin': $('#customer_overlay #id_pin').val(),
+                'country': $('#customer_overlay #id_country').val(),
+                'notes': $('#customer_overlay #id_notes').val()
+              };
+
+        var addBusinessUnit = function(json){
+            if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+            else{
+                $("#id_customer option[value='"+ json[0].id +"']").remove();
+                $('#id_customer').prepend('<option value="'+json[0].id+'">'+json[0].name+'</option>');
+                closeOverlay();
+            }
+            }
+
+        $.ajax({ 
+            type : "POST",
+            url : "/customer/create/",
+            data : customer_data,
+            success : addBusinessUnit,
+            dataType: "json"
+            });
+        });
+    });
+
+</script>
+<style>
+#customer_overlay label{ color: white; }
+.element { width: 100%; }
+.label { width: 23%; float: left; }
+.field { width: 67%; float:left; }
+.SaveAndCancel { clear: both; padding-left:23%; }
+</style>
+<html>
+    <head>
+        <title> Customer </title>
+    </head>
+    <body id="customer_overlay">
+        <h2><p><label> Customer </label></p></h2>
+        <h4><p><label> {{form.errors}} </label></p></h4>
+        {% for field in customer_form %}
+            <div class="element">
+                <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+            </div>
+            {% ifequal field.name 'url' %}
+                {% for address_field in address_form %}
+                    <div class="element">
+                        <div class="label">{{address_field.label_tag}}</div><div class="field">{{address_field}}</div>
+                    </div>
+                {% endfor %}
+            {% endifequal %}
+        {% endfor %}
+        <div class="SaveAndCancel">
+            <input type="hidden" id="customerID" name="customerID" value="{% if customer_id %}{{customer_id}}{% endif %}" />
+            <input type="button" id="save" name="save" value="save" />
+            <input type="button" id="cancel" name="cancel" value="cancel" />
+        </div>
+    </body>
+</html>

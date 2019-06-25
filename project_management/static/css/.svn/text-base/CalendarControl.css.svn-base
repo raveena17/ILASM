@@ -1,0 +1,120 @@
+/*************************************************************************************************************
+									 Start Calendar Control
+*************************************************************************************************************/
+#CalendarControlIFrame {
+  display: none;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  height: 250px;
+  width: 250px;
+  z-index: 99;
+}
+
+#CalendarControl {
+  position:absolute;
+  background-color:white;
+  margin:0;
+  padding:0;
+  display:none;
+  z-index: 100;
+}
+
+#CalendarControl table {
+  font-family: Tahoma;
+  font-size: 11px;
+  border-left: 2px solid #DDD;
+  border-right: 2px solid #DDD;
+  border-top: 2px solid #DDD;
+  border-bottom: 2px solid #DDD;
+}
+
+#CalendarControl th {
+  font-weight: bold;
+  background-color:#FFF;
+  color: Maroon;
+}
+
+#CalendarControl th a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #FFF;
+  padding: 1px;
+}
+
+#CalendarControl td {
+  text-align: center;
+}
+
+#CalendarControl .header {
+  background-color: #7B9EBD;
+}
+
+#CalendarControl .weekday {
+  background-color: white;
+  color: #000;
+}
+
+#CalendarControl .weekend {
+  background-color: White;
+  color: #336;
+}
+
+#CalendarControl .current {
+  border: 1px solid #FFFFFF;
+  background-color: #7B9EBD;
+  color: #FFFFFF;
+}
+
+#CalendarControl .weekday,
+#CalendarControl .weekend,
+#CalendarControl .current {
+  display: block;
+  text-decoration: none;
+  border: 1px solid white;
+  width: 2em;
+}
+
+#CalendarControl .weekday:hover,
+#CalendarControl .weekend:hover,
+#CalendarControl .current:hover {
+  color: #FFFFFF;
+  background-color: #7B9EBD;
+  border: 1px solid #999;
+}
+
+#CalendarControl .previous {
+  text-align: left;
+}
+
+#CalendarControl .next {
+  text-align: right;
+}
+
+#CalendarControl .previous,
+#CalendarControl .next {
+  padding: 1px 3px 1px 3px;
+  font-size: 1.4em;
+}
+
+#CalendarControl .previous a,
+#CalendarControl .next a {
+  color: #FFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#CalendarControl .title {
+  text-align: center;
+  font-weight: bold;
+  color: #FFF;
+}
+
+#CalendarControl .empty {
+  background-color: white;
+  border: 1px solid white;
+}
+
+/*************************************************************************************************************
+									 End Calendar Control
+*************************************************************************************************************/

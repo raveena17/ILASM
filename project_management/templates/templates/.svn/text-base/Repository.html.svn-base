@@ -1,0 +1,116 @@
+{% extends "base.html" %} {% block title %} Repository  {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+
+<script>
+
+	YAHOO.namespace("widget.Container");
+
+	YAHOO.widget.Container.init = function() {
+	tt2 = new YAHOO.widget.Tooltip("tt2", { context:"Submitbtn", text:'Add to Repository'});
+	tt3 = new YAHOO.widget.Tooltip("tt3", { context:"filter", text:'Filter by tag'});
+	}
+
+	YAHOO.util.Event.onDOMReady(YAHOO.widget.Container.init);
+</script>
+<script language="JavaScript">
+ function filterByTag(object)
+ {
+ 	ID = document.getElementById(object).value;
+ 	var urlval = '/Repository/?tagID='+ID;
+	window.location.href = urlval;
+ }
+
+window.onload = function(){
+	document.getElementById('repositoryTag').value = document.getElementById('repositoryTagID').value;
+}
+
+</script>
+<div class="program-hdr">
+	<br />
+		<span class="header">Repository</span>
+	</div>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="width: 50%; text-align: center; vertical-align: middle;" colspan="2">
+                    <label id="msg" class="Arial-12-maroon">
+                        {{ msg }}</label>
+                </td>
+            </tr>
+
+            </table>
+
+    	<div class="program-blue-box" style="height:60px;">
+        <table width="100%" >
+            <tr>
+                <td class="program-blue-center-box1" style="width:15%;vertical-align:top;">
+				<div class="program-hdr">
+                    <span class="program-hdr" style="width: auto;white-space:nowrap;"><!-- Repository --></span>
+				</div>
+                </td>
+				 <form enctype="multipart/form-data" method="post" action="/RepositoryUpload/">
+				 <td class="program-blue-center-box1" align="right" style="width:45%;vertical-align:top;">
+				 <span class="con-grey"> Tag </span>
+				 <select name="repositoryTag" id="repositoryTag" style="width: 150px">
+                    <option value="" selected >All </option>
+	                 {% for tag in repositoryTags|dictsort:"name" %}
+                    			<option value="{{ tag.pk }}" >{{ tag.name }} </option>
+   	              {% endfor %}
+              </select>
+              <a id="filter" href="#" onclick="filterByTag('repositoryTag');" ><img src="/static/css/images/funnel.png" /> </a>
+             <input type="hidden" name="repositoryTagID" id="repositoryTagID"  value="{{repositoryTagID}}"/>
+				 </td>
+                <td class="program-blue-center-box1" align="right" style="width:25%;vertical-align:top;">
+		<table>
+         <tr><td>
+				{{templateForm.fileUploaded}}
+				</td></tr>
+         <tr><td><label id="filemsg" class="Arial-12-maroon">({{fileSizeMsg}})</label>
+         </td>
+         </tr>
+			</table>
+				</td>
+
+				<td class="program-blue-center-box1" align="right" valign="middle" style="vertical-align:top;">
+				<input type="submit" name="Submitbtn" id="Submitbtn" value="Add to Repository" class="b1"/>
+				</td></form>
+				            </tr>
+
+        </table>
+    	</div>
+
+<div style="text-align:center;" >
+<table class="program-drag-sec-box" width="100%"  cellpadding="0" cellspacing="0" border="0" style="text-align:center;">
+	<tr height="25px" align="left" valign="bottom" class="con-white-bold">
+		<td class="link-line-bg" style="width:5%">
+		<a href="#" class="con-white-bold">S.No.</a>
+		</td>
+		<td class="link-line-bg" style="width:40%; padding-left:10px;">
+		<a href="#" class="con-white-bold">Filename</a>
+		</td>
+		<td class="link-line-bg" style="width:10%; padding-left:10px;">
+		<a href="#" class="con-white-bold">Tag</a>
+		</td></tr>
+		{% load tags %}
+	{% for eachFile in Repository %}
+	<tr height="35" align="left" valign="bottom" class="wh-bg">
+		<td class="program-row" style="width:5%" class="con-grey">
+		{{forloop.counter}}
+		</td>
+		<td class="program-row" style="width:40%">
+
+		<a class="con-grey" {% fileexists downloadpath eachFile.fileUploaded %}  target="_blank" >
+		{{eachFile.name}}</a>
+		</td>
+		<td class="program-row" style="width:10%">
+		{{eachFile.repositoryTag.name}}
+		</td></tr>
+	{% endfor %}
+
+	</table>
+
+ </div>
+
+{% endblock %}
+
+

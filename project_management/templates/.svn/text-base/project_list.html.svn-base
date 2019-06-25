@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Project {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .project { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-project { padding-top: 10px; padding-bottom: 10px; width: 100%; }
+    #create-project { float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .project-header-panel { width:100%;  }
+    .project-list-header, .project-column {width: 18%; padding-top: 10px;  }
+    .project-content { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .delete-project {float: left; }
+    .page-number{ float: right; }
+</style>
+<script>
+
+$(document).ready(function(){
+    $('#create-project').click(function(){ window.location.href = '{% url projects.views.project_initiation %}' });
+    $('#show_inactive').click(function(){ window.location.href = '{% url projects.views.project_list %}?is_active=1' });
+    $('#hide_inactive').click(function(){ window.location.href = '{% url projects.views.project_list %}?is_active=0' });
+    $('#delete').click(function(){
+            if(deleteconfirmation(document.projectlist.project_pk)){
+            document.getElementById('projectlist').action = '{% url projects.views.ProgramDelete %}';
+            }
+            else
+            {
+                return false;
+            }
+        })
+    $('#deactivate').click(function(){
+            if(confirm('Are you sure you want to deactivate the project?')){
+                document.getElementById('projectlist').action = '{% url deactivate-project %}';
+            }
+            else{
+                return false;
+            }
+        })
+
+    $('#activate').click(function(){
+            if((confirm('Are you sure you want to activate the project?'))){
+                document.getElementById('projectlist').action = '{% url activate-project %}';
+            }
+            else{
+                return false;
+            }
+        })
+    $('table#projects').tablesorter();
+    });
+function showphase()
+{
+window.location.href = "/projectbudget/phase/";
+}
+
+function showcost()
+{
+window.location.href = "/projectbudget/cost/";
+}
+
+</script>
+{% load pagination_tags %}
+    <form id="projectlist" name="projectlist" action="" method="POST" />
+        <div class="project" >
+            <div class="list-header">
+                <span class="header">Project List</span>
+            </div>
+            <div class="message">
+               <span class="Arial-12-maroon"> {{msg}}</span>
+            </div>
+            <div class="program-blue-box">
+                <div class="create-project">
+                    {% if perms.projects.add_project or perms.projects.change_project %}
+                        {% if not show_inactive %}
+                            <input type="button" id="show_inactive" name="show_inactive" class="b1" value="show Inactive" />
+                        {% else %}
+                            <input type="button" id="hide_inactive" name="hide_inactive" class="b1" value="hide Inactive" />
+                        {% endif %}
+                    {% endif %}
+                    {% if perms.projects.add_project %}
+                        <input type="button" id="create-project" name="create-project" class="b1" value="Create Project" style="display:none" />
+                        <input type="button" id="phase_master" name="Phase Master" class="b1" value="Phase Master" onclick="showphase();" />
+                    <input type="button" id="cost_master" name="Cost Master" class="b1" value="Cost Master" onclick="showcost();" />
+                    {% endif %}
+                    
+                </div>
+            </div>
+				{% autopaginate project_list %}
+            <table id="projects" class="tablesorter">
+                <thead class="project-header-panel">
+                    <tr>
+                        <th class="project-list-header header link-line-bg con-white-bold">Select</th>
+                        <th class="project-list-header header link-line-bg con-white-bold">Project Id</th>
+                        <th class="project-list-header header link-line-bg con-white-bold">Project Name</th>
+                        <th class="project-list-header header link-line-bg con-white-bold">Start Date</th>
+                        <th class="project-list-header header link-line-bg con-white-bold">End Date</th>
+                        <th class="project-list-header header link-line-bg con-white-bold">Status</th> 
+                    </tr>
+                </thead>
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="2">
+                            <div class="delete-project">
+                            {% if perms.projects.add_project %}
+                            {% if show_inactive %}
+                                <input type="submit" value="Activate" id="activate" name="activate" class="b1" />
+                                {% else %}
+                                <input type="submit" value="Deactivate" id="deactivate" name="deactivate" class="b1" onclick=""/>
+                                {% endif %}
+                                <input type="submit" value="Delete" id="delete" name="delete" class="b1" />
+                                <input type="button" value="Select All" id="select_all" name="select_all" class="b1" onclick="return doCheck('projectlist');"  />
+                                <input type="button" value="Clear All" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('projectlist');"  />
+                            {% endif %}
+                            </div>
+
+                        </td>
+                        <td colspan="4">
+                           {% paginate %}
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for project in project_list %}
+                        <tr class="project-content">
+                            <td class="project-column">
+                                <input type="checkbox" id="project_pk" name="project_pk" value="{{project.project_no}}" />
+                                <a href="{% url projects.views.display_project_dashboard %}?ids={{project.id}}">View</a>
+                            </td>
+                            <td class="project-column">
+                                
+								{{project.id}}
+                            </td>
+                            <td class="project-column">
+                                {{ project.name }}
+                            </td>
+                            <td class="project-column">
+								{% if project.schedules.planned_start_date == Null %}
+									{{ project.schedules.expected_start_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"  }}
+								{% else %}	
+									{{ project.schedules.planned_start_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}
+								{% endif %}	
+                            </td>
+                            <td class="project-column">
+								{% if project.schedules.planned_end_date == Null %}
+									{{ project.schedules.expected_end_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}
+								{% else %}	
+									{{ project.schedules.planned_end_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}
+								{% endif %}	
+                            </td>
+                            <td class="project-column">
+                                {% if project.is_active %} Active {% else %} Inactive {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/SVN/Mindshare/!svn/ver/1395/trunk/src/PayIT/payit/apps/updated_code/project_management
+END
+manage.py
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/manage.py
+END
+i18nDate.py
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/SVN/Mindshare/!svn/ver/1122/trunk/src/PayIT/payit/apps/updated_code/project_management/i18nDate.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/__init__.py
+END
+settings.py
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/SVN/Mindshare/!svn/ver/1344/trunk/src/PayIT/payit/apps/updated_code/project_management/settings.py
+END
+Utility.py
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/SVN/Mindshare/!svn/ver/1193/trunk/src/PayIT/payit/apps/updated_code/project_management/Utility.py
+END
+templatecalendar.py
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/templatecalendar.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/SVN/Mindshare/!svn/ver/1193/trunk/src/PayIT/payit/apps/updated_code/project_management/urls.py
+END

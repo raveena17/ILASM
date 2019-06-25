@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests
+END
+doctests.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests/doctests.py
+END
+testcases.py
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests/testcases.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests/__init__.py
+END
+settings.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests/settings.py
+END
+tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests/tests.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/mptt/tests/models.py
+END

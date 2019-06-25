@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Leave Application {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; font-family:Liberation Serif;}
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right;font-family:Liberation Serif; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%; font-family:Liberation Serif; font-size: 20px; }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  font-family:Liberation Serif; font-size: 20px;}
+    .list-row { width:100%; font-family: Liberation Serif; font-size: 12px;}
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .b1{font-family: Liberation Serif;
+    font-size: 14px;}
+    .header {font-family: Liberation Serif; font-size: 18px; font-style: normal; line-height: normal;font-weight: normal;font-variant: normal;text-transform: none;color: #000000; text-decoration: none;
+    .header link-line-bg con-white-bold {font-family: Liberation Serif; font-size: 18px;}
+}
+</style>
+<script>
+$(document).ready(function(){
+    $('#create-leave').click(function(){ 
+        window.location.href = "/leave/create/"
+    });
+    $('#create-shortleave').click(function(){ 
+        window.location.href = "/leave/short/create/"
+    });
+    
+    $('#cancel').click(function(){
+        if(confirm('are you sure you want to cancel selected?')){
+            document.getElementById('leavelist').action = "/leave/cancel/";
+        }
+        else{
+            return false;
+        }
+    })
+
+    $('table.tablesorter').tablesorter();
+});
+</script>
+{% load pagination_tags %}
+    <form id="leavelist" name="leavelist" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">Leave Status</span>
+            </div>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+            <div class="program-blue-box">
+                <div class="create-button">
+                    <input type="button" id="create-leave" name="create-leave" class="b1" value="Apply Leave" /><input type="button" id="create-shortleave" name="create-shortleave" class="b1" value="ShortLeave" />
+                </div>
+            </div>
+
+
+            <table id="users1" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Leave Type</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Current Balance</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Applied For</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Balance After Approval</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">LOP</th>
+                        
+                    </tr>
+                </thead>
+                <!-- <tfoot class="footer">
+                    <tr>
+                        <td colspan="3"></td>
+                        <td colspan="10"></td>
+                    </tr>
+                </tfoot> -->
+                <tbody>  
+                     {% for data in data_set %}
+                        <tr class="list-row">
+                            
+                            <td width="10%">{{ data.leave_type }}</td>
+                            <td width="10%">{{ data.current_balence }}</td>
+                            <td width="10%">{{ data.appied_for }}</td>
+                            <td width="10%">{{ data.balence_after_approval }}</td>
+                            <td width="10%">{{ data.lop }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+            <br><br><br>
+            <div class="list-header">
+                <span class="header">Applied Leave</span>
+            </div>
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Select</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">S.No</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Username</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">From-Date</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">To-Date</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">No-of-days</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Leave Nature</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Approve-by</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Status</th>
+
+                    </tr>
+                </thead>
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="3">
+                            <div class="footer-buttons">
+                                <input type="submit" value="Cancel" id="cancel" name="cancel" class="b1" />
+                                <input type="button" value="Select All" id="select_all" name="select_all" class="b1" onclick="return doCheck('leavelist');"  />
+                                <input type="button" value="Clear All" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('leavelist');"  />
+                            </div>
+                        </td>
+                        <td colspan="10">
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>  
+                     {% for leave in Leave_list %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="leave_pk" name="leave_pk" value="{{leave.pk}}" />
+                                <a href="/leave/update/{{leave.pk}}">View</a>
+                            </td>
+                            <td width="5%">
+                                {% if is_paginated %}
+                                    {{ page_obj.start_index|add:forloop.counter0 }}
+                                {% else %}
+                                   {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td width="10%">{{ leave.empid }}</td>
+                            <td width="10%">{{ leave.leave_from }}</td>
+                            <td width="10%">{{ leave.leave_to }}</td>
+                            <td width="10%">{{ leave.no_of_days }}</td>
+                            <td width="10%">{{ leave.leave_nature }}</td>
+                            <td width="10%">{{ leave.approved_by }}</td>
+                            <td width="10%">{{ leave.approval_status }}</td>
+
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+{% endblock %}
+

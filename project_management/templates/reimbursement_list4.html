@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Reimbursement {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load reimbursement_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 18%; float: right; right: 0px; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .tablesorter{}
+
+    #all-reimbursements {
+        position: relative;
+        float: right;
+    }
+    #create-reimbursement {
+        position: relative;
+        float: left;
+        left: 3%;
+    }
+    .list-row {
+        width: 100%;
+        font-family: Liberation Serif;
+        font-size: 12px;
+    }
+    .header {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-style: normal;
+        line-height: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        color: #000000;
+        text-decoration: none;
+    }
+    .header-reimbursement{
+        font-size: 140%;
+    }
+</style>
+<script>
+$(document).ready(function(){
+    $('#create-reimbursement').click(function(){ 
+        window.location.href = "/reimbursement/create/"
+    });
+    $('#all-reimbursements').click(function(){ 
+        window.location.href = "/reimbursement/admin/list/"
+    });
+    $('#delete').click(function(){
+        if(confirm('Are you sure you want to delete selected?')){
+            document.getElementById('reimbursementlist').action = "/reimbursement_approval/delete/";
+        }
+        else{
+            return false;
+        }
+    })
+    $('#myRequestCancel').click(function(){
+            if(confirm('are you sure you want to cancel selected?')){
+                document.getElementById('reimbursementlist').action = "/reimbursement/cancel/";
+            }
+            else{
+                return false;
+            }
+        })
+    $('table.tablesorter').tablesorter();
+});
+
+</script>
+
+
+
+
+{% load pagination_tags %}
+    <form id="reimbursementlist" name="reimbursementlist" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header-reimbursement">Reimbursement</span>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+            <div class="program-blue-box">
+
+                <div class="create-button">
+                    <input type="button" id="create-reimbursement" name="create-reimbursement-report" class="b1" value="Create Reimbursement" />
+                </div>
+
+                {% for role in  user.groups.all %}
+                    {% if role.name == 'Corporate Admin' %}
+                        <div class="create-button">
+                            <input type="button" id="all-reimbursements" name="reimbursement-report"  class="b1" value="Reports" />
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                
+                    
+            </div><br>
+
+            
+
+            {% if user_reimbursement %}
+
+
+            <!-- <h4 style="height: 10%">My requests</h4><br> -->
+            <div class="header initiationHeader">My requests</div>
+
+
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold">Select</th>
+                        <th class="header link-line-bg con-white-bold">S.No</th>
+                        <!-- <th class="header link-line-bg con-white-bold">Name</th> -->
+                        <th class="header link-line-bg con-white-bold">Approver</th>
+                        <th class="header link-line-bg con-white-bold">Type</th>
+                        <th class="header link-line-bg con-white-bold">Total</th>
+                        <th class="header link-line-bg con-white-bold">Status</th>
+                        <th class="header link-line-bg con-white-bold">Created on</th>
+                    </tr>
+                </thead>
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="3">
+                            <div class="footer-buttons">
+                                    <input type="submit" value="Cancel" id="myRequestCancel" name="myRequestCancel" class="b1" />
+                                </div>
+                        </td>
+                        <td colspan="20">
+                            <center><div class="pagination">
+                                <span class="step-links">
+                                    {% if user_reimbursement.has_previous %}
+                                        <a href="?page={{ user_reimbursement.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                   {% for n in user_reimbursement.paginator.page_range %}
+                                        {% if user_reimbursement.number == n %}
+                                          <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                        {% elif n > user_reimbursement.number|add:'-2' and n < user_reimbursement.number|add:'4' %}
+                                        <span class="page-item"><a class="page-link" href="?page={{ n }}">{{ n }}</a></span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if user_reimbursement.has_next %}
+                                        <a href="?page={{ user_reimbursement.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div></center>
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody >
+                                               
+                     {% for reimbursement in user_reimbursement.object_list %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="reimbursement_pk" name="reimbursement_pk" value="{{reimbursement.pk}}" />
+                                <a href="/reimbursement/update/{{reimbursement.pk}}">View</a>
+                            </td>
+                            <td width="5%">
+                                {{ forloop.counter0|add:user_reimbursement.start_index}}
+                            </td>
+                            <!-- <td width="10%">{{ reimbursement.name }}</td> -->
+                            <td width="10%">{{ reimbursement.approver }}</td>
+                            <td width="10%">{{ reimbursement.type }}</td>
+                            <td width="10%">{{ reimbursement.total_amount }}</td>
+                            <td width="10%">{{ reimbursement.status }}</td>
+                            <td width="10%">{{ reimbursement.created_on }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>
+            {% endif %}
+
+            <!-- {% if requests %}
+            <div class="header initiationHeader">My Approval Queues</div>
+
+
+
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold">Select</th>
+                        <th class="header link-line-bg con-white-bold">S.No</th>
+                        <th class="header link-line-bg con-white-bold">Name</th>
+                        {% load reimbursement_tags %}
+                            {% if request.user|has_group:"Manager" %}
+                                {% if request.user|has_group:"Corporate Admin" %}
+                                    <th class="header link-line-bg con-white-bold">Approver</th>
+                                {% else %}
+
+                                {% endif %}
+                            {% else %}
+                            <th class="header link-line-bg con-white-bold">Approver</th>
+                            {% endif %}
+                        <th class="header link-line-bg con-white-bold">Type</th>
+                        <th class="header link-line-bg con-white-bold">Total</th>
+                        <th class="header link-line-bg con-white-bold">Status</th>
+                        <th class="header link-line-bg con-white-bold">Created on</th>
+                    </tr>
+                </thead>
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="20">
+                            <center><div class="pagination">
+                                <span class="step-links">
+                                    {% if requests.has_previous %}
+                                        <a href="?page={{ requests.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                   {% for n in requests.paginator.page_range %}
+                                        {% if requests.number == n %}
+                                          <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                        {% elif n > requests.number|add:'-2' and n < requests.number|add:'4' %}
+                                        <span class="page-item"><a class="page-link" href="?page={{ n }}">{{ n }}</a></span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if requests.has_next %}
+                                        <a href="?page={{ requests.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div></center>
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>                                         
+                     {% for reimbursement in requests %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="reimbursement_pk" name="businessunit_pk" value="{{reimbursement.pk}}" />
+                                <a href="/reimbursement/update/{{reimbursement.pk}}">View</a>
+                            </td>
+                            <td width="5%">
+                                {{ forloop.counter0|add:requests.start_index}}
+                            </td>
+                            <td width="15%">{{ reimbursement.name }}</td>
+
+                            {% load reimbursement_tags %}
+                            {% if request.user|has_group:"Manager"%}
+                                {% if request.user|has_group:"Corporate Admin"%}
+                                    <td width="10%">{{ reimbursement.approver }}</td>
+                                {% else %}
+                                
+                                {% endif %}
+                            {% else %}
+                                <td width="10%">{{ reimbursement.approver }}</td>
+                            {% endif %}
+                            <td width="10%">{{ reimbursement.type }}</td>
+                            <td width="10%">{{ reimbursement.total_amount }}</td>
+                            <td width="10%">{{ reimbursement.status }}</td>
+                            <td width="10%">{{ reimbursement.created_on }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %} -->
+            </div>
+    </form>
+{% endblock %}
+
+
+
+
+<!-- <table id="allowance">
+            
+            <thead>
+                {% for form in formset.forms %}
+                    {% if forloop.first %}
+                      <th> {{form.date.label_tag}} </th>
+                      <th> {{form.category.label_tag}} </th>
+                      <th> {{form.description.label_tag}} </th>
+                      <th> {{form.expenditure.label_tag}} </th>
+                      <th> <label>Budget</label> </th>
+                      <th> {{form.bill_availability.label_tag}} </th>
+
+
+                      
+                      {% if reimbursementModelForm.initial.id %}
+
+                        {% load reimbursement_tags %}
+
+                        {% if request.user|has_group:"Corporate Admin"  %}
+                          {% if reimbursementModelForm.name.value != request.user.id %}
+                              {% if reimbursementModelForm.initial.id %}
+                                {% for value, text in reimbursementModelForm.status.field.choices %}
+                                  {% if value == reimbursementModelForm.status.value %}
+                                    {% if text == 'Approved' or text == 'Processed' or text == 'Verified' %}
+                                  <th>{{form.bill_location.label_tag}}</th>
+                                    {% endif %}
+                                  {% endif %}
+                                {% endfor %} 
+                              {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {% if reimbursementModelForm.name.value != request.user.id %}
+                          {% if request.user|has_group:"Corporate Admin"%}
+                          {% endif %}
+                          {% endif %}
+
+                        {% if reimbursementModelForm.name.value == request.user.id %}
+                          {% for value, text in reimbursementModelForm.status.field.choices %}
+                            {% if value == reimbursementModelForm.status.value %}
+                              {% if text == 'Pending' %}
+                                <th> {{form.DELETE.label_tag}} </th>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% else %}
+                        <th> {{form.DELETE.label_tag}} </th>
+                      {% endif %}
+
+                    {% endif %}
+                  {% endfor %}
+            </thead>
+            <tbody >
+                {% for form in formset.forms %}
+                    <tr>
+                      <td> {{form.date}} </td>
+                      <td> {{form.category}} </td>
+                      <td> {{form.description}} </td>
+                      <td> {{form.expenditure}} </td>
+                      <td> <input type="text" id="budget" disabled="true"> </td>
+                      <td> {{form.bill_availability}} </td>
+                      {% if reimbursementModelForm.initial.id %}
+                        {% for role in request.user.groups.all %}
+                          {% if role.name == 'Corporate Admin' %}
+                            {% if reimbursementModelForm.name.value != request.user.id %}
+                              {% if reimbursementModelForm.initial.id %}
+                                {% for value, text in reimbursementModelForm.status.field.choices %}
+                                  {% if value == reimbursementModelForm.status.value %}
+                                    {% if text == 'Approved' or text == 'Processed' or text == 'Verified' %}
+                                  <td>{{form.bill_location}}</td>
+                                    {% endif %}
+                                  {% endif %}
+                                {% endfor %} 
+                              {% endif %}
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                      
+                      {% if reimbursementModelForm.initial.id %}
+
+                      {% if reimbursementModelForm.name.value != request.user.id %}
+                        {% if request.user|has_group:"Corporate Admin"%}
+                        {% endif %}
+                        {% endif %}
+
+                        {% if reimbursementModelForm.name.value == request.user.id %}
+                          {% for value, text in reimbursementModelForm.status.field.choices %}
+                            {% if value == reimbursementModelForm.status.value %}
+                              {% if text == 'Pending' %}
+                                <td> {{form.DELETE}} </td>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+                      {% else %}
+                        <td> {{form.DELETE}} </td>
+                      {% endif %}
+            
+
+                    </tr>
+            </tbody>
+               {% endfor %}
+        </table>
+
+ -->

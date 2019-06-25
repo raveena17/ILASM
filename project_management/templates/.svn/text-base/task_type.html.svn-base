@@ -1,0 +1,70 @@
+<style>
+#overlay label{ color: white; }
+</style>
+
+<html>
+<head>
+    <title> Task Type </title>
+</head>
+<body id="overlay">
+    <h3><p><label> Task Type </label></p></h3>
+    <h4><p><label>{{form.errors}}</label></p></h4>
+    <input type="hidden" name="type_id" id="type_id" value="{{type.pk}}"  />
+    {{form.as_p}}
+    <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+</body>
+<script>
+$(function() { 
+    $('#overlay #cancel').click(closeOverlay);
+
+    $('#overlay #save' ).click(function(){
+    
+    		if ($('#overlay #id_is_project_type').is(":checked") == true)
+    		 pjt_type = 1
+    		 else 
+    		 pjt_type=0
+    	  var task_type = /^[A-Za-z0-9_& ]{1,25}$/;
+        var task_type = {
+        			  
+                'id':$('#overlay #type_id').val(),
+                'name':$('#overlay #id_name').val(),
+                'is_project_type':pjt_type,
+                 
+              }; 
+       var addTaskType = function(json){
+         
+            if (json[0].hasOwnProperty('error'))
+            { 
+            alert(json[0].error); 
+            }
+            
+            else{
+                $("#id_type option[value='"+ json[0].id +"']").remove(); 
+                $('#id_type').append('<option value="'+json[0].id+'">'+json[0].name+'</option>');
+                closeOverlay();
+            }
+            }
+        if ($('#overlay #id_name').val() == '')
+        {      
+        alert('Name should not be empty')
+        $('#overlay #id_name').focus();
+        }      
+        else
+			$.ajax({
+           
+        		type : "POST",
+            url : "/task/create_type/",
+            data : task_type,
+            success : addTaskType,
+            dataType: "json[0]"
+            
+            });
+            
+        });
+        
+    });
+
+</script>
+
+</html>

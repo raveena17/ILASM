@@ -1,0 +1,50 @@
+[
+
+    {
+	"model": "milestone.InvoiceTerms",
+	"pk": 1,
+	"fields": {
+        "name":"Milestone"
+	}
+    },
+
+    {
+	"model": "milestone.InvoiceTerms",
+	"pk": 2,
+	"fields": {
+        "name":"Monthly"
+	}
+    },
+
+    {
+	"model": "milestone.InvoiceTerms",
+	"pk": 3,
+	"fields": {
+        "name":"Quarterly"
+	}
+    },
+
+    {
+	"model": "milestone.InvoiceTerms",
+	"pk": 4,
+	"fields": {
+        "name":"Half-Yearly"
+	}
+    },
+
+    {
+	"model": "milestone.InvoiceTerms",
+	"pk": 5,
+	"fields": {
+        "name":"Yearly"
+	}
+    },
+
+    {
+    "model":"milestone.InvoiceTerms",
+    "pk":6,
+    "fields":{
+        "name":"Specific-Date"
+    }
+    }
+]

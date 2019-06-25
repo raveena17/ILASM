@@ -1,0 +1,32 @@
+<div class="company-name"></div>
+<div style="float:right">
+    <div style="padding-right:5px;">
+        You are now logged in as 
+        <a href="{% url users.views.manage_myprofile %}">
+            {{request.user.first_name}}&nbsp;{{request.user.last_name}}
+        </a> | 
+        <a href="/logout/">logout</a>
+    </div>
+
+    <div style="float:right;padding-right:5px;">
+    <a href="/comingsoon/">
+        <img src="/static/css/images/pokayoke.png" width="50" height="50" style="padding-top:8px"/>
+    </a>
+
+    <a href="http://192.168.1.77/SVN/5GInitiatives/IdeasXChange/" target="_blank">
+        <img src="/static/css/images/ideasxchange.png" width="50" height="50" style="padding-top:8px"/>
+    </a>
+        <a href="/announcement/list/">
+            <img src="/static/css/images/announcement.png" width="50" height="50" style="padding-top:8px"/>
+        </a>
+    {% if perms.projects.add_project %}
+    <a href="/recentupdates/">
+            <img src="/static/css/images/recent_updates.png" width="50" height="50" style="padding-top:8px"/>
+        </a>
+    {% endif %}
+        <img src="/static/css/images/5g_logo.gif" width="70" height="70"/>
+    </div>
+</div>
+<div style="float:right;padding-top:-50px;">
+    <img src="/static/css/images/green_strip.png" width="870" height="10"/>
+</div>

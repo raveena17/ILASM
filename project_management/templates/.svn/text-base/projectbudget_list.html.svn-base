@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+<style>
+	 .list { width: 100%;  }
+    .phase-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .phase-header-panel { width:100%;  }
+    .phase-header, .phase-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .phase-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    #overlay label {color: white;}
+    #overlay {
+        color:#efefef; 
+        height:400px; 
+    }
+    
+	.contentWrap { 
+        height:391px; 
+        overflow-y:auto; 
+        }
+	
+	.apple_overlay {        
+            background-image:url(/static/css/images/overlay_black.png); 
+            display:none;
+            width:350px;        
+            padding:35px;
+            font-size:11px;
+          }
+
+    /* default close button positioned on upper right corner */
+    .apple_overlay div.close {
+        background-image:url(/static/css/images/close.png);
+        position:absolute; right:5px; top:5px;
+        cursor:pointer;
+        height:35px;
+        width:35px;
+        }
+
+    a:active {outline:none;}
+
+    .dialog-overlay { 
+        background-color:#fff; 
+        display:none; 
+        width:350px; 
+        padding:15px; 
+        text-align:left; 
+        border:2px solid #333; 
+                             
+        opacity:0.8; 
+            -moz-border-radius:6px; 
+            -webkit-border-radius:6px; 
+            -moz-box-shadow: 0 0 50px #ccc; 
+            -webkit-box-shadow: 0 0 50px #ccc; 
+        } 
+        
+</style>
+<script type="text/javascript" >
+    $(document).ready(function(){    
+    $('table.tablesorter').tablesorter();
+      });
+</script>
+<form method="POST" action="" name="budgetphase" id="budgetphase">
+<div class="project">
+			<div class="list-header">
+				<span class="header">Project Budget List</span>
+				</div>
+	<div style="width:100%">
+		<table id="budget" class="tablesorter">
+				<thead class="phase-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold">Sl.No</th>
+                        <th class="header link-line-bg con-white-bold">Select</th>
+                        <th class="header link-line-bg con-white-bold">Projects</th>
+                        <th class="header link-line-bg con-white-bold">Current Version</th>
+                        <th class="header link-line-bg con-white-bold">Status</th>
+                        <th class="header link-line-bg con-white-bold">Last Updated Date</th>
+                     </tr>
+				</thead>
+			<tbody>
+				{% for pjt in projects %}
+				 		<tr class="phase-row">
+				 			<td> {{ forloop.counter }} </td>
+				 			<td><a href="{% url projectbudget.views.create %}?pjt_id={{ pjt.project.id }}">View</a></td>
+				 			<td>{{ pjt.project.name }}  </td>
+				 			<td align="center" > {{ pjt.version }}</td>
+				 			<td> {{ pjt.status.status }}</td>
+				 			<td>{{ pjt.modified_on }}</td>
+				 		</tr>
+				 		{% endfor %}
+			</tbody>
+		</table>
+		</div>
+</div>
+</form>
+{% endblock %}

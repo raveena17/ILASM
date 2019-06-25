@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/SVN/Mindshare/!svn/ver/1143/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone
+END
+admin.py
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/SVN/Mindshare/!svn/ver/1119/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/admin.py
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/SVN/Mindshare/!svn/ver/1143/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1119/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/__init__.py
+END
+tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/SVN/Mindshare/!svn/ver/1119/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/tests.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/SVN/Mindshare/!svn/ver/1119/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/models.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/SVN/Mindshare/!svn/ver/1119/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/urls.py
+END
+forms.py
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/SVN/Mindshare/!svn/ver/1119/trunk/src/PayIT/payit/apps/updated_code/project_management/milestone/forms.py
+END

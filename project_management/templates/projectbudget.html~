@@ -1,0 +1,681 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/static/css/ui.tabs.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.theme.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.core.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/projectInitiation.css" rel="stylesheet" />
+      <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.8.16.custom.css"> 
+{% endblock %}
+
+{% block script %}
+
+  	 <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="/static/js/ui.core.js"></script>
+    <script type="application/javascript" src="/static/js/ui.tabs.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/jquery.datePicker.js"></script>
+  	 <script type="application/javascript" language="JavaScript" src="/static/js/jquery-1.7.1.min.js"></script>
+	 <script type="application/javascript" language="JavaScript" src="/static/js/jquery-ui-1.8.18.custom.js"></script>	
+	 <script type="application/javascript" language="JavaScript" src="/static/js/digital_only.js"></script>	
+	 
+{% endblock %}
+{% block title %} Project Budget {% endblock %} 
+{% block contentdata %}
+
+<form name="projectbudjet" id="projectbudjet" method="POST" action="/projectbudget/save/">
+		<div class="project">
+			{% include 'project_menus.html' %}						
+			 
+			<table summary="" ><tr>
+<td width="50%"><div class="header">&nbsp;&nbsp;&nbsp;Project Budget - Version {{ pjt_bud.version }}</div></td>
+<td align="right" width="50%">
+	{% if pjt_bud.project.ex_approval != 0 %}
+			<div align="right">
+					<label> <b>View Other Version</b></label>   
+   				&nbsp;&nbsp;&nbsp;&nbsp;<select style="width:100px" id="version" name="version" onchange="view_version()"><option value="">Select</option>
+					{% for version in version_range %}
+							<option {% if version == pjt_bud.version %} selected="selected" {% endif %}>
+								{{ version }}
+							</option>
+					{% endfor %}
+					</select>		
+			</div>
+		{% endif %}
+			</td></tr>
+</table>
+			 {% if msg != ''%} 
+			 	<label style="background:#99F6BB"><font >{{ msg }}</font></label>
+			 {% endif %}
+		     {% if pjt_bud.project.ex_approval == 0 %}
+			  		<label><font color="red" >Project not yet approved </font></label>
+			 {% else %}
+			        <div class="program-name-inside-box1">
+			        <input type="hidden" id="bud_id" name="bud_id" value="{{ pjt_bud.id }}" />
+			            <table id="plandivision"> 
+			                <tr><td>
+			                  <div class="disable_area">
+		                     <table width="100%" > 							 	
+										
+										<tr style="height:25px;">
+											<td>Project Manager</td><td>{{ pjt_bud.project.requested_by.username }}</td>
+											<td>Client Name</td><td>{{ pjt_bud.project.customer.name }}</td>
+									 	</tr> 
+									 	<tr style="height:25px;">
+									 	<td>Business Unit</td><td>{{ pjt_bud.project.business_unit.name }}</td>
+											<td>Status </td><td><B>{{ pjt_bud.status.status }}</B></td>
+											
+										</tr>
+									 	<tr>	
+									 			<td> Business Head<font color="red" >*</font></td>
+									 	<td><select id="bus_head" class="dropdown" name="bus_head" style="width:100px" ><option value="0">Select</option>
+									 	{% for usr in business_head %}
+									 	<option value="{{ usr.id }}" {% if pjt_bud.business_head.id == usr.id %} selected="selected" {% endif %} >{{ usr.username }}</option>
+									 	{% endfor %}
+									 	</select></td> 							 	
+												<td>Project Owner<font color="red" >*</font></td>
+										 	<td><select id="pjt_owner" class="dropdown" name="pjt_owner" style="width:100px" ><option value="0">Select</option>
+										 	{% for usr in pjt_owners %}
+									 			<option value="{{ usr.id }}" {% if pjt_bud.pjt_owner.id == usr.id %} selected="selected" {% endif %} >{{ usr.username }}</option>
+									 		{% endfor %}
+										 	</select></td>
+										 	 
+										 	
+									 	</tr>
+									 	
+									 	<tr>
+									 		<td>Planned Start Date<font color="red" >*</font></td>
+									 		<td><input size="10" readonly="readonly" onchange="show_date()" id="planned_start_date" name="planned_start_date" value="{{ pjt_bud.planned_start_date|date:'m-d-Y' }}"/></td>
+									 		
+											<td>Planned End Date<font color="red" >*</font></td>
+											<td><input size="10" readonly="readonly" id="org_end_date" onchange="show_date()" name="org_end_date" value="{{ pjt_bud.org_end_date|date:'m-d-Y' }}" /></td>
+									 		
+									 		</tr>
+									 	<tr>&nbsp;</tr>
+									 	<tr>
+									 		<td>Revised Start Date<font color="red" >*</font> </td>
+									 		
+									 		<td><input size="10" readonly="readonly" id="revised_start_date" name="revised_start_date"  value="{{ pjt_bud.revised_start_date|date:'m-d-Y' }}" /></td>
+									 		
+									 		<td>Revised End Date<font color="red" >*</font></td>
+									 		
+									 		<td><input  size="10" readonly="readonly" id="revised_end_date" name="revised_end_date" value="{{ pjt_bud.revised_end_date|date:'m-d-Y' }}" /></td>
+									 		
+									 	</tr>
+									 	
+									 	<tr>							 	
+									 	
+										 	<td>Project Execution Mode<font color="red" >*</font></td>
+											<td><select id="execution_mode" class="dropdown" name="execution_mode" style="width:100px" >
+											<option value="0">Select</option>
+											<option value="FixedPrice" >FixedPrice</option>
+											<option value="TM">T&M</option> 
+											<option value="Hybrid">Hybrid</option> </select></td> 
+										 	
+											
+									 	<td> Activity Type<font color="red" >*</font></td>
+									 	<td><select id="activity_type"  class="dropdown" name="activity_type" style="width:100px" onclick="check_activity_tbl()"  >
+										 	<option value="0">Select</option>
+										 	<option value="1">Phase</option>
+										 	<option value="2">Module</option>
+										 	</select></td></tr>
+										 <tr>
+										 	<td>Other1 Role Name</td>
+										 	<td>
+										 			<input size="10" maxlength="12" onblur="change_effort_heading(this.value, 1)" value="{{ pjt_bud.other1_description }}" name="other1_desc" id="other1_desc" /></td>
+										 	<td>Other2 Role Name</td>
+										 	<td>
+										 			<input size="10" maxlength="12" onblur="change_effort_heading(this.value, 2)" value="{{ pjt_bud.other2_description }}" name="other2_desc" id="other2_desc" /></td>
+										 </tr>
+									 	
+									</table>
+									</div>
+			                </td></tr>
+			
+			                <tr><td>
+				                 <div>
+				                    <p><h3>Project Budget (Efforts in person-hours)</h3></p>
+				                    
+				                     <table id="activity_tbl">
+					                     <thead align="center">
+													<th> <img  class="delete_img" title="add task type" src="/static/css/images/add.png"  onclick="add_activity('','','','','0','0','0','0','0','0','0','0')" ></th>	
+					                     	<th>Activity</th>
+					                     	<th>Location</th>
+					                     	<th>Duration(Days)</th>
+					                     	<th>PM Effort</th>
+					                     	<th>Lead Effort</th>
+					                     	<th>Developer Effort</th>
+					                     	<th>Tester Effort</th>
+					                     	<th id="other1_head">{{ pjt_bud.other1_description }}</th>
+					                     	<th id="other2_head">{{ pjt_bud.other2_description }}</th>			                     	
+					                     </thead>
+					                     <tbody>
+					                     <input type="hidden" id="activity_len" name = "activity_len" />
+					                     </tbody>
+					                       <tfoot> <input type="hidden" name="delete_effort" id="delete_effort" ></tfoot>
+				                     </table>			                    
+				                 </div>
+			                </td></tr>
+			
+			                <tr><td id="team_selection">
+			                   <p><h3>Project Budget (Costs in INR)</h3> Note : Include costs which are not billable to client</p>
+		                     	
+				                     <table id="cost_tbl">
+					                     <thead>
+					                    	 <th><img class="delete_img" title="add task type" src="/static/css/images/add.png"  onclick="add_cost('','','0.0','0')">	</th>
+					                     	<th>Cost Type</th>
+					                     	<th>Cost</th>			                     	
+					                     </thead>
+					                     <tbody class="cost" ><input type="hidden" id="cost_len" name = "cost_len" /></tbody>
+					                     <tfoot> <input type="hidden" name="delete_cost" id="delete_cost" ></tfoot>
+				                     </table>
+				                   
+			                </td></tr>
+			                <tr>
+			                		<td>
+			                			<table>
+			                			<tr><td colspan="3"><p><h3>Project Budget Threshold</h3></p></td>
+			                			<td colspan="3"><p><h3>Deviation with prev version (in %)</h3></p></td></tr>
+			                				<tr class="total_efforts">
+			                					<td>Total Efforts (hrs)</td><td>:</td><td><input size="8" readonly="true" id="tot_effort" name="tot_effort" {% if pjt_bud.total_effort %} value="{{ pjt_bud.total_effort }}" {% else %} value="0" {% endif %} /></td>
+			                					<td> Efforts Deviation </td><td>:</td><td><input size="8" readonly="true"  id="tot_effort" name="tot_effort" value="{{ threshold_effort }}" /></td>
+			                				</tr>
+			                				<tr>
+			                					<td>Total Costs (INR)</td><td>:</td><td><input size="8"  readonly="true"  id="tot_effort" name="tot_effort" {% if pjt_bud.total_cost %} value="{{ pjt_bud.total_cost }}" {% else %} value="0" {% endif %} /></td>
+			                					<td>Cost Deviation</td><td>:</td><td><input size="8" readonly="true"  id="tot_effort" name="tot_effort" value="{{ threshold_cost }}" /></td>
+			                				</tr>
+			                				<tr>
+			                				<td> Total Duration </td><td>:</td><td><input readonly="true"  size="8" id="tot_duration" name="tot_duration" value="{{ tot_duration }}"/></td>
+			                				<td> Deviation Duration </td><td>:</td><td><input readonly="true"  size="8" id="dev_duration" name="dev_duration" value="{{deviation_duration}}"/></td>
+			                				</tr>
+			                				<tr>        
+			                				<td> <b>Remarks: </b></td><td>:</td><td colspan="4"><textarea id="remarks" name="remarks" rows="3" cols="60">{{ pjt_bud.remarks }}</textarea></td>
+			                				</tr>
+												{% if request.user.id == pjt_bud.business_head.id or request.user.id == pjt_bud.pjt_owner.id %}
+												    {% if pjt_bud.business_head.id != pjt_bud.project.requested_by.id %}
+											 			 <tr><td><br><br><label id="apr_status"><b>Approval Status: </b></label><input type="radio" checked="checked" name="status" id="approve_btn" value="Approve"/>Approve&nbsp;&nbsp;&nbsp;<input type="radio" name="status" id="reject_btn" value="Reject"/>Reject</td></tr>
+					                				 <tr><td colspan="3"><div id="rejecttxt" style="display:none;"><br><br><label id="rmks"><b>Reason for Rejection: </b></label><textarea id="rjt_reason" name="rjt_reason" rows="3" cols="40">{% if pjt_bud.rejection_reason %} {{ pjt_bud.rejection_reason }}{% endif %}</textarea></div></td></tr>
+													 {% else %}	
+											  		 {% if request.user.id == pjt_bud.pjt_owner.id %}
+											 			<tr><td><br><br><label id="apr_status"><b>Approval Status: </b></label><input type="radio" checked="checked" name="status" id="approve_btn" value="Approve"/>Approve&nbsp;&nbsp;&nbsp;<input type="radio" name="status" id="reject_btn" value="Reject"/>Reject</td></tr>
+					                			 <tr><td colspan="3"><div id="rejecttxt" style="display:none;"><br><br><label id="rmks"><b>Reason for Rejection: </b></label><textarea id="rjt_reason" name="rjt_reason" rows="3" cols="40">{% if pjt_bud.rejection_reason %} {{ pjt_bud.rejection_reason }}{% endif %}</textarea></div></td></tr>
+											  		 {% endif %}  	   		
+		  	   								{% endif %}           		        
+			               		       
+				                			{% endif %}  
+			                			</table>
+			                			
+			                		</td>
+			                </tr>
+			            </table>
+			            <br>
+			            <div id="temp_submit" name="temp_submit" style="display:none"><input name="tmp_save" type="submit" id="tmp_save" class="b1" value="Save"/></div>
+			            <div class="decisionblock">
+			            	{% if is_editable == 1 %}
+			            		{% if request.user.id == pjt_bud.project.requested_by.id %} 
+			            		{% if  pjt_bud.status.id == 'RS1' or pjt_bud.status.id == 'RS4' or pjt_bud.status.id == 'RS5'  %}  
+			                		<input name="save" type="button" id="save" class="b1" value="Save"   onclick="save_budget('RS1')"  />
+			                 		<input name="submit" type="button" id="submit" class="b1" value="Submit" onclick="save_budget('RS2')" />
+			               	{% endif %}{% endif %}
+			               	{% if request.user.id == pjt_bud.business_head.id or request.user.id == pjt_bud.pjt_owner.id %}
+			               		{% if  pjt_bud.status.id == 'RS2' or pjt_bud.status.id == 'RS3' %}  
+			               			{% if pjt_bud.business_head.id != pjt_bud.project.requested_by.id %}
+											 	 <input name="approve" type="button" id="approve" class="b1" value="Approve" onclick="save_budget('RS4')" />
+											  	 <input name="reject" type="button" id="reject" class="b1" value="Reject" style="display:none;" onclick="save_budget('RS5')" />
+											{% else %}	
+											  	 {% if request.user.id == pjt_bud.pjt_owner.id %}
+											 		 <input name="approve" type="button" id="approve" class="b1" value="Approve" onclick="save_budget('RS4')" />
+											  		 <input name="reject" type="button" id="reject" class="b1" value="Reject" style="display:none;" onclick="save_budget('RS5')" />
+											  	 {% endif %}  	   		
+		  	   							{% endif %}
+			                 		{% endif %}
+			                 	{% endif %}
+			                 
+			              	{% endif %}
+			              	{% if pjt_bud.budget_updated == 1 %}
+			                 	<input  type="button" name="export" class="b1"  id="export" onclick="export_budget()" value="Export To Pdf" />
+			              	{% endif %}
+			               
+			            </div>
+			          </div>
+	          {% endif %}
+				
+				 <input type="hidden" id="status" name="status" value="open" />
+			</div>
+</form>
+
+<script type="text/javascript" >
+
+$(document).ready(function(){
+$('#mnuProjectBudget').css({'background':'#1bc2ec'});
+var mnua = $('#mnuProjectBudget').children();
+$(mnua[0]).css({'color':'white','font-weight':'bold'});
+
+
+
+
+		
+	$('#activity_len').val('');
+	$('#execution_mode').val('{{ pjt_bud.execution_mode }}')
+	'{% for effort in efforts %}'
+			$('#activity_type').val('{{ effort.activity_type }}')
+			
+			add_activity('{{ effort.id }}','{{ effort.phase.id }}','{{ effort.module }}','{{ effort.location.id }}','{{ effort.duration_days }}','{{ effort.pm_effort }}','{{ effort.lead_effort }}','{{ effort.developpper_effort }}','{{ effort.tester_effort}}','{{ effort.other1 }}','{{ effort.other2 }}','{{ effort.effort_approved }}')
+	'{% endfor %}'
+	
+	'{% for cost in bud_costs %}'
+			add_cost('{{ cost.id }}', '{{ cost.cost_type.id }}', '{{ cost.cost }}', '{{ cost.cost_approved }}')
+	'{% endfor %}'	
+	
+	'{% if request.user.id == pjt_bud.business_head.id or request.user.id == pjt_bud.pjt_owner.id %}'
+	   '{% if  pjt_bud.status.id == "RS2" or pjt_bud.status.id == "RS3" %}'  
+				'{% if request.user.id == pjt_bud.pjt_owner.id or  pjt_bud.business_head.id != pjt_bud.project.requested_by.id %}'
+						$(".disable_area input").attr("disabled","disabled");					
+	 					$('.dropdown').prop('disabled', 'disabled');	 
+	 					$("#activity_tbl tr >td").children(":input").attr("disabled",true);	
+	 					$("#cost_tbl tr >td").children(":input").attr("disabled",true);
+	 					$(".delete_img").prop("onclick", null);
+						
+	 			'{% endif %}'
+	 	'{% endif %}'					
+	'{% else %}'
+		  		'{% if pjt_bud.version == 1 %}'
+
+					'{% if pjt_bud.status.id != "RS4" %}'
+
+						$( "#planned_start_date,#org_end_date" ).datepicker({		
+							showOn: "button",
+							buttonImage: "/static/css/images/icon_calendar.gif",
+							buttonImageOnly: true,
+							dateFormat:"mm-dd-yy",
+								
+							});
+					'{% else %}'
+							$( "#revised_start_date,#revised_end_date" ).datepicker({		
+								showOn: "button",
+								buttonImage: "/static/css/images/icon_calendar.gif",
+								buttonImageOnly: true,
+								dateFormat:"mm-dd-yy",
+								
+							});
+					'{% endif %}'
+				'{% else %}'
+							$( "#revised_start_date,#revised_end_date" ).datepicker({		
+							showOn: "button",
+							buttonImage: "/static/css/images/icon_calendar.gif",
+							buttonImageOnly: true,
+							dateFormat:"mm-dd-yy",
+							
+							});
+			 	'{% endif %}'			
+	'{% endif %}'				
+	
+	$("input:radio").click(function() {
+	if ((this).id == "approve_btn") {	
+	document.getElementById('rejecttxt').style.display = 'none';
+	document.getElementById('approve').style.display = '';
+	document.getElementById('reject').style.display = 'none';
+			} else if ((this).id == "reject_btn") {		
+		document.getElementById('rejecttxt').style.display = '';
+		document.getElementById('approve').style.display = 'none';
+		document.getElementById('reject').style.display = ''; 
+			//document.forms.projectbudjet.rejecttxt.style.display =''; 
+		}
+	});
+});
+
+function change_effort_heading(title, id){
+	if (title != '' && title.indexOf(' ') != 0) 
+		document.getElementById('other' + id + '_head').innerHTML = title
+	else
+		{	alert("Enter valid Role name")
+			document.getElementById('other' + id + '_desc').value = "Other" +id
+			document.getElementById('other'+ id + '_head').innerHTML = "Other" + id
+		}
+	
+}
+
+function show_date(){
+		start_date=$('#planned_start_date').val();
+		document.getElementsByName('revised_start_date')[0].value = start_date;
+		end_date=$('#org_end_date').val();
+		document.getElementsByName('revised_end_date')[0].value = end_date;
+}
+
+function add_activity(id,phase,module, location,duration,pm, lead,dev,tester,other1,other2,efforts_approved){
+
+	var trlength =($('#activity_len').val() == '') ? 1 : $('#activity_len').val();
+	trlength = trlength.toString();
+	activity_type = $('#activity_type').val()
+	
+	if (activity_type == '0')
+		{
+		alert('Please select activity type');
+		return false
+		}
+	else 
+		{
+		tr_str = '<tr align="center"><input type="hidden" value="'+ id +'" name="effort_id' + trlength + '" id="effort_id' + trlength + '" />'
+		
+		if (efforts_approved == 'True')
+			tr_str += '<td><input type="hidden" value="1" name="effort_approved' + trlength + '" id="effort_approved' + trlength + '" /></td>'
+		else
+			tr_str += '<td><img class="delete_img" id="delete_type" title="delete task type" src="/static/css/images/delete.png"  onclick=DeleteRow(this,"effort",'+trlength+');></td>'
+			
+		if (activity_type == '2')
+			tr_str += '	<td><input  type="text" maxlength="50" id="module' + trlength + '" name="module' + trlength + '" value="' + module + '" /></td>'
+		else if (activity_type == '1')
+			{
+			tr_str += '<td><select id="phase' + trlength + '" name="phase' + trlength + '"  class="phasecls" style="width:100px" >'
+			'{% for phase in phases %}'
+			tr_str += '<option value="{{ phase.id }}"'
+			if ('{{ phase.id }}' == phase)
+				tr_str += 'selected="selected"'			
+			tr_str += '>{{ phase.phase }}</option>'
+			'{% endfor %}'
+			tr_str += '</select></td>'
+			}
+		tr_str += '<td><select id="location' + trlength + '" name="location' + trlength + '"  style="width:100px" >'
+		'{% for loc in locations %}'
+	 	tr_str += '<option value="{{ loc.id }}"'
+	 	if ('{{ loc.id }}' == location)
+			tr_str += 'selected="selected"'	 	
+	 	tr_str += '>{{ loc.location }}</option>'
+	   '{% endfor %}'
+	   tr_str += '</select></td>'
+	   tr_str +='<td class="efforts" ><input  size="5"  maxlength="7" id="duration_days' + trlength + '"  name="duration_days' + trlength +'"  value="'+ duration +'"onkeypress="check_alph()" onfocus="this.select()" onMouseUp="return false" /> </td>'
+		tr_str += '	<td class="efforts" ><input  size="5"  maxlength="7" id="pm_effort' + trlength + '"  name="pm_effort' + trlength + '" value="' + pm + '" onkeypress="check_alph()" onfocus="this.select()" onMouseUp="return false" /></td>'
+		tr_str += '	<td class="efforts" ><input  size="5" maxlength="7" id="lead_effort' + trlength + '" name="lead_effort' + trlength + '" value="' + lead + '"  onkeypress="check_alph()"  onfocus="this.select()" onMouseUp="return false" /></td>'
+		tr_str += '	<td class="efforts" ><input  size="5" maxlength="7" id="dev_effort' + trlength + '"  name="dev_effort' + trlength + '" value="' + dev + '"  onkeypress="check_alph()"  onfocus="this.select()" onMouseUp="return false" /></td>'
+		tr_str += '	<td class="efforts" ><input  size="5" maxlength="7" id="test_effort' + trlength + '"  name="test_effort' + trlength + '" value="' + tester + '"  onkeypress="check_alph()" onfocus="this.select()" onMouseUp="return false" /></td>'
+		tr_str += '	<td class="efforts" ><input  size="5" maxlength="7" id="oth1_effort' + trlength + '"  name="oth1_effort' + trlength + '" value="' + other1 + '"  onkeypress="check_alph()"  onfocus="this.select()" onMouseUp="return false" /></td>'
+		tr_str += '	<td class="efforts" ><input  size="5" maxlength="7" id="oth2_effort' + trlength + '"  name="oth2_effort' + trlength + '" value="' + other2 + '"  onkeypress="check_alph()"   onfocus="this.select()" onMouseUp="return false" /></td></tr>'		
+		$('#activity_tbl tbody').append(tr_str)
+		$('#activity_len').val(parseInt(trlength) +1);
+		}	
+		if ($("#activity_tbl > tbody > tr").size() > 0){
+		$('#activity_type option').attr('disabled',true);
+		}
+		if (efforts_approved == 'True')
+		{
+				$('#phase' + trlength +' option').attr('disabled',true);
+				$('#module' + trlength).attr('readonly',true);				
+		}
+
+}
+
+function check_activity_tbl(){
+		
+	if ($("#activity_tbl > tbody > tr").size() > 0)
+	{
+	 		alert('If you want to change the activity type, Please delete all rows in activity table');
+	}
+		else
+		{
+			$('#activity_len').val('');
+		}
+}
+
+function add_cost(id, costtype, cost,cost_approved){
+	var trlength =($('#cost_len').val() == '') ? 1 : $('#cost_len').val();
+	trlength = trlength.toString();
+	tr_str = '<tr align="center"><input type="hidden" name="cost_id' + trlength + '" id="cost_id' + trlength + '" value="'+ id + '" /><td>'
+	if (cost_approved == 'True')
+			tr_str += '<input type="hidden" value="1" name="cost_approved' + trlength + '" id="cost_approved' + trlength + '" /></td>'
+	else
+		tr_str += '<img  class="delete_img" id="delete_type" title="delete task type" src="/static/css/images/delete.png"  onclick=DeleteRow(this,"cost",'+trlength+');></td>'
+	tr_str += '	<td><select id="cost_type' + trlength + '" name="cost_type' + trlength + '" class="costcls">'
+	'{% for cost in costs %}'
+	tr_str += '<option value="{{ cost.id }}" '
+	if ('{{ cost.id }}' == costtype)
+			tr_str += 'selected="selected"'
+	tr_str += '>{{ cost.cost_type }}</option>'
+	'{% endfor %}'
+	tr_str += '</select></td>'
+	tr_str += '<td> <input  maxlength="12"  size="10"  value="' + cost +'" id="cost' + trlength + '" name="cost' + trlength + '" onfocus="this.select()" onMouseUp="return false" onblur="return CheckNumeric(this);" onkeypress = "return CheckIsNumeric(event,this);" oncontextmenu="return false;" /></td></tr>'
+	$('#cost_tbl tbody').append(tr_str)
+	$('#cost_len').val(parseInt(trlength) +1);
+		if (cost_approved == 'True')
+		{
+				$('#cost_type' + trlength +' option').attr('disabled',true);
+		}
+}
+
+function DeleteRow(obj, delete_type, trlength){
+    var res = confirm('Are you sure you want to delete this row?');
+    var del_type = '#delete_' + delete_type
+    var id = $('#'+ delete_type +'_id'+trlength).val()
+    if(res){
+    $(del_type).val($(del_type).val() + ',' + id)
+	 $(obj).parent().parent().remove();
+	 }
+	 if ($("#activity_tbl > tbody > tr").size() <= 0)
+	 		$('#activity_type option').removeAttr('disabled')
+}
+
+function check_alph(){  
+		   $('.efforts').bind('keypress',function(event){
+		    if (event.which > 31 && (event.which < 48 || event.which > 57)) return false;
+		  });
+		//  $('.cost').bind('keypress',function(event){
+		//    if (event.which > 31 && (event.which < 48 || event.which > 57)) return false;
+		//  });
+		//$('.cost').bind('keypress',function(event){
+		//    if((event.which < 46 || event.which > 59) && event.which > 31) {
+		//        event.preventDefault();
+		//    } // prevent if not number/dot
+		//
+		//    if(event.which == 46  && $(this).val().indexOf('.') != -1 ) {
+		//        event.preventDefault();
+		//    } // prevent if already dot
+		//});
+  }
+
+function view_version(){
+if ($('#version').val() != '' )
+	window.location.href = "/projectbudget/create/?pjt_id={{ pjt_bud.project.id }}&version=" + $('#version').val()
+else 
+{
+	alert('Please select a version')
+	return false
+	} 
+}
+
+function export_budget(){
+
+window.location.href = '/projectbudget/export_budget/?pjt_id={{ pjt_bud.project.id }}&version={{ pjt_bud.version }}'
+}
+
+
+function check_empty(id, check_val, temp_msg,is_text){
+	if ($('#'+id).val()  == check_val)
+	 	{
+	 		if (is_text == 0)
+	 			msg = 'Please enter ' + temp_msg
+	 		else
+			 			msg = temp_msg + ' should not be empty'
+	 	alert(msg)
+		document.getElementById(id).focus();
+		return false;
+	 	}	
+	 	return true;
+}
+
+
+function date_validation(fromdate, todate) {
+		fromdate = fromdate.split('-')
+		todate = todate.split('-')
+		fdate = new Date(parseInt(fromdate[2], 10),parseInt(fromdate[0], 10),parseInt(fromdate[1], 10));
+		tdate = new Date(parseInt(todate[2], 10),parseInt(todate[0], 10),parseInt(todate[1], 10));
+		difference = fdate - tdate
+		days = Math.round(difference/(1000*60*60*24));
+		return days
+}
+
+
+function check_duplication() {
+var phasemodeuletext='';
+for (check_type = 0; check_type <2; check_type++)
+{		
+		if (check_type == 0)
+		{
+				if ($('#activity_type').val() == '1')
+				check_str = '#phase'
+				if ($('#activity_type').val() == '2')
+				check_str = '#module'
+				row_length = $('#activity_len').val();//document.getElementById("activity_tbl").rows.length;
+		}
+		else
+		{
+				check_str = '#cost_type'
+				row_length = $('#cost_len').val();//document.getElementById("cost_tbl").rows.length;				
+		}			
+		phase_ids = [];				
+		for (i=1; i< row_length; i++)
+		{		
+				id = $(check_str +i.toString()).val();						
+				if (id != undefined)
+				{
+						if (phase_ids.indexOf(id) == -1)
+						{
+								phase_ids.push(id)
+						}
+						else 
+						{
+								if (check_type == 0)
+								{
+								if ($('#activity_type').val() == '1')
+										phasemodeuletext = $(check_str +i.toString()+ ' :selected').text();
+								else
+										phasemodeuletext = id;
+										alert('Activity "'+ phasemodeuletext +'" should not duplicated');
+								}
+								else
+								{
+										alert('Cost Type "'+ $(check_str +i.toString()+ ' :selected').text()+'" should not duplicated');
+								}
+								$(check_str +i.toString()).focus();
+								return false;
+						}
+				}
+		}
+}
+return true;
+}
+
+
+function validation(status)
+{
+	var flag = true
+	req_data = ['bus_head','pjt_owner','planned_start_date','org_end_date','revised_start_date','revised_end_date','execution_mode','activity_type']
+	req_check_val = ['0','0','','','','','0','0']
+	msg = ['Business Head','Project Owner','Planned Start Date','Planned End Date','Revised Start Date','Revised End Date','Execution Mode','Activity Type']
+	for (i = 0; i< req_data.length; i++){
+		if (flag == true)
+			flag = 	check_empty(req_data[i],req_check_val[i],msg[i],0)	
+	}		
+	if (flag == true){
+			if ($("#activity_tbl > tbody > tr").size() <= 0)
+				{	 	
+			 	flag = false
+				alert('Please add a row in project budget efforts table')	
+				document.getElementById('activity_tbl').focus(); 	 	
+			 	}
+			
+	 	}
+	 if (flag == true){
+	 	 if ($('#activity_type').val() == '2'){		 
+	 	 	for (i=1; i<= $('#activity_len').val(); i++){			
+				if (flag == true)
+				{	
+					flag = 	check_empty('module' + i,'','Activity Field',1)
+					 
+				}	 	 	
+	 	 	}
+	 	 }
+	 }
+	 if (flag == true){
+		 fromdate = $('#planned_start_date').val()
+		 todate = $('#org_end_date').val()
+		 days = date_validation(fromdate, todate) 
+		 if (days >= 0){
+				flag = false
+				alert('Planned end date should be greater than Planned start date')
+				}			
+		 }
+	if (flag == true){
+		 fromdate = $('#revised_start_date').val()
+		 todate = $('#revised_end_date').val()
+		 days = date_validation(fromdate, todate) 
+			if (days >= 0){
+				flag = false
+				alert('Revised end date should be greater than Revised start date')
+				}
+		}
+	if (flag == true){
+		flag = check_duplication()
+		}
+		if (flag == true && status == 'RS5'){
+			flag = check_empty('rjt_reason','','Rejection Reason',1)
+			}
+	
+return flag
+}
+
+function remove_attr(){
+	$(".disable_area input").attr("disabled",'');					
+ 	$('.dropdown').prop('disabled', '');	 
+ 	$("#activity_tbl tr >td").children(":input").removeAttr('disabled');
+ 	$("#cost_tbl tr >td").children(":input").removeAttr('disabled');
+ 	$('#planned_start_date').removeAttr('disabled');
+ 	$('#org_end_date').removeAttr('disabled');
+ 	$('#revised_start_date').removeAttr('disabled');
+ 	$('#revised_end_date').removeAttr('disabled');
+	$('#other1_desc').removeAttr('disabled');
+	$('#other2_desc').removeAttr('disabled');
+	$('#activity_type option').removeAttr('disabled');
+	$('.phasecls option').removeAttr('disabled');
+	$('.costcls option').removeAttr('disabled');
+}
+
+function save_budget(status)
+{
+	if (validation(status) == true)
+		{			
+		msg = 'Are you sure, you want to '
+		if (status == 'RS1')
+			msg += 'save'
+		if (status == 'RS2')
+			msg += 'submit'
+		if (status == 'RS3' || status == 'RS4')
+			msg += 'approve'
+		if (status == 'RS5')
+			msg += 'reject'
+		msg +=' this project budget?'
+		res = confirm(msg)
+		if (res) {
+				$('#status').val(status)
+				remove_attr()
+				$('#temp_submit').attr('display',true)
+		  		$("#tmp_save").trigger("click");
+				}
+		}
+}
+
+$(document).ready(function(){
+    $(".txt").each(function() {
+    
+    });
+    });
+
+</script>
+{% endblock %}

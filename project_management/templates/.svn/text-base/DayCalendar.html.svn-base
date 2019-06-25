@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} Daily Event Calendar {% endblock %} {% block programcontent %} {% endblock %}
+{% block programmenu %}{% endblock %} {% block submenu %}{% endblock %} 
+{% block taskmenus %}{% endblock %} 
+{% block contentdata %}
+
+
+{% url notifications.eventviews.nextyear 'day' as next_year %}
+{% url notifications.eventviews.previousyear 'day' as previous_year %}
+{% url notifications.eventviews.nextday as next_day %}
+{% url notifications.eventviews.previousday as previous_day %}
+
+<script language="JavaScript">
+/*function init() 
+ { 
+ 	document.getElementById('times').scrollTop = 400;
+ 	if (navigator.appName == "Netscape"){
+ 	document.getElementById('topLinks').style.width = "48%";
+ 	}
+ 	else{
+ 	document.getElementById('topLinks').style.width = "44%";
+ 	}
+	
+ };
+
+if (navigator.appName == "Netscape")
+{
+  for Mozilla 
+   if (document.addEventListener) 
+   {
+       document.addEventListener("DOMContentLoaded", init, false);
+   }
+}
+else
+{
+ window.onload = init;
+}   
+*/
+</script>
+<style>
+.year{font-weight: bold; font-size:21px;}
+</style>
+
+        <div class="wr-ar">
+            <div class="program-hdr">
+               
+                <span class="header">Daily View</span>
+            </div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <label id="msg" class="Arial-12-maroon">
+                        </label>
+                    </td>
+                </tr>
+                <style>
+                .calenderlink{padding-right: 10px; padding-top: 10px; width: 300px; }
+                .form{ float: right }
+                </style>
+                <tr>
+                    <td align="right"  valign="top" class="program-name-form-box" width="100%">
+                    <div class="calenderlink">
+                                <label>
+                                    <a href="/DayCalendar/" style="color:Maroon"  >Day</a>
+                                </label>
+                            &nbsp;|&nbsp;
+                                <label>
+                                    <a href="/WeeklyCalendar/"  >Week</a>
+                                </label>
+                            &nbsp;|&nbsp;
+                                <label>
+                                    <a href="/MonthlyCalendar/" >Month</a>
+                                </label>
+                            &nbsp;
+                            <div class="form">
+                               <form name="Add_new" action="/Event/" method="GET">
+                                   <input type="submit" name="button" id="SubmitEvent" value="Create Event" class="b1"/>
+                               </form>
+                            </div>
+                    </div>
+                </td>
+                </tr>
+            </table>
+        
+            <form name="dayCal" id="dayCal" action="/MonthlyCalendar/">
+                        <div align="center"  style="padding-top: 15px; padding-bottom: 5px; padding-left: 15px;
+                            padding-right: 15px; ">
+                            <table cellspacing='0' cellpadding='0'  width='100%' style="border:2px solid #dbe6ed;">
+     <tr class="link-line-bg" style=" width: 18px;border:2px solid #dbe6ed;">
+         <td  class="previous" align="left" >            
+             <a title="previous year" class="year" href="{{ previous_year }}"><span class="calendar-arrow">&lt;</span></a>
+             <a class="menu-btn-link" title="previous day"  href="{{ previous_day }}"><span class="calendar-arrow">&lt;&lt;</span></a></td>
+         <td  class="menu-btn-link" align="center" style="text-align: center; font-weight: bold;
+             font-size:20px;">
+             {{ monthyear }}</td>
+         <td  class="next" align="right" style="width: 8%;">         
+             <a class="menu-btn-link" title="next day" class="year" href="{{ next_day }}"><span class="calendar-arrow">&gt;&gt;</span></a>
+            <a title="next year" style="text-align: center; font-weight: bold;font-size:21px; " href="{{ next_year }}"><span class="calendar-arrow">&gt;</span></a></td>
+             
+             </td>
+     </tr>
+                                <tr style="color: Maroon;border:2px solid #dbe6ed;" >
+					<th style="width: 8%;"></th>
+                                    {% for day in headers %}
+                                    <th style="text-align:center;" >
+                                         <a href="/Event/?selecteddate={{day}}" style=" color:Maroon;">{{ day|date:"l,d" }}</a></th>
+                                    {% endfor %}<th style="width: 8%"></th>
+                                </tr>
+            </table>
+            <div id="times" style="height:310px; overflow: auto;overflow-x:hidden;" width='100%'>
+            <table cellspacing='0' cellpadding='0' style="border:2px solid #dbe6ed;" width='100%'>
+				{% for times in timedata %}
+				{% load tags %}				
+   				
+				
+				<tr style="height: 25px;border:2px solid #dbe6ed;" >
+				<td style="width: 8%;border:2px solid #dbe6ed;">
+				{{times}}</td>	
+				{% for key,value in monthdata.items %} 
+                                {% ifequal times key %}
+				<td colspan="2"   style="border:2px solid #dbe6ed;">
+				{% tags value %}</td>
+				{% endifequal %}					
+				{% endfor %}		
+                             </tr>
+				{% endfor %}
+				
+                            </table></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/select2-amc-min.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        select.select2 {
+            position: absolute;
+            visibility: hidden;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+
+  <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    
+    <script type="application/javascript" src="/static/js/jquery-date.js"></script>
+    <script type="application/javascript" src="/static/js/select2.js"></script>
+    <link href="/static/css/jquery-daterange-ui.css" rel="stylesheet" type="text/css" />
+    <script type="application/javascript" src="/static/js/jquery-daterange-ui.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/additional-methods.min.js"></script>
+  
+    <style type="text/css">
+        
+        form { padding: 10px; }
+        .header{position: absolute; text-align: left; left: 182px;}
+        .element { width: 100%; min-height: 30px; }
+        .field { width: 59%; float:left; min-height: 46px;}
+        .label { width: 21%; float: left; min-height: 35px; margin-left: 10px;}
+        input[type=text]{ width:185px;}
+        input[type=date]{ width:185px; background-color: white}
+        input[type=number]{ width:185px;}
+        select { width: 170px;  background-color: white}
+        #report_form{position: absolute; top: 150px;}
+        .class_Repeat {position: absolute; text-align: right; left: 440px; top: 150px; width: 90px;}
+        .class_Frequency{position: absolute; text-align: left; left: 520px; top: 150px;-+}
+        .select2-container .select2-choice {width: 184px;}
+        #s2id_id_customer_name{background-color: #fff}
+        #s2id_id_frequency{position: absolute; left: 80px; width: 200px;}
+        .select2-choices .select2-search-choice{height: 9px; width: auto;}
+        .select2-container{width: 195px;}
+        #id_remarks{width: 185px;height: 55px;}
+        select {width: 193px; background-color: white}
+
+    </style>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            $("#id_customer_name").select2({
+              placeholder: "Select the customer",
+              allowClear: true
+            });
+
+            $("#id_project_name").select2({
+              placeholder: "Select the project",
+              allowClear: true
+            });
+
+            $("#id_milestone_name").select2({
+              placeholder: "Select the milestone",
+              allowClear: true
+            });
+
+            $("#id_frequency").select2({
+              allowClear: true
+            });
+
+            $("#id_role").select2({
+              placeholder: "Select the role",
+              allowClear: true
+            });
+
+            $("#id_escalation_role").select2({
+                placeholder: "Select role",
+                allowClear: true
+            });
+
+            $("#id_Frequency").hide();
+            $('input[type="checkbox"]').click(function(){
+                if($(this).is(":not(:checked)")){
+                    $(".class_Frequency").hide();
+                }
+                else if($(this).is(":checked")){
+                    $(".class_Frequency").show();
+                }
+            });
+            $('#id_frequency').val('1').trigger('change');
+        });
+
+        $( function() {
+            var dateformat = "yy-mm-dd",
+            from = $("#id_Due_date").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                dateFormat: "yy-mm-dd"
+              }).on( "change", function() {
+                  to.datepicker( "option", "minDate", getDate(this ));
+              }),
+            to = $( "#id_AMC_end_date" ).datepicker({
+              defaultDate: "+1w",
+              changeMonth: true,
+              dateFormat: "yy-mm-dd"
+            })
+            .on( "change", function() {
+              from.datepicker( "option", "maxDate", getDate( this ) );
+            });
+       
+          function getDate( element ) {
+            var date;
+            try {
+              date = $.datepicker.parseDate( dateformat, element.value );
+            } catch( error ) {
+              date = null;
+            }
+            
+            return date;
+          }
+
+        });      
+</script>
+
+{% endblock %}
+{% block programcontent %} {% endblock %}
+{% block programmenu %}{% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+    <div class="header">Report</div>
+    
+    <form  id="report_form" name="report_form" action="" method="POST">
+        {% csrf_token %}
+        {% for field in Amc_form %}
+            <div class="label">{{field.label}}: </div><div class="field">{{field}}</div>
+        {% endfor %} 
+        {% for field in service_form %}
+            <div class="class_{{field.label}}" id="id_{{field.label}}">
+                <div class="label">{{field.label}}: </div><div class="field">{{field}}</div>
+            </div>   
+        {% endfor %} 
+        <button type="submit" style="position: absolute; left:145px; bottom: -25px">Submit</button>
+            {% endblock %}
+        </form>

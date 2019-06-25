@@ -1,0 +1,30 @@
+.milestone { width:100%;  margin-left: 17%; position: absolute; }
+select{ width: 210px; }
+input[type=text]{ width: 200px;}
+input[id$="percentage"]{ width: 50px;}
+.EditField{ width: 12%;}
+.LabelField{  width: 14%; align: left; valign: middle;}
+.Field{ width: 25%; align: left; valign: middle;}
+#id_planned_effort_unit{ width: 75px; align: right; valign: middle;}
+.invoiceField{ width: "35%";}
+.title-border {
+    background-image:url(/static/css/images/b_update_program_green_stp.gif);
+    background-position:left top;
+    background-repeat:repeat-x;
+    padding-top:15px;
+    width:100%;
+    }
+.sub-header{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	color: #000000;
+	text-decoration: none;
+}
+.projectDetails{ padding: 10px; }
+.approvalDetails{ padding: 10px; }
+.billingDetails{ padding: 10px; }

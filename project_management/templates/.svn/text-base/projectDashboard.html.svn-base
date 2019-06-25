@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+ {% block taskmenus %}{% endblock %} {% block contentdata %}
+ {%load tags%}
+ {% load user_tags %}
+ {% include "user_popup.html" %}   
+<form id = "frmInternal" name = "frmInternal" action="." method = "post" enctype="multipart/form-data">
+{% include 'project_menus.html' %}
+<div style="width: 100%; height: 130px; padding-left: 10px;">
+
+<div class="ftr-line">
+</div>
+ <div style="width: 100%;padding-left: 10px;">
+    <table width="100%" align="left" valign="top">
+        <tr>
+            <td valign="top" rowspan="2" style="width: 65%">
+                <div style="width: 99%;">
+
+                            <div>
+                            <table width="100%">
+                                <tr class="link-line-bg" style="cursor: pointer; height: 27px;" onclick="toggleMilestone();">                                    
+								<td height="25" class="top-cr-1">&nbsp;</td>
+                            	<td class="link-line-bg" width="97%" colspan="15">
+                                <span class="menu-btn-link">Project Milestone</span>
+                            	</td>
+                            	<td class="link-line-bg" valign="middle" width="2%">
+                            	    <img id="eventImg" src="/static/css/images/arrow-down.gif" />&nbsp;&nbsp;&nbsp;
+                            	</td>
+                            	<td class="top-cr-2"> &nbsp;
+	                            </td>
+                                </tr>
+                                <tr height="2px">
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <div id="milestone" style="text-align: center; ">
+                                <table class="program-drag-sec-box" width="100%" cellpadding="0" cellspacing="0"
+                                    border="0">
+                                    <tr height="28" align="left" valign="middle">
+                                        <td class="program-row" style="width: 45%">
+                                            <a href="#" >Name</a>
+                                        </td>
+                                        <td class="program-row" style="width: 25%">
+                                            <a href="#">Start Date</a>
+                                        </td>
+                                        <td class="program-row" style="white-space: nowrap;width: 40px">
+                                            <a href="#">&nbsp;</a></td>
+                                        <td class="program-row" style="white-space: nowrap;width: 40px">
+                                            <a href="#">End Date</a></td>
+                                    </tr>
+                                    {% for milestone in updatedStage %}
+                                    <tr height="28" align="left" valign="middle" class="wh-bg">                                        
+                                        <td class="con-grey" style="width: 45%;padding-left: 10px;">
+                                            {{milestone.name|truncchar:25}}
+                                        </td>
+                                        <td class="con-grey" style="width: 25%;padding-left: 10px;">
+                                            {{milestone.start_date|date:'d M Y'}}
+                                        </td>
+                                        <td style="width: 40px;padding-left: 10px;">
+                                            &nbsp; </td>
+                                        <td style="width: 40px;padding-left: 10px;">
+                                            {{milestone.end_date|date:'d M Y'}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </table>
+                                
+                                </div>
+                            </div>
+                            <div>
+                            <table width="100%">
+                                <tr class="link-line-bg" style="cursor: pointer; height: 27px;" onclick="toggleEvent();">                                    
+								<td height="25" class="top-cr-1">&nbsp;</td>
+                            	<td class="link-line-bg" width="97%" colspan="15">
+                                <span class="menu-btn-link">Todays Event </span>
+                            	</td>
+                            	<td class="link-line-bg" valign="middle" width="2%">
+                            	    <img id="eventImg" src="/static/css/images/arrow-down.gif" />&nbsp;&nbsp;&nbsp;
+                            	</td>
+                            	<td class="top-cr-2"> &nbsp;
+	                            </td>
+                                </tr>
+                                <tr height="2px">
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <div id="event" style="text-align: center; display: none;">
+                                <table class="program-drag-sec-box" width="100%" cellpadding="0" cellspacing="0"
+                                    border="0">
+                                    <tr height="28" align="left" valign="middle">
+                                        <td class="program-row" style="width: 45%">
+                                            <a href="#" >Name</a>
+                                        </td>
+                                        <td class="program-row" style="width: 25%">
+                                            <a href="#">Type</a>
+                                        </td>
+                                        <td class="program-row" style="white-space: nowrap;width: 40px">
+                                            <a href="#">&nbsp;</a></td>
+                                        <td class="program-row" style="white-space: nowrap;width: 40px">
+                                            <a href="#">Start Time</a></td>
+                                    </tr>
+                                    {% for event in todaysEvent %}
+                                    <tr height="28" align="left" valign="middle" class="wh-bg">                                        
+                                        <td class="con-grey" style="width: 45%;padding-left: 10px;">
+                                            {{event.name|truncchar:25}}
+                                        </td>
+                                        <td class="con-grey" style="width: 25%;padding-left: 10px;">
+                                            {{event.type}}
+                                        </td>
+                                        <td style="width: 40px;padding-left: 10px;">
+                                            &nbsp; </td>
+                                        <td style="width: 40px;padding-left: 10px;">
+                                            {{event.start_time}} IST </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </table>
+                                
+                                </div>
+                            </div>
+                    <div>
+                        <table width="100%">
+			<tr class="link-line-bg" style="cursor: pointer; height: 27px;" onclick="toggleTaskList();">
+			<td height="25" class="top-cr-1">&nbsp;
+                            </td>
+                            <td class="link-line-bg" width="97%" colspan="15">
+                                <span class="menu-btn-link">Module</span>
+                            </td>
+                            <td class="link-line-bg" valign="middle" width="2%">
+                            	    <img id="tasklistImg" src="/static/css/images/arrow-down.gif" />&nbsp;&nbsp;&nbsp;
+                            	</td>
+                            	<td class="top-cr-2"> &nbsp;
+	                            </td>
+                            </tr> 
+
+                            <tr height="2px">
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <div id="tasklist" style="text-align: center; display: none;">
+                            <table class="program-drag-sec-box" width="100%" cellpadding="0" cellspacing="0"
+                                border="0">
+                                <tr height="28" align="left" valign="middle">                                    
+                                    <td class="program-row" style="width: 50%">
+                                        <a href="#" >Name</a>
+                                    </td>
+                                    <td class="program-row" style="width: 35%">
+                                        <a href="#" >Notes</a>
+                                    </td>
+                                    <td class="program-row" style="width: 40px">
+                                        <a href="#">Status</a></td>
+                                </tr>
+                                {% for eachlist in modules %}
+                                <tr height="28" align="left" valign="middle" class="wh-bg">                                    
+                                    <td class="con-grey" style="width: 50%;padding-left: 10px;">
+                                        <a class="con-grey" href="/UpdateProgramTasklist/?ids={{eachlist.programTasklist.pk}}" style="width: 25px;">{{eachlist.programTasklist.name|truncchar:25}}</a>
+                                    </td>
+                                    <td class="con-grey" style="width: 35%;padding-left: 10px;">
+                                        &nbsp;&nbsp;&nbsp;{{eachlist.programTasklist.notes|truncchar:25}}
+                                    </td>
+                                    <td class="con-grey" style="width: 40px;padding-left: 10px;">
+                                        {% load tags %} {{eachlist.status}}
+                                    </td>
+                                </tr>
+                                {% endfor %}</table>
+                            <div>
+                            </div>
+                        </div>
+                        <div>
+                            <table width="100%">
+                                <tr class="link-line-bg" style="cursor: pointer; height: 27px;" onclick="toggleTask();">
+				<td height="25" class="top-cr-1">&nbsp;</td>
+                            	<td class="link-line-bg" width="97%" colspan="15">
+                                <span class="menu-btn-link">Task </span>
+                            	</td>
+                            	<td class="link-line-bg" valign="middle" width="2%">
+                            	    <img id="taskImg" src="/static/css/images/arrow-down.gif" />&nbsp;&nbsp;&nbsp;
+                            	</td>
+                            	<td class="top-cr-2"> &nbsp;
+	                            </td>
+                                </tr>
+                                <tr height="2px">
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <div id="task" style="text-align: center; display: none;">
+                                <table class="program-drag-sec-box" width="100%" cellpadding="0" cellspacing="0"
+                                    border="0">
+                                    <tr height="28" align="left" valign="middle">
+                                        <td class="program-row" style="width: 50%">
+                                            <a href="#" >Name</a>
+                                        </td>
+                                        <td class="program-row" style="width: 35%">
+                                            <a href="#">Notes</a>
+                                        </td>
+                                        <td class="program-row" style="width: 40px">
+                                            <a href="#">Status</a></td>
+                                    </tr>
+                                    {% for projectTask in projectTasks %}
+                                    <tr height="28" align="left" valign="middle" class="wh-bg">                        
+                                        <td class="con-grey" style="width: 50%;padding-left: 10px;">
+                                            <a class="con-grey" href="/task/{{projectTask.pk}}/?pid={{project.code}}" style="width: 25px;">{{projectTask.name}}</a>
+                                        </td>
+                                        <td class="con-grey" style="width: 35%;padding-left: 10px;">
+                                            {{projectTask.notes}}
+                                        </td>
+                                        <td style="width: 40px;padding-left: 10px;">
+                                            {{projectTask.status}}</td>
+                                    </tr>
+                                    {% endfor %}</table>
+                                
+                                </div>
+                            </div>
+                           
+            </td>
+            <td valign="top" style="height:400px;" >
+                <div>
+                    <div>
+                        <table width="100%">
+                            <tr class="link-line-bg" style="cursor: pointer; height: 27px;">
+				<td height="25" class="top-cr-1">&nbsp;
+	                            </td>
+                            <td class="link-line-bg" width="97%" colspan="15">
+                                <span class="menu-btn-link">Resources</span>
+                            </td>
+                            <td class="top-cr-2"> </td>
+                            </tr>
+                            <tr height="2px">
+                            </tr>
+                        </table>
+                    </div>
+                    <div >
+                        <style>
+                            .role{ width: 65%; float:left; } 
+                            .members{ width: 35%; min-height: 10px; float: left;  }
+                            .NoAssignment{ color: red; float: left; width: 40%; }
+                        </style>
+						<table width="100%" >
+						<div id="internalResource" style="display: block;">
+
+                        <table border='1' >
+                        {% for resource in resources %}
+                        <tr>
+                        <td align="left" valign="top" style="padding: 10px">
+                            {{resource.member.username}}
+                        </td>
+                        <td>
+                            {% for role in resource.roles.all %} {{ role.name }} {% endfor %} 
+                        </td>
+                        </tr>
+                        {% endfor %}
+                        </table>
+                     </div>
+							</td></tr>
+							</table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top" style="height: 70%">
+            </td>
+        </tr>
+    </table>
+</div>
+</form>
+
+<script type="application/javascript" language="JavaScript">
+   $(document).ready(function(){
+      $('#mnuHome').css({'background':'#1bc2ec'});
+      var mnua = $('#mnuHome').children();
+      $(mnua[0]).css({'color':'white','font-weight':'bold'});
+   });
+   
+window.onload = function(){
+ 	try { 		
+ 		displayClock();
+	}
+	catch(err) {}
+	try{  
+  		showtime ();}
+  catch(err) {}
+}
+
+
+function setRepositoryAction(action)
+{
+	var formObj = document.getElementById("frmInternal");
+   var newAttr = document.createAttribute("action");
+   newAttr.nodeValue = action;
+   var newAttr1 = document.createAttribute("enctype");
+   newAttr1.nodeValue = "multipart/form-data";	
+   formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+   formObj.setAttributeNode(newAttr);
+   formObj.removeAttributeNode(formObj.getAttributeNode("enctype"));
+   formObj.setAttributeNode(newAttr1);
+	//document.createcustomer.action = action;
+}
+
+function showExternal(){
+document.getElementById("externalResource").style.display='';
+document.getElementById("internalResource").style.display='none';
+}
+function showInternal(){
+document.getElementById("externalResource").style.display='none';
+document.getElementById("internalResource").style.display='';
+}
+
+function toggleCalendar(){
+/*if(document.getElementById("clock_a").style.display=='none'){	
+	document.getElementById("calendarID").style.display='none';
+	document.getElementById("clock_a").style.display='';
+}
+else
+{
+	document.getElementById("calendarID").style.display='';
+	document.getElementById("clock_a").style.display='none';	
+}*/
+
+}
+
+function toggleTask() {
+divObj = document.getElementById("task")
+if( divObj.style.display=='none' ){
+	divObj.style.display = '';
+	document.getElementById("taskImg").src = "/static/css/images/arrow-up.gif"; }
+else{
+	divObj.style.display = 'none';
+	document.getElementById("taskImg").src = "/static/css/images/arrow-down.gif"}
+} 
+
+function toggleRepository() {
+divObj = document.getElementById("Repository")
+if( divObj.style.display=='none' ){
+	divObj.style.display = '';
+	document.getElementById("repositoryImg").src = "/static/css/images/arrow-up.gif"; }
+else{
+	divObj.style.display = 'none';
+	document.getElementById("repositoryImg").src = "/static/css/images/arrow-down.gif"}
+} 
+
+function toggleTimeLine() {
+divObj = document.getElementById("timeline")
+if( divObj.style.display=='none' ){
+	divObj.style.display = '';
+	document.getElementById("timelineImg").src = "/static/css/images/arrow-up.gif"; }
+else{
+	divObj.style.display = 'none';
+	document.getElementById("timelineImg").src = "/static/css/images/arrow-down.gif"}
+} 
+
+function toggleTaskList() {
+divObj = document.getElementById("tasklist")
+if( divObj.style.display=='none' ){
+	divObj.style.display = '';
+	document.getElementById("tasklistImg").src = "/static/css/images/arrow-up.gif"; }
+else{
+	divObj.style.display = 'none';
+	document.getElementById("tasklistImg").src = "/static/css/images/arrow-down.gif"}
+} 
+
+function toggleEvent() {
+divObj = document.getElementById("event")
+if( divObj.style.display=='none' ){
+	divObj.style.display = '';
+	document.getElementById("tasklistImg").src = "/static/css/images/arrow-up.gif"; }
+else{
+	divObj.style.display = 'none';
+	document.getElementById("tasklistImg").src = "/static/css/images/arrow-down.gif"}
+} 
+
+
+function toggleMilestone() {
+divObj = document.getElementById("milestone")
+if( divObj.style.display=='none' ){
+	divObj.style.display = '';
+	document.getElementById("tasklistImg").src = "/static/css/images/arrow-up.gif"; }
+else{
+	divObj.style.display = 'none';
+	document.getElementById("tasklistImg").src = "/static/css/images/arrow-down.gif"}
+} 
+
+    function setFooter(){
+        alert('callfun');
+        var Qstr = window.location.search.substring();
+        alert(Qstr);
+    }
+    
+    function hidePage(){ 
+            document.getElementById('pageFooter').style.display = "none";
+            document.getElementById('showAll').style.display = "none";      
+            document.getElementById('showPage').style.display = "block";      
+    }
+    function showPage(){
+            document.getElementById('pageFooter').style.display = "block";
+            document.getElementById('showAll').style.display = "block";
+            document.getElementById('showPage').style.display = "none";      
+    }
+    
+ function getQueryVariable(val,urls,origin) {
+    try {
+        getURL = urls.href
+        var query = window.location.search.substring();        
+        urlVal = getURL.split("?");        
+        var vars = query.split("&");        
+        var queryString ='';
+        for (var i=0;i<vars.length;i++) {
+            valArry = vars[i].split("=")
+            if(queryString == '')            
+                if(origin == 'Sort')
+                {                    
+                    queryString = valArry[0] +'='+val
+                }
+                else                 
+                    queryString = vars[i]
+            else
+                 if(origin == 'Page')
+                 {                     
+                     pagVal = valArry[0] + '=' + val
+                     queryString = queryString + '&' + pagVal
+                 }
+                 else                 
+                    queryString = queryString +'&'+ vars[i]            
+             } 
+         if(queryString != '')
+            urls.href = urlVal[0]+queryString;
+         }
+     catch(ex){
+        window.location.href =urls.href;
+     }
+}
+
+function popUp(URL,winName,features){
+	window.open(URL,winName,features);
+}
+
+</script>
+
+{% endblock %} 

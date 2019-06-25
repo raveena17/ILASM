@@ -1,0 +1,844 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+
+
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tools.min.js"></script>
+
+
+    {% load i18n %}
+{% endblock %}
+{% block title %} User {% endblock %}
+
+{% block contentdata %}
+
+<style>
+.element { width: 50%; float: left;  }
+.field { width: 59%; float:left; min-height: 35px;}
+.label { width: 41%; float: left; min-height: 35px;}
+input[type=text]{ width:160px;}
+select { width: 170px; }
+.SaveAndCancel { width:100%; clear:both; }
+form { padding: 10px; }
+#id_business_unit, #id_groups { width: 90%; height: 60px; }
+.user-permission { width: 100%; clear:both; }
+.dialog-overlay {
+    background-color:#fff;
+    display:none;
+    width:350px;
+    padding:15px;
+    text-align:left;
+    border:2px solid #333;
+
+    opacity:0.8;
+        -moz-border-radius:6px;
+        -webkit-border-radius:6px;
+        -moz-box-shadow: 0 0 50px #ccc;
+        -webkit-box-shadow: 0 0 50px #ccc;
+    }
+</style>
+<script>
+
+
+    function remove_unselected_onload() {
+        /*Remove unselected options from all the role select boxes.*/
+        $('select#id_business_unit option:not(:selected)').remove();
+        $('select#id_groups option:not(:selected)').remove();
+    }
+
+    function selectall_onsubmit() {
+        $('form#user_form').submit(function() {
+            $('#id_business_unit').find('option').each(function() {
+                $(this).attr('selected', 'selected');
+            });
+        });
+        $('form#user_form').submit(function() {
+            $('#id_groups').find('option').each(function() {
+                $(this).attr('selected', 'selected');
+            });
+        });
+    }
+
+    jQuery.fn.copy = function(obj) {
+        jQuery(this).keyup(function() {
+            if(jQuery(this).val().indexOf('@') <= 0)
+            {
+            jQuery(obj).val(jQuery(this).val());
+            }
+        });
+    }
+
+function printMe(divID)
+{
+  var disp_setting="toolbar=yes,location=no,directories=yes,menubar=yes,";
+      disp_setting+="scrollbars=yes,width=650, height=600, left=100, top=25";
+  var content_vlue = document.getElementById(divID).innerHTML;
+
+  var docprint=window.open("","",disp_setting);
+   docprint.document.open();
+   docprint.document.write('<html><title>User Profile</title><head> ');
+
+
+   docprint.document.write('<link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />');
+   docprint.document.write('<link href="/static/css/forms.css" rel="stylesheet" type="text/css" />');
+   docprint.document.write('</head><body onLoad="self.print()"><center>');
+
+   docprint.document.write(content_vlue);
+   docprint.document.write('</center></body></html>');
+   docprint.document.close();
+   docprint.focus();
+}
+
+    $(document).ready(function(){
+        convertDate('id_date_of_birth');
+        convertDate('id_date_of_joining');
+        convertDate('id_passport_validity');
+        convertDate('id_date_of_confirmation');
+        convertDate('id_date_of_resignation');
+        convertDate('id_date_of_relieving');
+        convertDate('id_probation_end_date');
+        $('#id_code').attr('readonly','true');
+        $('#id_email').copy('input#id_username');
+        $('#id_date_of_birth').attr('class', 'vDateField');
+        $('#id_date_of_joining').attr('class', 'vDateField');
+        $('#id_passport_validity').attr('class', 'vDateField');
+        $('#id_date_of_confirmation').attr('class', 'vDateField');
+
+        $('#id_contact-country').val('IND');
+        $('#id_permanent-country').val('IND');
+        $('#id_emergency-country').val('IND');
+        $('#id_division').val('TECHNICAL');
+        $('#id_probation_end_date').attr('readonly', 'true');
+        $('#id_11').hide();
+        $('#id_9').hide();
+        $('#id_10').hide();
+        $('#id_36').hide();
+        remove_unselected_onload();
+        if ($('#id_confirmation_status').val() == "CONFIRMED"){
+            $('#id_9').show();
+
+        }
+        if ($('#id_document_check_list_others').val() != ''){
+           $('#id_36').show();
+        }
+          if ($('#id_confirmation_status').val() == "ONPROBATION"){
+            $('#id_10').show();
+            $('#id_11').show();
+        }
+
+        $('#id_confirmation_status').change(function(){
+        if ($('#id_confirmation_status option:selected').text() == 'On Probation'){
+
+             $('#id_10').show();
+             $('#id_11').show();
+        }
+        else{
+            $('#id_10').hide();
+            $('#id_11').hide();
+
+        }
+    });
+
+        $('#id_confirmation_status').change(function(){
+        if ($('#id_confirmation_status option:selected').text() == 'Confirmed'){
+
+             $('#id_9').show();
+        }
+        else{
+            $('#id_9').hide();
+        }
+    });
+
+        $('#id_35').click(function(){
+          var Selectedval=$('#id_35 option:selected').text();
+        if (Selectedval.indexOf('others(Please specify)') >=0){
+
+             $('#id_36').show();
+        }
+        else{
+            $('#id_36').hide();
+        }
+    });
+
+
+
+        if ($('#id_probation_period').val() != ''){
+        var probationPeriod = Number($('#id_probation_period').val());
+
+        var mydate = $('#id_date_of_joining').val().split('-');
+        year = +(mydate[2]);
+        month = +(mydate[0]) - 1;
+        day = +(mydate[1]);
+        var date1 = new Date(year, month, day);
+        date1.setMonth(date1.getMonth() + probationPeriod);
+        if ((date1.getMonth() + 1) <= 9)
+            monthDisplay = '0' + (date1.getMonth() + 1);
+        else
+            monthDisplay = date1.getMonth() + 1;
+
+
+        if (date1.getDate() <= 9)
+            dateDisplay = '0' + date1.getDate();
+        else
+            dateDisplay = date1.getDate();
+
+        mydate3 = monthDisplay + '-' + dateDisplay + '-' + date1.getFullYear();
+
+        $('#id_probation_end_date').val(mydate3);
+        }
+
+        /* business unit overlay */
+        $('#business_unit_add').overlay({
+            autoOpen: false,
+            expose: { color: '#333', loadSpeed: 200, opacity: 0.9 },
+            closeOnClick: true
+        });
+
+        $('#business_unit_select').click(function(){
+            var units = []
+            $('select#id_business_unit option').each(function(i, business_unit){
+                units[i] = $(business_unit).val();
+                });
+            $('select#business_units').find('option').filter(':selected').each(function(i, business_unit){
+                if($.inArray($(business_unit).val(), units) == -1){
+                    $('#id_business_unit').append(
+                    "<option value=\"" + $(business_unit).val() + "\">" + $(business_unit).text() + "</option>");
+                    }
+                });
+            $('#business_unit_add').overlay().close()
+        });
+
+        $('#dialog-form #business_unit_cancel').click(function(){
+            $('#business_unit_add').overlay().close()
+        });
+
+        $('#business_unit_delete').click(function(){
+            $('#id_business_unit').find('option').filter(':selected').remove();
+        });
+
+        /* Document check list */
+         $('#document_check_list').overlay({
+            autoOpen: false,
+            expose: { color: '#333', loadSpeed: 200, opacity: 0.9 },
+            closeOnClick: true
+        });
+
+        $('#document_check_list_select').click(function(){
+            var units = []
+            $('select#id_document_check_list option').each(function(i, document_check_list){
+                units[i] = $(document_check_list).val();
+                });
+            $('select#document_check_list').find('option').filter(':selected').each(function(i, document_check_list){
+                if($.inArray($(document_check_list).val(), units) == -1){
+                    $('#id_document_check_list').append(
+                    "<option value=\"" + $(document_check_list).val() + "\">" + $(document_check_list).text() + "</option>");
+                    }
+                });
+            $('#document_check_list_add').overlay().close()
+        });
+
+        $('#dialog-form #document_check_list_cancel').click(function(){
+            $('#document_check_list_add').overlay().close()
+        });
+
+        $('#document_check_list_delete').click(function(){
+            $('#id_document_check_list').find('option').filter(':selected').remove();
+        });
+
+        /* permission overlay */
+        $('#permission_add').overlay({
+            autoOpen: false,
+            expose: { color: '#333', loadSpeed: 200, opacity: 0.9 },
+            closeOnClick: true
+        });
+
+        $('#permission_select').click(function(){
+            var groups = []
+            $('select#id_groups option').each(function(i, group){
+                groups[i] = $(group).val();
+                });
+            $('select#groups').find('option').filter(':selected').each(function(i, group){
+                if($.inArray($(group).val(), groups) == -1){
+                    $('#id_groups').append(
+                    "<option value=\"" + $(group).val() + "\">" + $(group).text() + "</option>");
+                    }
+                });
+            $('#permission_add').overlay().close()
+        });
+
+        $('#permission-form #permission_cancel').click(function(){
+            $('#permission_add').overlay().close()
+        });
+
+        $('#permission_delete').click(function(){
+            $('#id_groups').find('option').filter(':selected').remove();
+        });
+
+        $('#cancel').click(function(){
+            window.location.href = '{% url users.views.user_list %}'
+        });
+        selectall_onsubmit();
+    })
+</script>
+
+<form enctype="multipart/form-data" id="user_form" name="user_form" action="" method="POST" >
+<div class="header">User Details</div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+        {% endfor %}
+    {% endif %}
+    {{user_form.errors}}
+    {{profile_form.errors}}
+    {{address_contact_form.errors}}
+    {{address_permanent_form.errors}}
+
+ {% for field in profile_form %}
+{% ifequal field.name 'users_image' %}
+<div align="right">
+<img id="userphoto" src="/static/user_images/{{users_image}}" width="100" height="100" border="1px" />
+<br/>
+{% ifequal field.name 'users_image' %}
+    {{field.label}}: {{field}}
+{% endifequal %}
+</div>
+ {% endifequal %}
+{% endfor %}
+<div>
+
+<div class="header initiationHeader">
+    Personal Information
+</div>
+<hr style="border:groove;"/>
+<br/>
+{% for field in user_form %}
+    {% ifnotequal field.name 'groups' %}
+
+        <div class="label">{{field.label}}: </div><div class="field">{{field}}</div>
+
+    {% endifnotequal %}
+
+{% endfor %}
+
+{% for field in profile_form %}
+
+{% ifequal field.name 'gender' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'salutation' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'fathers_name' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+
+ {% ifequal field.name 'code' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'email_address_official' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+
+ {% ifequal field.name 'designation' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+ {% ifequal field.name 'type' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'division' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+ {% ifequal field.name 'date_of_birth' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+
+{% endifequal %}
+
+{% ifequal field.name 'blood_group' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'pan_no' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'passport_no' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'passport_validity' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'comments' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+ {% endfor %}
+ </div>
+
+ <div>
+
+ <div class="header initiationHeader">
+    Contacts
+</div>
+<hr style="border:groove;"/>
+ <br/>
+ {% for field in profile_form %}
+
+    {% ifequal field.name 'phone_mobile' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'phone_residence' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'emergency_contact' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'phone_emergency1' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'phone_emergency2' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'phone_office' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'phone_office_extension' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'hide_phone_number' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+
+    {% ifequal field.name 'phone_residence' %}
+
+            <h4>Contact Address</h4>
+            {% for address_field in address_contact_form %}
+                <div class="label">{{address_field.label}}: </div><div class="field">{{address_field}}</div>
+            {% endfor %}
+
+
+            <h4>Permanent Address</h4>
+            {% for address_field in address_permanent_form %}
+                <div class="label">{{address_field.label}}: </div><div class="field">{{address_field}}</div>
+            {% endfor %}
+
+
+    {% endifequal %}
+
+
+{% endfor %}
+</div>
+
+ <div align= "left">
+
+ <div class="header initiationHeader">
+    Office Use
+</div>
+ <hr style="border:groove;"/>
+ <br/>
+ {% for field in profile_form %}
+
+ {% ifequal field.name 'date_of_joining' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+ {% ifequal field.name 'confirmation_status' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+ {% ifequal field.name 'date_of_confirmation' %}
+ <div  id="id_9" >
+<div class="label">{{field.label}}: </div><div class="field">{{field}}</div>
+</div>
+{% endifequal %}
+
+
+
+{% ifequal field.name 'probation_period' %}
+<div id="id_10">
+<div class="label"  >{{field.label}}: </div><div class="field">{{field}}</div>
+</div>
+{% endifequal %}
+
+
+
+{% ifequal field.name 'probation_end_date' %}
+<div id = "id_11">
+<div class="label"  >{{field.label}}: </div><div class="field">{{field}}</div>
+</div>
+
+{% endifequal %}
+
+{% ifequal field.name 'date_of_resignation' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'date_of_relieving' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'bank_name' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'bank_acc_no' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'pf_no' %}
+<div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+
+{% ifequal field.name 'reporting_senior_name' %}
+     <div class="label" >{{field.label}}: </div><div class="field">{{field}}</div>
+{% endifequal %}
+{% endfor %}
+ </div>
+
+
+
+
+    {% for field in profile_form %}
+{% ifequal field.name 'document_check_list' %}
+    <div id = "id_35">
+
+        {# This is a popup for assigning document check list to users. #}
+        <div class="label">{{field.label}}: </div>
+        <div class="field">{{field}}
+            {% for field in profile_form %}
+                {% ifequal field.name 'document_check_list_others' %}
+                       <span id="id_36">{{field}}</span>
+                {% endifequal %}
+            {% endfor %}
+        </div>
+            <div id="dialog-form" class="dialog-overlay" title="Project Team Members">
+                 <form>
+                <select id="document_check_list" multiple="multiple">
+                    {% for document_check_list in field.field.queryset %}
+                        <option value="{{ document_check_list.pk }}">{{ document_check_list.list_name }}</option>
+                    {% endfor %}
+                </select>
+             </form>
+            <input type="button" id="business_unit_select" name="business_unit_select" value="select" />
+            <input type="button" id="business_unit_cancel" name="business_unit_cancel" value="cancel" />
+        </div>
+        <input type="hidden" value="{{ field.field.queryset }}"/>
+    </div>
+{% endifequal %}
+
+
+
+{% ifequal field.name 'business_unit' %}
+     <div class="label">{{field.label}}: </div><div class="field" style="width:30%">{{field}}</div>
+        <input type="button" rel='#dialog-form' value="Add" id="business_unit_add" />
+        <input type="button" value="Delete" id="business_unit_delete" />
+        {# This is a popup for assigning business unit to users. #}
+
+        <div id="dialog-form" class="dialog-overlay" title="Project Team Members">
+            <form>
+                <select id="business_units" multiple="multiple">
+                    {% for business_unit in field.field.queryset %}
+                        <option value="{{ business_unit.pk }}">{{ business_unit.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <input type="button" id="business_unit_select" name="business_unit_select" value="select" />
+            <input type="button" id="business_unit_cancel" name="business_unit_cancel" value="cancel" />
+        </div>
+        <input type="hidden" value="{{ field.field.queryset }}"/>
+
+{% endifequal %}
+ {% endfor %}
+
+
+ <div class="user-permission">
+
+        <div class="label">{% trans 'Role' %}: </div><div class="field"  style="width:30%">{{user_form.groups}}</div>
+
+    <input type="button" rel='#permission-form' value="Add" id="permission_add" />
+    <input type="button" value="Delete" id="permission_delete" />
+
+    {# This is a popup for assigning group permissions to users. #}
+    <div id="permission-form" class="dialog-overlay" title="Permission Groups">
+        <form>
+            <select id="groups" multiple="multiple">
+                {% for group in user_form.groups.field.queryset %}
+                    <option value="{{ group.pk }}">{{ group.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <input type="button" id="permission_select" name="permission_select" value="select" />
+        <input type="button" id="permission_cancel" name="permission_cancel" value="cancel" />
+    </div>
+    <input type="hidden" value="{{ user_form.groups.field.queryset }}">
+
+</div>
+
+
+
+<div class="SaveAndCancel">
+    <input type="submit" name="save" id="save" value="save" />
+    <input type="button" value="Print" id="Print" name="print" onclick="printMe('SuperuserProfile');"/>
+    <input type="button" name="cancel" id="cancel" value="cancel" />
+</div>
+</div>
+</form>
+<div id="SuperuserProfile" style="display:none;">
+<table width="100%">
+    <tr><td align = "center" colspan = "9"><b>User Profile</b></td></tr>
+     {% for field in profile_form %}
+{% ifequal field.name 'users_image' %}
+<tr><td><img id = "logo" src = "/static/css/images/logo_mindshare.gif"  width="100" height="100" /></td><td colspan="9"  align="right">
+<img id="userphoto" src="/static/user_images/{{users_image}}" width="100" height="100" border="1px" />
+</td></tr>
+ {% endifequal %}
+{% endfor %}
+
+<tr><td  colspan="9"><b>Personal Information</b></td></tr>
+<tr><td colspan="9"><hr style="border:groove;"/></td></tr>
+
+<br/>
+
+{% for field in user_form %}
+
+    {% ifequal field.name 'first_name' %}
+        <tr>
+            <td>Name</td><td >:</td>{% for field in profile_form %}{% ifequal field.name 'salutation' %}
+    <td>{{profile.salutation}}{% endifequal %}{% endfor %}&nbsp;{{firstname}}&nbsp;{{lastname}}</td>
+
+        {% endifequal %}
+
+        {% ifequal field.name 'email' %}
+
+            <td>Email</td><td>:</td><td >{{emailid}}</td>
+        </tr>
+        {% endifequal %}
+
+{% endfor %}
+
+{% for field in profile_form %}
+
+
+{% ifequal field.name 'fathers_name' %}
+    <tr><td>{{field.label}}</td><td>:</td><td>{{profile.fathers_name}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'code' %}
+    <td>{{field.label}}</td><td>:</td><td >{{profile.code}}</td></tr>
+{% endifequal %}
+
+{% ifequal field.name 'designation' %}
+     <tr><td>{{field.label}}</td><td>:</td><td>{{profile.designation}}</td>
+{% endifequal %}
+{% ifequal field.name 'gender' %}
+{% ifequal profile.gender 'F'%}
+<td>{{field.label}}</td><td>:</td><td>Female</td></tr>
+    {% endifequal %}
+  {% ifequal profile.gender 'M'%}
+<td>{{field.label}}</td><td>:</td><td>Male</td></tr>
+    {% endifequal %}
+{% endifequal %}
+
+{% ifequal field.name 'type' %}
+    <tr><td>{{field.label}}</td><td>:</td><td>{{profile.type}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'division' %}
+    <td>{{field.label}}</td><td>:</td><td >{{profile.division}}</td></tr>
+{% endifequal %}
+
+
+
+{% ifequal field.name 'blood_group' %}
+     <tr><td>{{field.label}}</td><td>:</td><td>{{profile.blood_group}}</td>
+{% endifequal %}
+{% ifequal field.name 'date_of_birth' %}
+    <td>DOB</td><td>:</td><td>{{profile.date_of_birth|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</td></tr>
+{% endifequal %}
+
+{% ifequal field.name 'pan_no' %}
+    <tr><td>{{field.label}}</td><td>:</td><td>{{profile.pan_no}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'passport_no' %}
+    <td>Passport no. Validity</td><td>:</td><td >{{profile.passport_no}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'passport_validity' %}
+    <tr><td>Passport Validity</td><td>:</td><td>{{profile.passport_validity}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'comments' %}
+     <td>{{field.label}}</td><td>:</td><td>{{profile.comments}}</td></tr>
+{% endifequal %}
+ {% endfor %}
+
+
+ <tr><td><b>
+    Contacts</b>
+</td></tr>
+ <tr><td colspan="9"><hr style="border:groove;"/></td></tr>
+ <br/>
+ {% for field in profile_form %}
+
+    {% ifequal field.name 'phone_mobile' %}
+      <tr><td>Mobile</td><td>:</td><td>{{profile.phone_mobile}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'phone_residence' %}
+ <td>Resi. No.</td><td>:</td><td>{{profile.phone_residence}}</td></tr>
+{% endifequal %}
+
+{% ifequal field.name 'emergency_contact' %}
+ <tr><td>Emergency Contact</td><td>:</td><td >{{profile.emergency_contact}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'phone_emergency2' %}
+ <td>Emergency No</td><td>:</td><td>{{profile.phone_emergency2}}</td></tr>
+{% endifequal %}
+
+{% ifequal field.name 'phone_office' %}
+ <tr><td>Office No</td><td>:</td><td>{{profile.phone_office}}</td>
+ {% endifequal %}
+
+{% ifequal field.name 'phone_office_extension' %}
+<td>Ext</td><td>:</td><td>{{profile.phone_office_extension}}</td></tr>
+ {% endifequal %}
+
+   {% ifequal field.name 'phone_residence' %}
+
+            <tr><td>Address</td><td>:</td><td>{{Contact_address.address_line1}},{{Contact_address.address_line2}},{{Contact_address.city}},{{Contact_address.state}},{{Contact_address.pin}},{{Contact_address.country}}</td>
+
+            <td>Perm Address</td><td>:</td><td>{{Permanent_address.address_line1}},{{Permanent_address.address_line2}},{{Permanent_address.city}},{{Permanent_address.state}},{{Permanent_address.pin}},{{Permanent_address.country}}</td></tr>
+
+    {% endifequal %}
+{% endfor %}
+
+
+
+<tr><td><b>
+    Office Use</b></td></tr>
+
+ <tr><td colspan="9"><hr style="border:groove;"/></td></tr>
+ <br/>
+ {% for field in profile_form %}
+
+ {% ifequal field.name 'date_of_joining' %}
+ <tr><td>DOJ</td><td>:</td><td>{{profile.date_of_joining|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</td>
+{% endifequal %}
+{% ifequal field.name 'date_of_resignation' %}
+ <td>Resig. Dt</td><td>:</td><td>{{profile.date_of_resignation|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</td></tr>
+{% endifequal %}
+
+ {% ifequal field.name 'confirmation_status' %}
+ <div>
+ <tr><td>Status</td><td>:</td><td >{{profile.confirmation_status}}</td>
+ </div>
+ {% endifequal %}
+ {% ifequal profile.confirmation_status 'CONFIRMED'  %}
+ {% ifequal field.name 'date_of_confirmation' %}
+ <div  id="id_9" >
+ <td>Conf. Dt.</td><td>:</td><td >{{profile.date_of_confirmation|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</td></tr>
+ </div>
+{% endifequal %}
+{% endifequal %}
+
+
+
+
+{% ifequal profile.confirmation_status 'ONPROBATION'  %}
+{% ifequal field.name 'probation_period' %}
+<div id="id_10">
+ <tr><td>{{field.label}}</td><td>:</td><td>{{profile.probation_period}}</td></tr>
+</div>
+{% endifequal %}
+
+
+
+{% ifequal field.name 'probation_end_date' %}
+<div id = "id_11">
+ <tr><td>Probation End Dt.</td><td>:</td><td>{{profile.probation_end_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</td></tr>
+</div>
+
+{% endifequal %}
+{% endifequal %}
+
+
+
+{% ifequal field.name 'date_of_relieving' %}
+ <tr><td>Rlv Dt.</td><td>:</td><td>{{profile.date_of_relieving|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None"}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'bank_name' %}
+ <td>Bank/Branch</td><td>:</td><td>{{profile.bank_name}}</td></tr>
+{% endifequal %}
+
+{% ifequal field.name 'bank_acc_no' %}
+ <tr><td>Acc No.</td><td>:</td><td >{{profile.bank_acc_no}}</td>
+{% endifequal %}
+
+{% ifequal field.name 'pf_no' %}
+ <td>{{field.label}}</td><td>:</td><td>{{profile.pf_no}}</td></tr>
+{% endifequal %}
+{% endfor %}
+
+
+
+
+
+{% for field in profile_form %}
+
+{% ifequal field.name 'business_unit' %}
+     <tr><td>Bus. Unit</td><td>:</td><td>{% for each in business_unit_list%}{{each}},{% endfor %}</td>
+
+{% endifequal %}
+
+
+{% ifequal field.name 'document_check_list' %}
+    <div id = "id_35">
+
+         <td>Doc. list</td><td>:</td><td>{% for each in check_list%}{{each}},{% endfor %}</td>
+
+         {% for field in profile_form %}
+        {% ifequal field.name 'document_check_list_others' %}
+    <div  id="id_36" >
+            <td>Others</td><td>:</td><td >{{profile.document_check_list_others}}</td></tr>
+    </div>
+{% endifequal %}
+{% endfor %}
+    </div>
+{% endifequal %}
+ {% endfor %}
+
+        <tr><td>{% trans 'Role' %}</td><td>:</td><td >{% for each in role%}{{each}},{% endfor %}</td>
+
+ </table>
+ </div>
+{% endblock %}

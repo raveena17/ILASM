@@ -1,0 +1,48 @@
+<script>
+$(function() { 
+    $('#overlay #cancel').click(closeOverlay);
+
+    $('#overlay #save' ).click(function(){
+        var task_type = {
+                'id':$('#overlay #type_id').val(),
+                'name':$('#overlay #id_name').val()
+              };
+
+        var addTaskType = function(json){
+            if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+            else{
+                $("#id_type option[value='"+ json[0].id +"']").remove(); 
+                $('#id_type').append('<option value="'+json[0].id+'">'+json[0].name+'</option>');
+                closeOverlay();
+            }
+            }
+
+        $.ajax({ 
+            type : "POST",
+            url : "/projectbudget/phase/add/",
+            data : task_type,
+            success : addTaskType,
+            dataType: "json"
+            });
+        });
+    });
+
+</script>
+
+<style>
+#overlay label{ color: white; }
+</style>
+
+<html>
+<head>
+    <title> Task Type </title>
+</head>
+<body id="overlay">
+    <h3><p><label> Task Type </label></p></h3>
+    <h4><p><label>{{form.errors}}</label></p></h4>
+    <input type="hidden" name="type_id" id="type_id" value="{{type.pk}}"  />
+    {{form.as_p}}
+    <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+</body>
+</html>

@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.tablesorter.js"></script> 
+    
+{% endblock %}
+{% block title %} cvr {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+
+<style>
+    .task { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; text-align: left; }
+    .create-cvr { padding-top: 5px; padding-bottom: 10px; width: 100%; }
+    .cvr-record {padding-top: 5px; padding-bottom: 10px; width: 100%;}
+    .search_report { padding-top: 5px; padding-bottom: 10px; width: 100%; float: left;}
+    .msg1 { padding-top: 5px; padding-bottom: 10px; float: left;}
+    #create-cvr { float: right; }
+    #cvr_homepage { float: left; }
+    #cvr-record { float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .cvr-header-panel { width:100%;  }
+    .cvr-list-header, .task-column {width: 10%; padding-top: 10px;  }
+    .cvr-content { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .delete-cvr {float: left; }
+    .select-cvr {float: left; }
+    .page-number{ float: right; }
+</style>
+    
+<script>
+    function filter(){
+            var action = document.getElementById('list').value;
+            var type = "actionitems"
+            if(action!=""){
+                window.location = "/clientvisitreports/list/"+type+"/"+action;}
+            else{
+                window.location = "/clientvisitreports/"  
+            }
+    }
+    function status_filter(){
+            var action = document.getElementById('request_list').value;
+            var type = "requests"
+            if(action!=""){
+                window.location = "/clientvisitreports/list/"+type+"/"+action;}
+            else{
+                window.location = "/clientvisitreports/"  
+            }
+    }
+
+    var printError = function(error, explicit) {
+    console.log(`[${explicit ? 'EXPLICIT' : 'INEXPLICIT'}] ${error.name}: ${error.message}`);}
+
+    $(document).ready(function(){
+
+        var currentLocation = window.location.href;
+        if(currentLocation.split('/').length > 5){
+                    $("#redirect_back").show();
+                }
+                else{
+                    $("#redirect_back").hide();
+                }
+
+        $('#create-cvr').click(function(){ 
+            window.location.href = "/clientvisitreports/create/";
+        });
+
+        $('#delete').click(function(){
+            document.getElementById('cvrlist').action = "/clientvisitreports/delete/";
+            if(confirm('Are you sure you want to delete selected?')){
+                document.getElementById('cvrlist').action = "/clientvisitreports/delete/";
+            }
+            else{
+                return false;
+            }
+        })
+
+        $('table#tasks').tablesorter();
+        $('table#tasks1').tablesorter();
+
+        var status = '{{status}}'
+        try{
+            document.getElementById('list').value = '{{ status }}';
+            document.getElementById('request_list').value = '{{ status }}';
+        }
+        catch (e) {
+            document.getElementById('request_list').value = '{{ status }}';
+
+        if (e instanceof TypeError) {
+            printError(e, true);
+        } else {
+            printError(e, false);
+        }}
+    });
+
+    
+
+</script>
+
+
+{% load pagination_tags %}
+<form id="cvrlist" name="cvrlist" action="" method="POST" />
+    {% csrf_token %}
+    <div class="cvr" >
+        <div class="list-header">
+            <span class="header">Client Visit Report</span>
+        </div>
+        <div class="program-blue-box">
+            <div class="create-cvr">
+                    <a href="/clientvisitreports/" id="redirect_back"><input type="button" id="cvr_homepage" name="cvr_homepage" class="b1" value="<<<Back" /></a>
+
+                    <input type="button" id="create-cvr" name="create-cvr" class="b1" value="Add CVR" />
+
+                    <div class="cvr-records">
+                        {% for role in  user.groups.all %}
+                            {% if role.name == 'Corporate Admin' %}
+                                <a href = "/clientvisitreports/record/">
+                                <input type="button" id="cvr-record" value = "Reports" name="cvr-record" class="b1"></a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
+
+        <div id="msg1"> 
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% if approvallist %} 
+            <h1>My Action Items</h1>
+            <div class="search_report">
+                {% for role in  user.groups.all %}
+                    {% if role.name == 'Manager' %}
+                        <label for="field1"><span>Status</span> :
+                        <select name="list" id="list" accesskey="target">
+                            <option id="option1" value="" ><b>Waiting for approval</b></option>
+                            <option id="option2" value="approve">Approved</option>
+                            <option id="option3" value="reject">Rejected</option>
+                            <option id="option4" value="all">All</option>
+                        <select></label>
+                        <input id="go" type="button" value="Go" onclick="filter()" />
+                    {% endif %}
+                {% endfor %}
+            </div>    
+            <table id="tasks1" class="tablesorter">
+                <thead class="cvr-header-panel">
+                    <tr>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Select</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Prepared By</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Project Name</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Client Name</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Visit Location</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">From- Date</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">To-Date</th>
+                        <!-- <th class="cvr-list-header header link-line-bg con-white-bold">Reporting Senior Name</th> -->
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Status</th>
+                    </tr>
+                </thead>
+
+                <tfoot class="footer">
+                    <tr><td colspan="3"><center>
+                        <td colspan="10">
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if approvallist.has_previous %}
+                                        <a href="?approve_page={{ approvallist.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                   {% for n in approvallist.paginator.page_range %}
+                                        {% if approvallist.number == n %}
+                                          <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                        {% elif n > approvallist.number|add:'-2' and n < approvallist.number|add:'4' %}
+                                        <span class="page-item"><a class="page-link" href="?approve_page={{ n }}">{{ n }}</a></span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if approvallist.has_next %}
+                                        <a href="?approve_page={{ approvallist.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </td>
+                        <center>
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                {% for post in approvallist %}
+                    <label for="post{{ forloop.counter }}">
+                        <tr class="cvr-content">
+                            <td class="cvr-column">
+                                <input type="checkbox" id="post_pk" name="post_pk" value="{{post.pk}}" />
+                                <a href="/clientvisitreports/report/{{post.pk}}/">View</a>
+                            </td>
+                            <td class="cvr-column">{{post.prepared_by}}</td>
+                            <td class="cvr-column">{{post.project_name}}</td>
+                            <td class="cvr-column">{{post.client_name}}</td>
+                            <td class="cvr-column">{{post.visit_location}}</td>
+                            <td class="cvr-column">{{post.from_date}}</td>
+                            <td class="cvr-column">{{post.to_date}}</td>
+                            <!-- <td class="cvr-column">{{post.reporting_senior_name}}</td> -->
+
+                                {% if request.user.username == post.prepared_by %}
+                                    {% if post.is_approved %}
+                                        <td class="cvr-column">Approved</td>
+                                    {% elif post.is_rejected %}
+                                        <td class="cvr-column">Rejected</td>
+                                    {% else %}
+                                        <td class="cvr-column">Pending</td>
+                                    {% endif %}
+                                        
+                                {% elif request.user.username != post.reporting_senior_name %}
+                                    {% if post.is_approved %}
+                                        <td class="cvr-column">Approved</td>
+                                    {% elif post.is_rejected %}
+                                        <td class="cvr-column">Rejected</td>
+                                    {% else %}
+                                        <td class="cvr-column"><b>Waiting for approval</b></td>
+                                    {% endif %}
+                                {% endif %} 
+                                                      
+                        </tr>
+                    </label>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        {% endif %}
+        <br><br>
+
+        {% if requestlist %} 
+            <h1>My Requests</h1>
+            <div class="search_report">
+                <label for="field1"><span>Status</span> :
+                <select name="request_list" id="request_list" accesskey="target">
+                    <option id="option5" value="" >All</option>
+                    <option id="option6" value="pending" >Pending</option>
+                    <option id="option7" value="approve">Approved</option>
+                    <option id="option8" value="reject">Rejected</option>
+                <select></label>
+                <input id="go" type="button" value="Go" onclick="status_filter()" />
+            </div>
+            <table id="tasks" class="tablesorter">
+                <thead class="cvr-header-panel">
+                    <tr>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Select</th>
+                        <!-- <th class="cvr-list-header header link-line-bg con-white-bold">Prepared By</th> -->
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Project Name</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Client Name</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Visit Location</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">From- Date</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">To-Date</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Reporting Senior Name</th>
+                        <th class="cvr-list-header header link-line-bg con-white-bold">Status</th>
+                    </tr>
+                </thead>
+
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="3">
+                            <div class="footer-buttons">
+                                <input type="submit" value="Delete" id="delete" name="delete" class="b1" />
+                                <input type="button" value="Clear" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('cvrlist');"  />
+                            </div>
+                        </td>
+                        <td colspan="10">
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if requestlist.has_previous %}
+                                    <a href="?request_page={{ requestlist.previous_page_number }}">previous</a>
+                                {% endif %}
+
+                               {% for n in requestlist.paginator.page_range %}
+                                    {% if requestlist.number == n %}
+                                      <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                    {% elif n > requestlist.number|add:'-2' and n < requestlist.number|add:'4' %}
+                                    <span class="page-item"><a class="page-link" href="?request_page={{ n }}">{{ n }}</a></span>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if requestlist.has_next %}
+                                    <a href="?request_page={{ requestlist.next_page_number }}">next &raquo;</a>
+                                    <a href="?request_page={{ requestlist.paginator.num_pages }}">last &raquo;</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                    {% for post in requestlist %}
+                        <label for="post{{ forloop.counter }}">
+                            <tr class="cvr-content">
+                                <td class="cvr-column">
+                                    <input type="checkbox" id="post_pk" name="post_pk" value="{{post.pk}}" />
+                                    <a href="/clientvisitreports/report/{{post.pk}}/">View</a>
+                                </td>
+                                <!-- <td class="cvr-column">{{post.prepared_by}}</td> -->
+                                <td class="cvr-column">{{post.project_name}}</td>
+                                <td class="cvr-column">{{post.client_name}}</td>
+                                <td class="cvr-column">{{post.visit_location}}</td>
+                                <td class="cvr-column">{{post.from_date}}</td>
+                                <td class="cvr-column">{{post.to_date}}</td>
+                                <td class="cvr-column">{{post.reporting_senior_name}}</td>
+
+                                    {% if request.user.username == post.prepared_by %}
+                                        {% if post.is_approved %}
+                                            <td class="cvr-column">Approved</td>
+                                        {% elif post.is_rejected %}
+                                            <td class="cvr-column">Rejected</td>
+                                        {% else %}
+                                            <td class="cvr-column">Pending</td>
+                                        {% endif %}
+                                            
+                                    {% elif request.user.username != post.reporting_senior_name %}
+                                        {% if post.is_approved %}
+                                            <td class="cvr-column">Approved</td>
+                                        {% elif post.is_rejected %}
+                                            <td class="cvr-column">Rejected</td>
+                                        {% else %}
+                                            <td class="cvr-column"><b>Waiting for approval</b></td>
+                                        {% endif %}
+                                    {% endif %} 
+                                                      
+                        </tr>
+                        </label>
+
+                    {% endfor %}
+
+                    </tbody>
+
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

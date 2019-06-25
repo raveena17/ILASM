@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">  
+    
+  <object pk="RS1" model="projectbudget.SaveRecordStatus">        
+        <field  name="code">RS1</field>
+        <field  name="status">Open</field>
+  </object>
+  <object pk="RS2" model="projectbudget.SaveRecordStatus">        
+        <field  name="code">RS2</field>
+        <field  name="status">Waiting for approval</field>
+  </object>
+  <object pk="RS3" model="projectbudget.SaveRecordStatus">        
+        <field  name="code">RS3</field>
+        <field  name="status">Waiting for project owner approval</field>
+  </object>
+  <object pk="RS4" model="projectbudget.SaveRecordStatus">        
+        <field  name="code">RS4</field>
+        <field  name="status">Approved</field>
+  </object>
+  <object pk="RS5" model="projectbudget.SaveRecordStatus">        
+        <field  name="code">RS5</field>
+        <field  name="status">Rejected</field>
+  </object>  
+  
+  
+  <object pk="Phase1" model="projectbudget.BudgetPhase">                 
+			<field  name="code">Phase1</field>        
+			<field  name="phase">Requirements</field>  
+ 			<field  name="is_active">1</field> 
+ 	</object>
+  <object pk="Phase2" model="projectbudget.BudgetPhase">                 
+			<field  name="code">Phase2</field>         
+			<field  name="phase">Design</field>  
+ 			<field  name="is_active">1</field> </object>
+  	<object pk="Phase3" model="projectbudget.BudgetPhase">                 
+			<field  name="code">Phase3</field>         
+			<field  name="phase">Development</field>
+ 			<field  name="is_active">1</field>   
+   </object>
+  <object pk="Phase4" model="projectbudget.BudgetPhase">                 
+		 <field  name="code">Phase4</field>        
+		 <field  name="phase">Testing</field>
+		 <field  name="is_active">1</field>   </object>
+  <object pk="Phase5" model="projectbudget.BudgetPhase">                 
+		 <field  name="code">Phase5</field>         
+		 <field  name="phase">Implementation</field> 
+		 <field  name="is_active">1</field> 
+  </object>  
+  <object pk="Phase6" model="projectbudget.BudgetPhase">                 
+		 <field  name="code">Phase6</field>         
+		 <field  name="phase">Project Management</field> 
+		 <field  name="is_active">1</field>
+   </object>  
+  <object pk="Phase7" model="projectbudget.BudgetPhase">                 
+		<field  name="code">Phase7</field>         
+		<field  name="phase">Other</field>
+		 <field  name="is_active">1</field>   
+	</object>  
+
+  	<object pk="Cost1" model="projectbudget.BudgetCost">                 
+			<field  name="code">Cost1</field>         
+			<field  name="cost_type">Local Travel costs</field> 
+ 			<field  name="is_active">1</field>  </object>
+  	<object pk="Cost2" model="projectbudget.BudgetCost">                 
+			<field  name="code">Cost2</field>         
+			<field  name="cost_type">Intercity Travel costs</field>   
+ 			<field  name="is_active">1</field>
+ 	</object>
+  <object pk="Cost3" model="projectbudget.BudgetCost">                 
+		 <field  name="code">Cost3</field>        
+		 <field  name="cost_type">Special h/w or s/w costs</field> 
+		 <field  name="is_active">1</field> 
+  </object>
+  <object pk="Cost4" model="projectbudget.BudgetCost">                 
+		<field  name="code">Cost4</field>         
+		<field  name="cost_type">Telephone Calls/Other Infrastructure Costs</field> 
+ 		<field  name="is_active">1</field>  
+ </object>
+  <object pk="Cost5" model="projectbudget.BudgetCost">                 
+		<field  name="code">Cost5</field>         
+		<field  name="cost_type">Other costs</field> 
+ 		<field  name="is_active">1</field>  
+ </object>  
+
+  <object pk="Location1" model="projectbudget.BudgetLocation">                 
+		<field  name="code">Location1</field>         
+		<field  name="location">Onsite</field>   
+</object>
+  <object pk="Location2" model="projectbudget.BudgetLocation">                 
+		<field  name="code">Location2</field>         
+		<field  name="location">Offshore</field>   
+</object>
+</django-objects>
+

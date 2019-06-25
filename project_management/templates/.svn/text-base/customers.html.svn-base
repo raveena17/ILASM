@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} {{action}} {{ title }} {% endblock %}
+
+{% block programcontent %} {% endblock %}
+{% block programmenu %} {% endblock%}
+{% block taskmenus %} {% endblock %}
+
+{% block contentdata %}
+{% url projects.views.project_initiation as project_url %}
+{% url create_customer_contact as add_contact_url %}
+
+<style>
+.content{ padding-top: 10px; }
+.customercontent{ padding:10px; }
+.savecontent{ padding-left : 53px; padding-bottom: 20px; }
+.customer-contact{ padding : 10px; width: 100%; }
+.addcontact{ width: 100%; height: 23px; }
+#add-contact{ float: right; }
+.customer-contact-list{ padding-top: 20px; padding-bottom: 30px; width: 100%; }
+.contact-content { width: 100%; }
+.contact-list-headers{ font-weight: bold; width: 100%; }
+.contact-name, .contact-designation, .contact-telephone, .contact-email{ width: 25%; float: left; }
+</style>
+
+<script>
+$(document).ready(function(){
+    $('#cancel').click(function(){ window.location.href = '{{ project_url }}'; });
+    $('#add-contact').click(function(){ window.location.href = '{{ add_contact_url }}'; });
+    });
+</script>
+
+<form id = "customer" name="customer" action="." method = "post">
+    <input type="hidden" name="id" id="id" value="{{ id }}" />
+    <div class="header">
+        Create Customer
+    </div>
+    <div class="program-name-form-box">
+        <div class="content">
+            <div class="customercontent">
+                <table> {{customer.as_table}} </table>
+            </div>
+            <div class="savecontent">
+                <input type="submit" id="save" class="b1" value="save" \>
+                <input type="button" id="cancel" class="b1" value="cancel" \>
+            </div>
+
+            <div class="customer-contact">
+                <div class="addcontact">
+                    <input type="button" id="add-contact" name="add-contact" value="Add Contact" class="b1" \>
+                </div>
+
+                {% if customer_contacts %}
+                    <div class="customer-contact-list">
+                        <div class="contact-list-headers">
+                            <div class="contact-name">
+                                Name
+                            </div>
+                            <div class="contact-designation">
+                                Designation
+                            </div>
+                            <div class="contact-telephone">
+                                Telephone
+                            </div>
+                            <div class="contact-email">
+                                email
+                            </div>
+                        </div>
+
+                        {% for contact in customer_contacts %}
+                        <div class="contact-list-contact">
+                            <div class="contact-name">
+                              <a href="/customer/contact/update/{{contact.pk}}/">{{contact.salutation}}.{{contact.name}} </a>
+                            </div>
+                            <div class="contact-designation">
+                                {{contact.designation}}
+                            </div>
+                            <div class="contact-telephone">
+                                {{contact.telephone}}
+                            </div>
+                            <div class="contact-email">
+                                {{contact.email}}
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
+    <title>{% block title %}{{title}}{% endblock %} </title>
+
+    {% block stylesheet %}{% endblock %}
+
+    {% block script %}{% endblock %}
+</head>
+
+<body>
+{% load tags %}
+
+<!--[if IE]>
+   <div class="warning">Currently we are not supporting IE. Please Use other browsers for Enhanced Mindshare.</div>
+<![endif]-->
+
+<div class="header-section">        
+    {% block header-section %}
+       {% include 'header.html' %} 
+    {% endblock %}
+</div>
+
+<div  style="width:100%;height:100%">
+
+    {% block sidemenu %}
+        <div style="width:14%; vertical-align:top; background-color:#f6f6f6; float:left;">
+            {% include 'sidemenu.html' %}
+        </div>
+    {% endblock %} 
+
+    <div style="width:85%; vertical-align:top; float: left">
+        {% block contentdata %}{% endblock %}
+    </div>
+
+    <div class="program-drag-sec"></div>
+
+    {% block footer %}
+        <div style="clear:both"> {% include 'footer.html' %} </div>
+    {% endblock %}
+</div>
+
+</body>
+</html>

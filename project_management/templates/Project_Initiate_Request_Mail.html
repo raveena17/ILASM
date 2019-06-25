@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+
+<html lang="en">
+<body>
+    <p><b>Dear {{approved_by}},<br/>
+    &nbsp;&nbsp;&nbsp;Project {{project_name}} has been initiated by {{user_name}} on {{request_date}}</b></p>
+    <table width="50%">
+        <tr>
+            <td>Requested by</td><td>:</td>
+            <td>{{user_name}}</td>
+        </tr>
+        <tr>
+            <td>Requested on</td><td>:</td>
+            <td>{{request_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}</td>
+        </tr>
+        <tr>
+            <td>Business Unit</td><td>:</td>
+            <td>{{bus_unit}}</td>
+        </tr>
+        <tr>
+             <td>Delivery Centre</td><td>:</td>
+             <td>{{delivery_centre}}</td>
+
+        </tr>
+        <tr>
+            <td>Project Name</td><td>:</td>
+            <td>{{project_name}}</td>
+        </tr>
+        <tr>
+            <td>Project Category</td><td>:</td>
+            <td>{{project_category}}</td>
+        </tr>
+        <tr>
+            <td>Project Type</td><td>:</td>
+            <td>{{project_type}}</td>
+        </tr>
+        <tr>
+            <td>Expected Start Date</td><td>:</td>
+            <td>{{expected_start_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}</td>
+        </tr>
+        <tr>
+            <td>Expected End Date</td><td>:</td>
+            <td>{{expected_end_date|date:"M j, Y"|cut:"Jan 1, 2000"|cut:"Jan 1, 1900"|cut:"None" }}</td>
+        </tr>
+        <tr>
+            <td>Estimated Efforts(man-days)</td><td>:</td>
+            <td>{{estimated_efforts}}</td>
+        </tr>
+        <tr>
+            <td>Objectives</td><td>:</td>
+            <td>{{objective}}</td>
+        </tr>
+    </table>
+</body>
+</html>
+

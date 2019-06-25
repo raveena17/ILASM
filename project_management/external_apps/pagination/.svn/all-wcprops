@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination
+END
+._middleware.py
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/._middleware.py
+END
+.___init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/.___init__.py
+END
+middleware.py
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/middleware.py
+END
+._tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/._tests.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/__init__.py
+END
+._models.py
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/._models.py
+END
+tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/tests.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/SVN/Mindshare/!svn/ver/1127/trunk/src/PayIT/payit/apps/updated_code/project_management/external_apps/pagination/models.py
+END

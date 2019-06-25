@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block sidemenu %}{% endblock %}
+{% block header-section %}<div class="company-name" align="top"></div>{% endblock %}
+ {% block contentdata %}		
+		<div class="both"></div>
+        <div class="wr-ar">
+            <div class="program-hdr">
+                <br />
+                <span class="header">Log Detail</span>
+            </div>
+            <br />
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+            <tr>
+            <td align="left" valign="top" width="10%">              
+                    <span class="con-grey">Log Type </span> 
+            </td>
+            <td align="left" width="90%">
+                <div class="update-program-float" >
+                    <input type="text" name="logType" id="logType" maxlength="120" readonly style="width: 265px" value="{{Type}}"/>                    
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="top" width="10%">              
+                    <span class="con-grey">DateTime </span> 
+            </td>
+            <td align="left" width="90%">
+                <div class="update-program-float" >
+                    <input type="text" name="DateTime" id="DateTime" maxlength="120" readonly style="width: 265px"value="{{ log.timeStamp|date:"M j, Y : f A "}}"/>                    
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="top" width="10%">              
+                    <span class="con-grey">User </span> 
+            </td>
+            <td align="left" width="90%">
+                <div class="update-program-float" >
+                    <input type="text" name="userName" id="userName" maxlength="120" readonly style="width: 265px"value="{{ log.users.strip}}"/>                    
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="top" width="10%">              
+                    <span class="con-grey">Screen </span> 
+            </td>
+            <td align="left" width="90%">
+                <div class="update-program-float" >
+                    <input type="text" name="screenName" id="screenName" maxlength="120" readonly style="width: 265px"value="{{log.screen.strip}}"/>                    
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="top" width="10%">              
+                    <span class="con-grey">Action </span> 
+            </td>
+            <td align="left" width="90%">
+                <div class="update-program-float" >
+                    <input type="text" name="Actions" id="Actions" maxlength="120" readonly style="width: 265px" value="{{log.actionPerformed.strip}}"/>                    
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="top" style="width:10%;">                
+                    <span class="con-grey">Message  </span>
+            </td>
+            <td align="left" style="width:90%;">                
+                    <label>
+                        <textarea class="text-area" style="width: 370px;height:100px;" readonly name="messages" id="messages" value="{{log.notes.strip}}">{{log.notes.strip}}</textarea>
+                    </label>
+                
+            </td>
+        </tr>
+</table>
+        </div>
+
+<script type="application/javascript" language="JavaScript">
+window.onload = function(){
+	
+getComboValue('logTypeID','logType');
+}
+
+    function setFooter(){
+        alert('callfun');
+        var Qstr = window.location.search.substring();
+        alert(Qstr);
+    }
+    
+    function hidePage(){ 
+//            var Qstr = window.location.search.substring();
+//            alert(Qstr);
+            alert(Session("loginUserName"));   
+            document.getElementById('pageFooter').style.display = "none";
+            document.getElementById('showAll').style.display = "none";      
+            document.getElementById('showPage').style.display = "block";      
+    }
+    function showPage(){
+            document.getElementById('pageFooter').style.display = "block";
+            document.getElementById('showAll').style.display = "block";
+            document.getElementById('showPage').style.display = "none";      
+    }
+    
+ function getQueryVariable(val,urls,origin) {
+    try {
+        getURL = urls.href
+        var query = window.location.search.substring();        
+        urlVal = getURL.split("?");        
+        var vars = query.split("&");        
+        var queryString ='';
+        for (var i=0;i<vars.length;i++) {
+            valArry = vars[i].split("=")
+            if(queryString == '')            
+                if(origin == 'Sort')
+                {                    
+                    queryString = valArry[0] +'='+val
+                }
+                else                 
+                    queryString = vars[i]
+            else
+                 if(origin == 'Page')
+                 {                     
+                     pagVal = valArry[0] + '=' + val
+                     queryString = queryString + '&' + pagVal
+                 }
+                 else                 
+                    queryString = queryString +'&'+ vars[i]            
+             } 
+         if(queryString != '')
+            urls.href = urlVal[0]+queryString;
+         }
+     catch(ex){
+        window.location.href =urls.href;
+     }
+}		
+</script>
+
+{% endblock %}

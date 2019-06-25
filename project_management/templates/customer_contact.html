@@ -1,0 +1,64 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} {{action}} {{ title }} {% endblock %}
+
+{% block programcontent %} {% endblock %}
+{% block programmenu %} {% endblock%}
+{% block taskmenus %} {% endblock %}
+
+{% block contentdata %}
+{% url update_customer customer_id as customer_url %}
+
+<style>
+.content
+{
+    padding-top: 10px;
+}
+.customercontent
+{
+    padding:10px;
+}
+.savecontent
+{
+    padding-left : 53px;
+    padding-bottom: 20px;
+}
+#id_address
+{
+    height: 150px;
+    width: 250px;
+}
+</style>
+
+<script>
+$(document).ready(function(){
+    $('#cancel').click(function(){ window.location.href = '{{customer_url}}'; });
+    $('#id_customer').val('{{customer_id}}');
+    });
+</script>
+
+<form id = "customer_contacts" name="customer_contacts" action="." method = "post">
+    <input type="hidden" name="id" id="id" value="{{ id }}" />
+    <div class="header">
+        Create Customer Contact
+    </div>
+    <div class="program-name-form-box">
+        <div class="content">
+            <div class="customercontent">
+                <table> {{customer_contact.as_table}} </table>
+            </div>
+            <div class="savecontent">
+                <input type="submit" id="save" class="b1" value="save" \>
+                <input type="button" id="cancel" class="b1" value="cancel" \>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

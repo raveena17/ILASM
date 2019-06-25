@@ -1,0 +1,414 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+    <link rel="stylesheet" type="text/css" href="/static/css/jquery-ui-1.8.16.custom.css"> 
+    <style type="text/css">
+        .list-header { width: 100%; padding-top: 10px; }
+        .list-column { min-width: 7%; max-width: 20%; padding-top: 10px;  }
+        .search_code_review { padding-top: 10px; padding-bottom: 10px; width: 100%; }
+        
+        .contentWrap {
+            overflow-y:auto; 
+        }        
+        .apple_overlay {        
+            background-image:url(/static/css/images/black.png); 
+            width:450px;
+            display: none;
+            padding:35px;
+            font-size:11px;            
+        }
+        
+        .apple_overlay label {color: white;}
+    
+        /* default close button positioned on upper right corner */
+        .apple_overlay div.close {
+            background-image:url(/static/css/images/close.png);
+            position:absolute; right:5px; top:5px;
+            cursor:pointer;
+            height:35px;
+            width:35px;
+        }
+        
+        td.success{
+            background-image: url(/static/css/images/green_cirlce.png);
+            background-repeat: no-repeat;
+            background-position: center;
+            text-align: center;
+            vertical-align: top;
+        }
+        td.failure{
+            background-image: url(/static/css/images/red_circle.png);
+            background-repeat: no-repeat;
+            background-position: center;
+            text-align: center;
+            vertical-align: top;
+            }     
+    </style>
+{% endblock %}
+{% block script %}
+    <script src="http://cdn.jquerytools.org/1.1.2/full/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-ui-1.8.18.custom.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/jquery.datePicker.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('table.tablesorter').tablesorter();
+            $("a[rel]").overlay({ 
+                expose: 'transparent', 
+            });
+            $( ".dateclass" ).datepicker({
+                maxDate: '+0d',
+                dateFormat: 'yy-mm-dd'
+            });
+            //$('#review_date').datepicker({
+            //    maxDate: '+0d',
+            //    dateFormat: 'yy-mm-dd',
+            //});
+        });
+        
+        var closeOverlay = function(){
+            $("a[rel]").each(function(){
+                $(this).overlay({oneInstance: false, api: true}).close();
+                });
+        }
+        String.prototype.toProperCase = function(){
+            return this.toLowerCase().replace(/(^[a-z]| [a-z])/g, 
+                function($1){
+                    return $1.toUpperCase();
+                }
+            );
+        };
+        
+        function get_team_members(obj, project_str){
+            url = "/codereview/"+ obj.value +"/get_team_members/"
+            $.ajax({ 
+                type : "POST",
+                "dataType":"json",
+                url : url,
+                success : function(json){
+                    result = JSON.parse(json);
+                    option_str = '<option value="" >Select</option>'
+                    for(var i=0; i<result.length; i++){
+                        option_str += '<option value="' + result[i].pk + '">' + result[i].fields.first_name + '</option>'
+                    }
+                    $('#' + project_str + 'engineer').html(option_str);
+                    $('#' + project_str + 'reviewer').html(option_str);
+                    $('#' + project_str + 'reviewer').val('{{ request.user.id }}');
+                } ,
+            });
+        }
+        
+        function clear_date(){
+            $('#from_date').val('')
+            $('#to_date').val('')
+        }
+        
+        function fill_code_review(code_review_id, project, review_date, patch_code, comments, patch, build, testcase, option_str, engineer, reviewer){
+            $('#code_review_id').val(code_review_id)
+            $('#project').val(project)
+            $('#review_date').val(review_date)
+            $('#patch_code').val(patch_code)
+            $('#comments').val(comments)
+            if (patch == true){
+                $('#patch1').attr('checked', true);
+                $('.patch_success').css('display','')
+                if (build == true){
+                    $('#build1').attr('checked', true);
+                }
+                else if (build == false){
+                    $('#build2').attr('checked', true);
+                }
+                else{
+                    $("#build1").attr('checked', false);
+                    $("#build2").attr('checked', false);
+                }
+                if (testcase == true){
+                    $('#testcase1').attr('checked', true);
+                }
+                else if (testcase == false){
+                    $('#testcase2').attr('checked', true);
+                }
+                else{
+                    $("#testcase1").attr('checked', false);
+                    $("#testcase2").attr('checked', false);
+                }
+            }
+            else if (patch == false){               
+                $('#patch2').attr('checked', true);
+                $('.patch_success').css('display','none')
+            }
+            else{
+            	 $("#patch1").attr('checked', false);
+                $("#patch2").attr('checked', false);
+                $("#build1").attr('checked', false);
+                $("#build2").attr('checked', false);
+                $("#testcase1").attr('checked', false);
+                $("#testcase2").attr('checked', false);
+                $('.patch_success').css('display','none')
+                
+            }
+            $('#engineer').html(option_str);
+            $('#reviewer').html(option_str);
+            $('#engineer').val(engineer)
+            $('#reviewer').val(reviewer)
+        }
+        
+        function edit_code_review(code_review_id){
+            if (code_review_id == ''){
+                option_str = '<option value="">Select</option>'
+                '{% for member in page_data.last_updated_pjt_team %}'
+                    option_str += '<option value="' + '{{ member.id }}' + '">' + '{{ member.first_name }}' + '</option>'
+                '{% endfor %}'
+                fill_code_review('0','{{ page_data.last_updated_pjt }}', $.datepicker.formatDate('yy-mm-dd', new Date()), '', '', null, null, null, option_str, '{{ page_data.last_updated_eng }}', '{{ request.user.id }}')
+            }
+            else{
+                url = "/codereview/edit/" + code_review_id + '/'
+                $.ajax({ 
+                    type : "POST",
+                    "dataType":"json",
+                    url : url,
+                    success : function(result){
+                        code_review = JSON.parse(result[0].code_review)[0];
+                        team_members = JSON.parse(result[0].team_members)
+                        option_str = '<option value="" >Select</option>'
+                        for(var i=0; i<team_members.length; i++){
+                            option_str += '<option value="' + team_members[i].pk + '">' + team_members[i].fields.first_name + '</option>'
+                        }
+                        fill_code_review(code_review.pk, code_review.fields.project, code_review.fields.review_date, code_review.fields.patch_code, code_review.fields.comments, code_review.fields.patch, code_review.fields.build, code_review.fields.test_case, option_str, code_review.fields.engineer, code_review.fields.reviewer)
+                    }
+                });
+            }
+        }
+        
+        function validation(){
+            flag = true
+            check_parameters = ['project', 'reviewer', 'engineer', 'review_date']
+            for (var i=0; i<check_parameters.length; i++){
+                if ($('#' + check_parameters[i]).val() == ''){
+                    alert(check_parameters[i].toProperCase() + ' should not be empty.')
+                    $('#' + check_parameters[i]).focus()
+                    flag = false
+                    break;
+                }
+            }            
+            if (flag && $("input[name='patch']:checked").val() == undefined){
+                alert('Please select patch')
+                flag = false
+            }
+            return flag
+        }
+        
+        function search_code_review(){
+            $('#code_reviewlist').attr('action','{% url codereview:list %}?search=search')
+            $('#code_reviewlist').submit()
+        }
+        
+        function save_code_review(){
+            if (validation()){                
+                $('#code_reviewlist').attr('action','{% url codereview:save %}')
+                $('#code_reviewlist').submit()
+            }
+        }
+    </script>
+{% endblock %}
+{% block title %} Code Review Metrics {% endblock %}
+{% block contentdata %}
+    <form id="code_reviewlist" name="code_reviewlist" action="{% url codereview:save %}" method="POST" />
+        <div class="list-header">
+                <span class="header">Code Review Metrics</span>
+        </div>
+        <div class="program-blue-box" style="height: 100px" >
+            <div class="search_code_review">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            Project:
+                        </td>
+                        <td>
+                            <select style="width: 100px" onchange="get_team_members(this, 'search_')" id="search_project" name="search_project" >
+                                <option value="" >Select</option>
+                                {% for each_pjt in page_data.projects %}
+                                    <option  value={{ each_pjt.id }} {% if page_data.selected_project == each_pjt.id %} selected="selected" {% endif %} >{{ each_pjt.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            Reviewer:
+                        </td>
+                        <td>
+                            <select style="width: 100px" id="search_reviewer" name="search_reviewer">
+                                <option value="">Select</option>
+                                {% for member in page_data.team_members %}
+                                    <option value="{{ member.id }}" {% if page_data.search_reviewer == member.id %} selected="selected" {% endif %} >{{ member.first_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            Engineer:
+                        </td>
+                        <td>
+                            <select style="width: 100px" id="search_engineer" name="search_engineer">
+                                <option value="">Select</option>
+                                {% for member in page_data.team_members %}
+                                    <option value="{{ member.id }}" {% if page_data.selected_eng == member.id %} selected="selected" {% endif %} >{{ member.first_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>From Date: </td>
+                        <td><input readonly="readonly" class="dateclass" size="10" id="from_date" name="from_date" value="{{ page_data.selected_from_date }}" /></td>
+                        <td>To Date: </td>
+                        <td><input readonly="readonly" class="dateclass" size="10" id="to_date" name="to_date" value="{{ page_data.selected_to_date }}" />
+                        <input class="b1" type="button" value="Clear date" onclick="clear_date()" /></td>
+                    </tr>
+                    <tr>
+                        <td>Patch: </td>
+                        <td>
+                            <select style="width: 100px" id="search_patch" name="search_patch">
+                                <option value="">Select</option>
+                                <option value="1" {% if page_data.selected_patch == '1' %} selected="selected" {% endif %} >Accept</option>
+                                <option value="0" {% if page_data.selected_patch == '0' %} selected="selected" {% endif %} >Reject</option>
+                                <option value="2" {% if page_data.selected_patch == '2' %} selected="selected" {% endif %} >None</option>
+                            </select>
+                        </td>
+                        <td>Build: </td>
+                        <td>
+                            <select style="width: 100px" id="search_build" name="search_build">
+                                <option value="">Select</option>
+                                <option value="1" {% if page_data.selected_build == '1' %} selected="selected" {% endif %} >Success</option>
+                                <option value="0" {% if page_data.selected_build == '0' %} selected="selected" {% endif %} >Failure</option>
+                                <option value="2" {% if page_data.selected_build == '2' %} selected="selected" {% endif %} >None</option>
+                            </select>
+                        </td>
+                        <td>Testcase: </td>
+                        <td>
+                            <select style="width: 100px" id="search_testcase" name="search_testcase">
+                                <option value="">Select</option>
+                                <option value="1" {% if page_data.selected_testcase == '1' %} selected="selected" {% endif %} >Success</option>
+                                <option value="0" {% if page_data.selected_testcase == '0' %} selected="selected" {% endif %} >Failure</option>
+                                <option value="2" {% if page_data.selected_testcase == '2' %} selected="selected" {% endif %} >None</option>
+                            </select>
+                            <td align="right" ><input class="b1" type="button" value="Search" onclick="search_code_review()" /></td>
+                        </td>
+                    </tr>
+                </table>                
+            </div>
+        </div>
+        <br>
+        <div>
+            <a href="#" rel="#overlay" onclick="edit_code_review('')" class="b1"> Add Code Review</a>
+            <div class="apple_overlay" id="overlay" >
+                <div class="contentWrap" >
+                    <table style="height: 400px;">
+                        <tbody>
+                            <tr>
+                                <td><label><b>Project:</b></label></td>
+                                <td>
+                                    <input id="code_review_id" name="code_review_id" type="hidden" />
+                                    <select style="width: 200px" onchange="get_team_members(this, '')" id="project" name="project" >
+                                        <option value="" >Select</option>
+                                        {% for each_pjt in page_data.projects %}
+                                            <option value={{ each_pjt.id }} {% if page_data.selected_project == each_pjt.id %} selected="selected" {% endif %} >{{ each_pjt.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label><b>Reviewer:</b></label></td>
+                                <td>
+                                    <select style="width: 200px" id="reviewer" name="reviewer">
+                                        <option value="">Select</option>
+                                        {% for member in page_data.team_members %}
+                                            <option value="{{ member.id }}"   {% if request.user.id == member.id %} selected="selected" {% endif %}>{{ member.first_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label><b>Engineer</b></label></td>
+                                <td>
+                                    <select style="width: 200px" id="engineer" name="engineer">
+                                <option value="">Select</option>
+                                {% for member in page_data.team_members %}
+                                    <option value="{{ member.id }}">{{ member.first_name }}</option>
+                                {% endfor %}
+                            </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label><b>Review Date:</b></label></td>
+                                <td><input class="dateclass" size="15" id="review_date" name="review_date" value="2013-12-12" /></td>
+                            </tr>
+                            <tr>
+                                <td><label><b>Patch Id:</b></label></td>
+                                <td><input maxlength="15" size="15" id="patch_code" name="patch_code" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td><label><b>Patch:</b></label></td>
+                                <td>
+                                    <input value="1" type="radio" name="patch" id="patch1" onclick="$('.patch_success').css('display','')" /><label>Accept </label>&nbsp;&nbsp;&nbsp;
+                                    <input value="0" type="radio" name="patch" id="patch2" onclick="$('.patch_success').css('display', 'none')" /><label>Reject</label>
+                                </td>
+                            </tr>
+                            <tr class="patch_success" style="display: none">
+                                <td><label><b>Build:</b></label></td>
+                                <td><input value="1"  type="radio" name="build"  id="build1" /><label>Success</label> &nbsp; <input value="0"  id="build2" name="build" type="radio" /><label>Failure</label></td>
+                            </tr>
+                            <tr class="patch_success" style="display: none">
+                                <td><label><b>Testcases:</b></label></td>
+                                <td><input value="1" type="radio"  name="testcase" id="testcase1" /><label>Success</label> &nbsp; <input value="0"  name="testcase"  type="radio" id="testcase2" /><label>Failure</label></td>
+                            </tr>
+                            <tr>
+                                <td><label><b>Comments:</b></label></td>
+                                <td><textarea cols="40" rows="6" name="comments" id="comments" ></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="button" id="save" name="save" value="Save" class="b1" onclick="save_code_review()"/>
+                    <input type="button" id="cancel" name="cancel" value="cancel" class="b1" onclick="closeOverlay()"/>
+                </div>
+            </div>
+        </div>
+        
+        <div id="code_reviewlist_div" >
+            <table id="code_review" class="tablesorter">
+                <thead class="list-header">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold" width="6%" >Edit</th>
+                        <th class="header link-line-bg con-white-bold" width="17%">Project</th>
+                        <th class="header link-line-bg con-white-bold" width="15%">Reviewer</th>
+                        <th class="header link-line-bg con-white-bold" width="15%">Engineer</th>
+                        <th class="header link-line-bg con-white-bold" width="10%">Review Date</th>
+                        <th class="header link-line-bg con-white-bold" width="7%">Patch</th>
+                        <th class="header link-line-bg con-white-bold" width="7%">Build</th>
+                        <th class="header link-line-bg con-white-bold" width="10%">TestCases</th>
+                        <th class="header link-line-bg con-white-bold" width="15%">Last Updated</th>
+                    </tr>
+                </thead>                
+                <tbody>
+                    {% for each_review in page_data.code_review %}
+                        <tr class="list-row">
+                            <td class="list-column">
+                                <a href="#" rel="#overlay" onclick="edit_code_review('{{ each_review.id }}')" >Edit</a>
+                            </td>
+                            <td class="list-column">{{ each_review.project.name  }}</td>
+                            <td class="list-column">{{ each_review.reviewer.first_name  }}</td>
+                            <td class="list-column">{{ each_review.engineer.first_name  }}</td>
+                            <td class="list-column">{{ each_review.review_date  }}</td>
+                            <td {% if each_review.patch != None %} {% if each_review.patch == 1 %} class="success" {% else %} class="failure" {% endif %} {% endif %}><input type="hidden" value="{{ each_review.patch }}" /></td> 
+                            <td {% if each_review.build != None %}  {% if each_review.build == 1 %} class="success" {% else %} class="failure" {% endif %} {% endif %}><input type="hidden" value="{{ each_review.build }}" /></td>
+                            <td {% if each_review.test_case != None %} {% if each_review.test_case == 1 %} class="success" {% else %} class="failure" {% endif %} {% endif %} ><input type="hidden" value="{{ each_review.test_case }}" /></td>
+                            <td class="list-column">{{ each_review.modified_on|date:"Y-m-d"  }}</td> 
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="footer">
+                    
+                </tfoot>
+            </table>
+        </div>  
+    </form>
+{% endblock %}

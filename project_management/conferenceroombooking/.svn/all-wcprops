@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking
+END
+admin.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/admin.py
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/__init__.py
+END
+eventviews.py
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/eventviews.py
+END
+cron.py
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/cron.py
+END
+icalendar.py
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/icalendar.py
+END
+tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/tests.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/models.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/urls.py
+END
+forms.py
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/SVN/Mindshare/!svn/ver/1116/trunk/src/PayIT/payit/apps/updated_code/project_management/conferenceroombooking/forms.py
+END

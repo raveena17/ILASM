@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block programcontent %} {% endblock %}
+{% block programmenu %}{% endblock %}
+{% block taskmenus %}{% endblock %}
+ {% block contentdata %}
+ {%load tags%}
+ <script language="javascript" type="application/javascript">
+function ValidatePage()
+{
+	var flg = true;
+	dateClean('fromDate');
+	dateClean('toDate');	
+	if(!isDate(document.getElementById("fromDate").value)){
+		alert('Enter valid from date');
+		document.getElementById('fromDate').focus();
+		flg = false;
+	}
+	
+	
+	if( flg && !isDate(document.getElementById("toDate").value)){
+		alert('Enter valid to date');
+		document.getElementById('toDate').focus();
+		flg = false;
+	}
+	
+	
+	if( flg && !isBetweenDate(document.getElementById("fromDate").value,document.getElementById("toDate").value)){
+		alert ('To date occurs before the from date');
+		document.getElementById('toDate').focus();
+		flg = false;
+	}
+	
+	
+	return flg;
+}
+</script> 
+
+<script language="JavaScript">
+	
+function init() 
+ { 
+	/*dateMask('fromDate');
+   dateMask('toDate');*/
+ };
+
+if (navigator.appName == "Microsoft Internet Explorer")
+{
+ window.onload = init;
+}
+else if (navigator.appName == "Netscape")
+{
+ /* for Mozilla */
+   if (document.addEventListener) 
+   {
+       document.addEventListener("DOMContentLoaded", init, false);
+   }
+}
+else
+{
+ window.onload = init;
+}   
+</script>
+<script language="JavaScript">
+function popUp(URL,winName,features){
+	window.open(URL,winName,features);
+}
+</script>
+    <form id="showLog" name="showLog" method="post" action="../admin.ShowLog/" onsubmit="return ValidatePage();" >
+        <div class="wr-ar">
+            <div class="program-hdr">
+                <br />
+                <span class="header">{{title}}</span>
+            </div>
+            <br />          
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td style="width: 50%; text-align: center; vertical-align: middle;">
+                        <label id="msg" class="Arial-12-maroon">
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" class="program-name-form-box">
+                        <div align="center" style="padding-top: 15px; padding-bottom: 5px; padding-left: 15px;
+                            padding-right: 15px;">
+                            <table width="100%" border="0" cellspacing="2" cellpadding="0">
+							<tr>
+                                    <td align="left" valign="middle" class="con-grey" style="width: 10%;">
+                                        Log Type<span class="Arial-12-grey"></span></td>
+                                    <td align="left" valign="middle" style="width: 23%;">
+                                    	<input type="hidden" name="logTypeID" id="logTypeID" value="{{log.logType}}" />
+                                        <select id="logType" name = "logType" style="width: 184px">
+                                            <option value ="Audit Log" selected="selected">Audit Log</option>
+					                        <option value ="Error Log" >Error Log</option>
+                                            <option value ="Event Log" >Event Log</option>
+					                        <option value ="Security Log" >Security Log</option>
+                                        </select>
+                                    </td>
+							</tr>
+							<tr>
+                                    <td align="left" valign="middle" class="con-grey" style="width: 10%;">
+                                       From Date</td>
+                                    <td align="left" style="width: 20%" valign="middle">
+                                    	<input type="text" style="width: 100px" name="fromDate" id="fromDate"
+                                            class="vDateField"  value="{{log.fromDate}}" maxlength="15" />
+                                    </td>
+                                    <td align="left" valign="middle" class="con-grey" style="width: 10%;">
+                                       &nbsp; &nbsp;To Date 
+                                    </td>
+                                    <td align="left" valign="middle" style="width: 30%;">
+                                    	 <input type="text" style="width: 100px" name="toDate" id="toDate"
+                                            class="vDateField"  value="{{log.toDate}}" maxlength="15"/>
+                                        &nbsp; &nbsp;&nbsp;</td>
+                                
+                                    <td  align="left" valign="top" >
+                                        <input id="Submit1" name="Submit1" type="submit" title="Show Log"  value="Show Log"  class="b1" align="right" />
+                                        </td>
+                                     <td></td>
+                                </tr>
+								
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+<div  style="text-align:center;">
+    <table class="program-drag-sec-box" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr height="30px" align="left" valign="middle"  class="con-white-bold" >             
+            {% for headCol in header_cols %}
+				    <td align="left"   class="link-line-bg" style="padding-left: 10px;" >
+				        <a href="../admin.ShowLog/?sortCol={{headCol}}&pageNo=" class="con-white-bold" onclick="getQueryVariable({{headCol}},this,'Sort');">{{headCol}} </a>
+				    </td>
+            {% endfor %}
+        </tr>   
+        {% for pageRow in page_list %}
+        <tr class="program-row"  height="30px" align="left" valign="middle"  id ="tooltip" >              
+	<td align="left"  class="con-grey" style="padding-left:3" width="20%" >     
+	   &nbsp;&nbsp;<a href="" onclick="popUp('../GetLogDetail/?ids={{pageRow.pk}}&logType={{log.logType}}','LogDetail','scrollbars=yes,width=500,height=500')"> {{ pageRow.timeStamp|date:"M j, Y : f A "}}</a>
+	</td>
+	<td align="left"  class="con-grey" style="padding-left:3" width="20%" >     
+	   &nbsp;&nbsp;{{ pageRow.users|truncatewords:"3"}}
+	</td>
+	<td align="left"  class="con-grey" style="padding-left:3" width="15%" >     
+	   &nbsp;&nbsp; {{ pageRow.screen|truncatewords:"3"}}
+	</td>
+	<td align="left"  class="con-grey" style="padding-left:3" width="15%" >     
+	   &nbsp;&nbsp; {{ pageRow.actionPerformed|truncatewords:"3"}}
+	</td>
+	<td align="left"  class="con-grey" style="padding-left:3" >     
+	   &nbsp;&nbsp; {{ pageRow.notes|truncchar:45}}
+	</td>
+        </tr>
+        {% endfor %}              
+    </table>
+    <table width="100%" style="text-align:center;">
+     <tr>     
+            <td style="text-align:right;">            
+                <span id="Span1" class="con-grey">Pages :{% for i in page_range %} <a href="../admin.ShowLog/?sortCol=&pageNo={{i}}" onclick="getQueryVariable({{i}},this,'Page');">
+                    {{i}}</a> | {% endfor %}{% ifequal page_range None %}<a href onclick="getQueryVariable('1',this,'Page');"> 1</a>{% endifequal %} |</span> 
+                    <span id="Span2" class="con-grey">{% ifequal page_range None %}<a href onclick="getQueryVariable('1',this,'Page');">{% else %}<a href="../admin.ShowLog/?sortCol=&pageNo=0" onclick="getQueryVariable(0,this,'Page');">{% endifequal %} ShowAll</a></span>            
+           </td>
+        </tr>
+    </table>
+</div>
+        </div>
+    </form>
+
+<script type="application/javascript" language="JavaScript">
+window.onload = function(){
+	/*colorcode = templateColor().substring(0,1);
+ 	try {
+		changeColors(colorcode);
+	}
+	catch(err) {}*/
+getComboValue('logTypeID','logType');
+}
+
+    function setFooter(){        
+        var Qstr = window.location.search.substring();
+        alert(Qstr);
+    }
+    
+    function hidePage(){ 
+//            var Qstr = window.location.search.substring();
+//            alert(Qstr);
+            alert(Session("loginUserName"));   
+            document.getElementById('pageFooter').style.display = "none";
+            document.getElementById('showAll').style.display = "none";      
+            document.getElementById('showPage').style.display = "block";      
+    }
+    function showPage(){
+            document.getElementById('pageFooter').style.display = "block";
+            document.getElementById('showAll').style.display = "block";
+            document.getElementById('showPage').style.display = "none";      
+    }
+    
+ function getQueryVariable(val,urls,origin) {
+    try {
+        getURL = urls.href
+        var query = window.location.search.substring();        
+        urlVal = getURL.split("?");        
+        var vars = query.split("&");        
+        var queryString ='';
+        for (var i=0;i<vars.length;i++) {
+            valArry = vars[i].split("=")
+            if(queryString == '')            
+                if(origin == 'Sort')
+                {                    
+                    queryString = valArry[0] +'='+val
+                }
+                else                 
+                    queryString = vars[i]
+            else
+                 if(origin == 'Page')
+                 {                     
+                     pagVal = valArry[0] + '=' + val
+                     queryString = queryString + '&' + pagVal
+                 }
+                 else                 
+                    queryString = queryString +'&'+ vars[i]            
+             } 
+         if(queryString != '')
+            urls.href = urlVal[0]+queryString;
+         }
+     catch(ex){
+        window.location.href =urls.href;
+     }
+}		
+</script>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/SVN/Mindshare/!svn/ver/1142/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1142/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/SVN/Mindshare/!svn/ver/1131/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/__init__.py
+END
+tests.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1131/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/tests.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/SVN/Mindshare/!svn/ver/1131/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/models.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/SVN/Mindshare/!svn/ver/1142/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/urls.py
+END
+context_processors.py
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/SVN/Mindshare/!svn/ver/1131/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/context_processors.py
+END
+forms.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/SVN/Mindshare/!svn/ver/1131/trunk/src/PayIT/payit/apps/updated_code/project_management/timesheetnew/forms.py
+END

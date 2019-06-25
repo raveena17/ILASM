@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} Add Contact {% endblock %}
+{% block programcontent %} {% endblock %} {% block programmenu %} {% endblock %}
+{% block taskmenus %} {% endblock %}
+
+{% block contentdata %}
+
+<script language="JavaScript">
+function AddNewDept()
+{
+    var selObj = document.getElementById('departmentID');
+  if (selObj.options[selObj.selectedIndex].value == "Add New")
+    document.getElementById('txtdept').style.display="block";
+ else
+    document.getElementById('txtdept').style.display="none";
+}
+
+function setHide()
+{
+	document.getElementById("id").disabled =false;
+	document.getElementById("externalType").disabled =false;
+	document.getElementById("departmentID").disabled =true;
+
+}
+function setVisibility()
+{
+	document.getElementById("id").disabled =true;
+	document.getElementById("externalType").disabled =true;
+	document.getElementById("departmentID").disabled =false;
+}
+function showhide()
+{
+	if(document.getElementById("typeid") != null)
+	{
+		if(document.getElementById("typeid").value == "External")
+		{
+			document.getElementById("External").checked=true;
+			setHide()
+		}
+		else
+		{
+			document.getElementById("Internal").checked=true;
+
+			if(document.getElementById("previlage").value == "Executive")
+				document.getElementById("rdnormal").checked=true;
+			else
+				document.getElementById("normal").checked=true;
+		}
+
+	}
+}
+
+function userCheckHide(){
+	if (document.getElementById("External").checked == true){
+		setHide();
+	}
+	else{
+		setVisibility();
+	}
+}
+
+function setaction(action)
+{
+	var formObj = document.getElementById("saveUser");
+	var newAttr = document.createAttribute("action");
+	newAttr.nodeValue = action;
+	formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+	formObj.setAttributeNode(newAttr);
+}
+function setCancelFormAction(action)
+{
+	setaction(action);
+	return true;
+}
+
+function setDeleteFormAction(action){
+ custID = document.getElementById("customer").value;
+ var formObj = document.getElementById("saveUser");
+ var newAttr = document.createAttribute("action");
+ newAttr.nodeValue = action;
+ formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+ formObj.setAttributeNode(newAttr);
+ window.location.href = '/UpdateCustomer/?ids='+custID;
+}
+
+function setFormAction(action){
+ var flg = false;
+ if (ReqValidate('userName,email','User Name,Email'))
+	{
+		if(document.getElementById("External").checked)
+		{
+
+				if(document.getElementById("externalType").value != 0)
+				{
+					if(emailValidation('email'))
+				   {
+						setaction(action);
+						flg = true;
+					}
+				}
+				else
+				{
+					alert('Select an External Type from the list');
+					document.getElementById('externalType').focus();
+					flg = false;
+				}
+
+		}
+	}
+
+if(flg && !isOfficeNum(document.getElementById("mobile").value)){
+alert (' Enter valid mobile number');
+document.getElementById('mobile').focus();
+flg = false;
+}
+
+if(flg && !isOfficeNum(document.getElementById("officeNo").value)){
+alert (' Enter valid office number');
+document.getElementById('officeNo').focus();
+flg = false;
+}
+
+if(flg && !isOfficeNum(document.getElementById("extensionNo").value)){
+alert (' Enter valid extension number');
+document.getElementById('extensionNo').focus();
+flg = false;
+}
+
+ return flg;
+}
+
+</script>
+<script language="JavaScript">
+window.onload = function(){
+	document.getElementById('userName').focus();
+	setHide();
+}
+</script>
+<script type="application/javascript">
+/*
+function getSubType(event)
+{
+     var form = this;
+     var data = {}
+     getdata = $("#externalType").val()
+
+$.getJSON("/GetExternalSubType/?typeid="+getdata,
+function(json)
+{
+ document.getElementById('externalSubType').options.length =0;
+	var newLi = $('<option  value =0 selected >Select</option>');
+	$("#externalSubType").prepend(newLi);
+	if (json.length > 0)
+	{
+		for (j =json.length-1 ;j >=0;j--)
+		{
+		  newLi = $('<option value='+json[j].id+'>'+json[j].name+'</option>');
+			$("#externalSubType").prepend(newLi);
+		}
+	}
+ }
+);
+}
+
+function init()
+ {
+   document.getElementById("externalSubType").value = document.getElementById("subtype").value;
+ };
+
+if (navigator.appName == "Netscape")
+{
+  for Mozilla
+   if (document.addEventListener)
+   {
+       document.addEventListener("DOMContentLoaded", init, false);
+   }
+}
+else
+{
+ window.onload = init;
+} */
+</script>
+    <form id="saveUser" name="saveUser" method="post" action=".">
+        <div class="wr-ar">
+        <div style="float:left">
+            <div class="update-program-hdr">
+            	<span class="header">{% ifequal action 'Create' %} Add {% else %} Update {% endifequal %} Contact</span>
+            </div></div>
+             <div style="float:left;padding-left:55%;padding-top:13px;">
+            <table>
+              <tr><td style="white-space:nowrap">
+              <input name="contactSave" type="submit" title="Save"  id="contactSavetop" value="Save" class="b1" onclick="return setFormAction('../CustomerContactSave/');" />
+              <input name="contactSave&Continue" type="submit" title="Save and Continue"  id="contactSave&Continuetop" value="Save and Continue" class="b1" onclick="return setFormAction('../CustomerContactSaveAndContinue/');" />
+              <input name="contactDeletetop" type="submit" id="contactDeletetop" value="Delete" class="b1" onclick="return setFormAction('../CustomerContactDelete/?ids={{funda_user.pk}}');" />
+              <input name="cancel" type="submit" id="canceltop" value="Cancel" class="b1" onclick="return setCancelFormAction('/UpdateCustomer/?ids={{id}}');" />
+            </td>
+             </tr>
+           </table>
+          </div>
+          <div class="both"></div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td style="width: 50%; text-align: center; vertical-align: middle;">
+                  <label id="msg" class="Arial-12-maroon">{{ duplicatealert }}</label>
+                  <input type="hidden" id="customer" name="customer" value="{{id}}" />
+                  </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top" class="program-name-form-box">
+                        <div align="center" style="padding-top: 15px; padding-bottom: 5px; padding-left: 15px;padding-right: 15px;">
+                            <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                             <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                       User Name*</td>
+                                    <td width="89%" height="28" align="left" valign="top">
+                                        <input type="text" maxlength="120" name="userName" id="userName" value="{{funda_user.name.strip}}"
+                                            style="width: 152px" />
+
+                                        {% if userProfileDetails %}
+                                        {% else %}
+                                            {% if funda_user.address.pk %}
+                                            <input type="hidden" maxlength="120" name="address_id" id="address_id" value="{{funda_user.address.pk}}" />
+                                            {% endif %}
+                                            {% endif %}
+                                        <input type="hidden" maxlength="120" name="authUserID" id="authUserID" value="{% if userProfileDetails %}{% else %}{{funda_user.userProfile.authUser.pk}}{% endif %}" />
+                                        <input type="hidden" maxlength="120" name="userID" id="userID" value="{{funda_user.pk}}" />
+													 <input type="hidden" maxlength="120" name="userProfileID" id="userProfileID" value="{% if userProfileDetails %}{% else %}{{funda_user.userProfile.userProfileID}}{% endif %}" />
+													 <input type="hidden" maxlength="120" name="action" id="action" value="{{action}}" />
+
+											</td>
+                                </tr>
+                                <tr>
+                              <td align="left" valign="middle" colspan="2">
+                                  <div id="sub3" > <! style="display: None;" -->
+                                      <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                                          <tr>
+                                              <td width="15%" align="left" valign="middle" class="con-grey">
+                                                  Job Title</td>
+                                              <td width="89%" height="28" align="left" valign="top">
+                                              <input type="text" maxlength="120" name="title" id="title" value="{{funda_user.title.strip}}"
+                                            style="width: 152px" />
+                                              </td>
+                                          </tr>
+                                      </table>
+                                  </div>
+                              </td>
+                                </tr>
+                                <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                        User Type*
+                                    </td>
+                                    <td width="89%" height="28" align="left" valign="middle">
+                                        <table border="0" cellpadding="1" cellspacing="1">
+                                            <tr>
+
+                                                {% if funda_user %} {% ifequal funda_user.sysuserType 'Internal' %}
+                                                <td width="89%" height="28" align="left" valign="middle">
+                                                    <input type="radio" value="Internal" checked name="userType" disabled id="Internal" onclick="javascript: setVisibility();" />
+                                                    <span class="con-grey">Internal</span>
+                                                    <input type="radio" value="External" {% if userProfileDetails %}{% else %}disabled{% endif %} name="userType" id="External" onclick="javascript: setHide();" />
+                                                    <span class="con-grey">External</span></td>
+                                                {% else %}
+                                                <td width="89%" height="28" align="left" valign="middle">
+                                                    <input type="radio" value="Internal" disabled name="userType" id="Internal" onclick="javascript: setVisibility();" />
+                                                    <span class="con-grey">Internal</span>
+                                                    <input type="radio" value="External" checked name="userType" id="External" onclick="javascript: setHide();" />
+                                                    <span class="con-grey">External</span></td>
+                                                {% endifequal %} {% else %}
+                                                <td width="89%" height="28" align="left" valign="middle">
+                                                    <input type="radio" value="Internal" disabled name="userType" id="Internal" onclick="javascript: setVisibility();" />
+                                                    <span class="con-grey">Internal</span>
+                                                    <input type="radio" value="External" checked name="userType" id="External" onclick="javascript: setHide();" />
+                                                    <span class="con-grey">External</span></td>
+                                                {% endif %}
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" valign="middle" colspan="2">
+                                        <div id="sub3" > <! style="display: None;" -->
+                                            <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                                                <tr>
+                                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                                        Business Unit*</td>
+                                                    <td width="89%" height="28" align="left" valign="top">
+                                                        <select id="id" name="id" class="select-box" style="width: 157px">
+
+
+                                                            {% for customer in customers %}
+                                                                <option value="{{customer.id}}">{{customer.name|cut:"None"}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" valign="middle" colspan="2">
+                                        <div id="sub6"><! style="display: None;" -->
+                                            <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                                                <tr>
+                                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                                        External Type*</td>
+
+                                                    <td width="89%" height="28" align="left" valign="top">
+                                                        <select id="externalType" name="externalType" class="select-box" style="width: 157px">
+															{% if funda_user %}
+															{% ifequal funda_user.userType.name 'None' %}
+															<option value="0">Select</option>
+															{% else %}
+															<option value="{{funda_user.userType.userType}}">{{funda_user.userType.name|cut:"None"}}</option>
+														{% endifequal %}
+															{% else %}
+                                              <option value="0">Select</option>
+															{% endif %}
+															{% for type in userTypes|dictsort:"name" %}
+															{% ifequal type.name funda_user.userType.name %}
+																{% else %}
+															<option value="{{type.userType}}">{{type.name|cut:"None"}}</option>
+															{% endifequal %}
+															{% endfor %}
+                                                            <!-- <option selected="selected">Customer</option>
+                                                            <option>Supplier</option>
+                                                            <option>Contractor</option>
+                                                            <option>Consultant</option> -->
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td align="left" valign="middle" colspan="2">
+                                        <div id="sub4">
+                                            <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                                                <tr align="left">
+                                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                                       Client*</td>
+                                                    <td width="18%" height="28" align="left" valign="top">
+                                                        <select name="departmentID" disabled id="departmentID" class="select-box" style="width: 157px" onchange="AddNewDept();">
+                                                            {% if funda_user %}
+                                                            {% ifequal funda_user.department.name 'None' %}
+															<option value="0">Select</option>
+															{% else %}
+															<option value="{{funda_user.department.departmentID}}">{{funda_user.department.name|cut:"None"}}</option>
+															{% endifequal %}{% else %}
+                                                            <option value="0">Select</option>
+															{% endif %}
+
+                                                            {% for department in departments %}
+															{% ifequal department.name funda_user.department.name %}
+																{% else %}
+                                                            <option value="{{department.departmentID}}">{{department.name|cut:"None"}} </option>
+															{% endifequal %}
+                                                            {% endfor %}
+															<option value="Add New">Add New</option>
+                                                        </select>
+                                                    </td>
+													<td width="67%" height="28" align="left" valign="top">
+                  <input id="txtdept" name="UserDepartmentName" type="text" maxlength="120"  style="display:none"/></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" valign="middle" colspan="2">
+                                        <div id="sub5">
+                                            <table cellpadding="0" width="100%">
+                                                <tr>
+                                                    <td width="9%" align="left" valign="middle" class="con-grey">
+                                                        Privilege*
+                                                    </td>
+
+                                                    <td width="50%" height="28" align="left" valign="middle">
+													{% for privilege in userPrivileges %}
+
+														{% ifequal privilege.name 'Guest' %}
+                                                        <input type="radio" checked value="{{privilege.id}}" name="roleID" id="roleID" />
+                                                        <span class="con-grey">{{privilege.name}}</span>
+														{% else %}
+														              <input type="radio" disabled value="{{privilege.id}}" name="roleID" id="roleID" />
+                                                        <span class="con-grey">{{privilege.name}}</span>
+														{% endifequal %}
+
+													{% endfor %}
+                                                    </td>
+
+
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                        Email*
+                                    </td>
+                                    <td width="89%" height="28" align="left" valign="top">
+                                        <input type="text" name="email" id="email" value="{% if authUserDetails %}{{authUserDetails.email.strip}}{% else %}{{funda_user.userProfile.authUser.email.strip}}{% endif %}" style="width: 152px" maxlength="120" />
+                                    </td>
+                                </tr>
+ <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                       Office Number 
+                                    </td>
+                                    <td width="89%" height="28" align="left" valign="top">
+                                        <input type="text" name="officeNo" id="officeNo" maxlength="20" value="{% if userProfileDetails %}{{userProfileDetails.officeNumber.strip}}{% else %}{{funda_user.userProfile.officeNumber.strip}}{% endif %}"
+                                            style="width: 152px" />
+                                        <input type="text" name="extensionNo" id="extensionNo" maxlength="6" value="{% if userProfileDetails %}{{userProfileDetails.extensionNumber.strip}}{% else %}{{funda_user.userProfile.extensionNumber.strip}}{% endif %}"
+                                            style="width: 52px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                        Mobile
+                                    </td>
+                                    <td width="89%" height="28" align="left" valign="top">
+                                        <input type="text" name="mobile" id="mobile" maxlength="20" value="{% if userProfileDetails %}{{userProfileDetails.mobile.strip}}{% else %}{{funda_user.userProfile.mobile.strip}}{% endif %}"
+                                            style="width: 152px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                        Notes
+                                    </td>
+                                    <td width="89%" height="28" align="left" valign="top">
+                                    <textarea name="notes" class="text-area" id="notes" style="width:260px; height:140px" cols="10" rows="1" maxlength="250" onkeypress="return imposeMaxLength(this,  event);" onbeforepaste="return doPaste(this);" onpaste="return doPaste(this);">{{funda_user.notes.strip}}</textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="15%" align="left" valign="middle" class="con-grey">
+                                         Active
+                                    </td>
+                                    <td width="89%" height="28" align="left" valign="top">
+									{% ifequal action 'Update' %}
+                                        <input id="status" name="status" {% ifequal funda_user.status 1 %}checked {% endifequal %} value="1" type="checkbox" />
+									{% else %}
+										<input id="status" name="status" checked value="1" type="checkbox" />
+									{% endifequal %}
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" valign="top" class="con-grey">
+                                        &nbsp;</td>
+                                    <td align="left" valign="top">
+                               <table>
+                                   <tr>
+                                       <td>
+                                               <input name="contactSave" title="Save"  type="submit" id="contactSave" style="margin-top: 10px" value="Save"
+                                                   class="b1" onclick="return setFormAction('../CustomerContactSave/');" />
+                                       </td>
+									          <td>
+                                      <input name="contactSave&Continue" type="submit" title="Save And Continue" id="contactSave&Continue" style="margin-top: 10px" value="Save and Continue"
+                                          class="b1" onclick="return setFormAction('../CustomerContactSaveAndContinue/');" />
+                                     </td>
+                                     <td>
+                                      <input type="submit" name="contactDelete" title="Delete"  id="contactDelete" style="margin-top: 10px" value="Delete"
+                                          class="b1" onclick="return setFormAction('../CustomerContactDelete/?ids={{funda_user.pk}}');" />
+                                     </td>
+									</form>
+                                 <td>
+                                   <form id="cancel" method="post" action="../UpdateCustomer/?ids={{id}}">
+                                         <input name="cancel" type="submit" id="cancel_bt" value="Cancel" style="margin-top: 10px" class="b1" />
+                                     </form>
+                                 </td>
+                                       <!--<td>
+                                           <form id="Form1" method="post" action="/MyPage/">
+                                               <input name="cancel" type="submit" id="Submit1" value="My Page" style="margin-top: 10px"
+                                                   class="b1" />
+                                           </form>
+                                   </td>-->
+                                </tr>
+                             </table>
+                           </td>
+                        </tr>
+                                <tr>
+                                    <td colspan="2" align="left" valign="top" class="con-grey">
+                                        <span class="con-s-grey">Marked (*) Fields are Mandatory</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="padding-bottom: 5px; padding-left: 15px; padding-right: 15px;">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+</body>
+{% endblock %}

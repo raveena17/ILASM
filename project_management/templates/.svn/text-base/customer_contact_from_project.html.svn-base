@@ -1,0 +1,87 @@
+<script type="application/javascript">
+$(function() { 
+    $('#customer_contact_overlay #cancel').click(closeOverlay);
+
+    $('#customer_contact_overlay #save' ).click(function(){
+        var customer_data = {
+                'contact_profile_id': $('#customer_contact_overlay #contact_profile_id').val(),
+                'salutation': $('#customer_contact_overlay #id_salutation').val(),
+                'first_name': $('#customer_contact_overlay #id_first_name').val(),
+                'last_name': $('#customer_contact_overlay #id_last_name').val(),
+                'email': $('#customer_contact_overlay #id_email').val(),
+                'designation': $('#customer_contact_overlay #id_designation').val(),
+                'business_unit': $('#customer_contact_overlay #id_business_unit').val(),
+                'phone_office': $('#customer_contact_overlay #id_phone_office').val(),
+                'phone_office_extension': $('#customer_contact_overlay #id_phone_office_extension').val(),
+                'phone_mobile': $('#customer_contact_overlay #id_phone_mobile').val(),
+                'address_line1': $('#customer_contact_overlay #id_address_line1').val(),
+                'address_line2': $('#customer_contact_overlay #id_address_line2').val(),
+                'city': $('#customer_contact_overlay #id_city').val(),
+                'state': $('#customer_contact_overlay #id_state').val(),
+                'pin': $('#customer_contact_overlay #id_pin').val(),
+                'country': $('#customer_contact_overlay #id_country').val(),
+              };
+
+        var addBusinessUnit = function(json){
+            if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+            else{
+                $("#id_customer_contact option[value='"+ json[0].id +"']").remove();
+                $('#id_customer_contact').prepend('<option value="'+json[0].id+'">'+json[0].name+'</option>');
+                closeOverlay();
+            }
+            }
+
+        $.ajax({ 
+            type : "POST",
+            url : "/customer/contact/create/",
+            data : customer_data,
+            success : addBusinessUnit,
+            dataType: "json"
+            });
+
+        });
+        $('#customer_contact_overlay #id_business_unit').val($('#customer_contact_overlay #customer_id').val());
+    });
+
+</script>
+
+<style>
+#customer_contact_overlay label{ color: white; }
+.element { height:30px; width: 100%; }
+.label { width: 23%; float: left; }
+.field { width: 67%; float:left; }
+.SaveAndCancel { clear: both; padding-left:23%; }
+</style>
+
+<html>
+    <head>
+        <title> Customer Contact </title>
+    </head>
+    <body>
+        <h2><p><label> Customer Contact </label></p></h2>
+        <h4><p><label> {{form.errors}} </label></p></h4>
+        {% for field in contact_profile_form %}
+            <div class="element">
+                <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+            </div>
+            {% ifequal field.name 'salutation' %}
+                {% for contact_field in contact_form %}
+                    <div class="element">
+                        <div class="label">{{contact_field.label_tag}}</div><div class="field">{{contact_field}}</div>
+                    </div>
+                {% endfor %}
+            {% endifequal %}
+        {% endfor %}
+        {% for field in address_contact_form %}
+            <div class="element">
+                <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+            </div>
+        {% endfor %}
+        <div class="SaveAndCancel">
+            <input type="hidden" id="contact_profile_id" name="contact_profile_id" value="{{contact_profile.id}}" />
+            <input type="hidden" id="customer_id" name="customer_id" value="{{customer_id}}" />
+            <input type="button" id="save" name="save" value="save" />
+            <input type="button" id="cancel" name="cancel" value="cancel" />
+        </div>
+    </body>
+</html>

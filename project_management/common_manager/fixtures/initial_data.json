@@ -1,0 +1,45 @@
+[
+
+
+    {
+	"model": "common_manager.MasterConfig",
+	"pk": 4,
+	"fields": {
+		"name": "Development Process",
+		"formName": "DevelopmentProcessForm",
+		"sequenceNo": "4"
+	}
+    },
+
+    {
+        "model": "common_manager.MasterConfig",
+        "pk": 6,
+        "fields": {
+            "name": "Domain",
+            "formName": "DomainForm",
+            "sequenceNo": "6"
+        }
+    },
+
+
+    {
+	"model": "common_manager.MasterConfig",
+	"pk": 8,
+	"fields": {
+		"name": "Project Type",
+		"formName": "ProjectTypeForm",
+		"sequenceNo": "8"
+	}
+    },
+
+
+     {
+        "model": "common_manager.MasterConfig",
+        "pk": 12,
+        "fields": {
+            "name": "Technology",
+            "formName": "TechnologyForm",
+            "sequenceNo": "12"
+    }
+    }
+]

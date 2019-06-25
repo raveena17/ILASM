@@ -1,0 +1,377 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/cvr_forms.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/cvr.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/cvr_popup.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/select2.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/jquery-daterange-ui.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block script %}
+  <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+  <script type="application/javascript" src="/static/js/jquery-date.js"></script>
+  <script type="application/javascript" src="/static/js/select2.js"></script>
+  <script type="application/javascript" src="/static/js/jquery-daterange-ui.js"></script>
+  <script src="/static/js/jquery.validate.min.js"></script>
+  <script src="/static/js/additional-methods.min.js"></script>
+  
+  <script>
+        $(document).ready(function() { 
+           $("#contacts").validate({
+              ignore: '',
+              messages: {
+                client_id: {
+                  required: "Please select your starting point.",
+                }
+              }
+            });
+          $("#project_id").select2({
+            placeholder: "Choose the Project Name",
+            allowClear: true
+          });
+          $("#client_id").select2({
+            placeholder: "Choose the Client Name",
+            allowClear: true
+          });
+          $("#report_id").select2({
+            placeholder: "Choose the Reporting Senior",
+            allowClear: true
+          });
+
+        var dateFormat = "mm/dd/yy",
+        from = $( "#from" )
+          .datepicker({
+            defaultDate: "+1w",
+            changeMonth: true,
+            numberOfMonths: 1
+          })
+          .on( "change", function() {
+            to.datepicker( "option", "minDate", getDate( this ) );
+          }),
+        to = $( "#to" ).datepicker({
+          defaultDate: "+1w",
+          changeMonth: true,
+          numberOfMonths: 1
+        })
+        .on( "change", function() {
+          from.datepicker( "option", "maxDate", getDate( this ) );
+        });
+   
+      function getDate( element ) {
+        var date;
+        try {
+          date = $.datepicker.parseDate( dateFormat, element.value );
+        } catch( error ) {
+          date = null;
+        }
+   
+        return date;
+      }
+
+    $('select.bar').bind('change', function () {
+        $(this).trigger('blur');
+    });        
+         }); 
+
+  </script>
+{% endblock %}
+
+{% load staticfiles %}
+{% block content %}
+{% block title %} Re-Use {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+
+<style>
+  .modal-content { background-color: black; margin: auto; padding: 20px; border: 1px solid #888; width: 40%; height: 22%;}
+  #txt { background-color: white; margin: auto; padding: 22px; border: 1px solid #888; width: 77%; height: 40%; margin-left: 6%;}
+  #reject { border-radius: 50%; margin: 2px 0;width: 68px;margin-top: 2%;margin-left: 42%;font-size: 13px;border: 5px solid #ddd;background-color: aliceblue;color: black; }
+  .close:hover, .close:focus {color: white;text-decoration: none;cursor: pointer;}
+</style>
+
+  <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <center><lable class="lable">Reason For Reject</lable></center><br>
+        <span class="required"></span><textarea id="txt" required class="area"></textarea><br>
+        <b><input id="reject" type="button"  name="reject" value ="Submit" onclick="onReject()"></b>
+      </div>
+      <div id="wait" style="display:none;width:20px;height:20px;position:absolute;top:20%;left:45%;padding:2px;"><img src='/static/css/images/loading_img.gif' width="25" height="25" /><br>Loading..</div>
+  </div>
+
+  <script>
+    function rejectionPopUp(){
+        var span = document.getElementsByClassName("close")[0];
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+    }
+
+
+    function onReject(){
+      var reason = document.getElementById('txt').value;
+      if (reason.length <= 0 ) {
+        alert('Please enter the reason')
+          event.preventDefault();
+          }
+      else{
+        $("#wait").css("display", "block");
+            $.ajax({
+            type: 'POST',
+            url: "/clientvisitreports/{{object.id}}/reject",
+            data: {
+              "reason": reason
+            },
+            dataType: "text",
+            success: function(resultData) { 
+              window.location.href = '/clientvisitreports/';
+            },
+            complete: function(){
+        $("#wait").css("display", "none");
+      }});
+    }}
+
+    
+// using to csrf token
+    $.ajaxSetup({ 
+         beforeSend: function(xhr, settings) {
+             function getCookie(name) {
+                 var cookieValue = null;
+                 if (document.cookie && document.cookie != '') {
+                     var cookies = document.cookie.split(';');
+                     for (var i = 0; i < cookies.length; i++) {
+                         var cookie = jQuery.trim(cookies[i]);
+                         if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                             break;
+                         }
+                     }
+                 }
+                 return cookieValue;
+             }
+             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+             }
+         } 
+    });
+  </script>
+
+<form name="contacts" id="contacts" action="/clientvisitreports/create/" method="post">{% csrf_token %}
+    <table border="5">
+        <div class="form-style-3">
+          <h1>Client Visit Report</h1><br><br>
+
+        <label for="field"><span>Project Name
+            <span class="required">*</span></span>:
+            {% if request.user.id == approve %}
+              <select name="project_name" id="project_id"  required style="width:240px;" disabled="disabled">
+                <option></option>
+                  {% for project_name in project_names %}
+                      <option value="{{project_name.id}}" 
+                      {% if project_name.id == project %} selected="selected" {% endif %}> {{project_name.name}}
+                      </option>
+                  {% endfor %}
+              </select>
+            {% else %} 
+              <select name="project_name" id="project_id" required style="width:240px;" >
+                <option></option>
+                  {% for project_name in project_names %}
+                      <option value="{{project_name.id}}" 
+                      {% if project_name.id == project %} selected="selected" {% endif %}> {{project_name.name}}
+                      </option>
+                  {% endfor %} 
+              <select>
+            {% endif %} 
+        </label>
+
+
+        <label for="field1"><span>Client Name 
+            <span class="required">*</span></span>:
+            {% if request.user.id == approve %}
+              <select id="client_id" name="client_name" required style="width:240px;" disabled="disabled">
+                <option></option>
+                  {% for client_name in client_names %}
+                      <option value="{{client_name.id}}" 
+                      {% if client_name.id == client %} selected="selected" {% endif %}> {{client_name}}
+                      </option> 
+                  {% endfor %}
+              </select>
+            {% else %}
+              <select id="client_id" name="client_name" style="width:240px;" required >
+                <option></option>
+                  {% for client_name in client_names %}
+                      <option value="{{client_name.id}}" 
+                      {% if client_name.id == client %} selected="selected" {% endif %}> {{client_name}}
+                      </option> 
+                  {% endfor %}
+              </select>
+            {% endif %} 
+        </label>
+
+        {% if object.id %}
+         <input type="hidden" name="object" value="{{object.id}}">
+        {% else %}
+         <input type="hidden" name="object" value="">
+        {% endif %}
+
+
+
+        {% if request.user.id == approve %}
+          <label for="field1"><span>Location<span class="required">*</span></span>:<input type="text" class="input-field" name="visit_location" value="{{object.visit_location}}" required="true" disabled="disabled"/></label>
+        {% else %}
+          {% if object.visit_location %}
+          <label for="field1"><span>Location<span class="required">*</span></span>:<input type="text" class="input-field" name="visit_location" value="{{object.visit_location}}" required="true"/></label>
+          {% else %}
+          <label for="field1"><span>Location<span class="required">*</span></span>:<input type="text" class="input-field" name="visit_location" value="" required="true"/></label>
+          {% endif %}
+        {% endif %}
+
+
+
+        {% if request.user.id == approve %}
+          <label for="field1"><span>From date<span class="required">*</span></span>:<input type="text" id="from" class="input-field" name="from_date" placeholder="MM-DD-YY" value={{object.from_date}} required disabled="disabled"/></label>
+        {% else %}
+          {% if object.from_date %}
+          <label for="field1"><span>From date<span class="required">*</span></span>:<input type="text" id="from" class="input-field" name="from_date" placeholder="MM-DD-YY" value={{object.from_date}} required/></label>
+          {% else %}
+          <label for="field1"><span>From date<span class="required">*</span></span>:<input type="text" id="from" class="input-field" name="from_date" placeholder="MM-DD-YY" value="" required/></label>
+          {% endif %}
+        {% endif %}
+
+        {% if request.user.id == approve %}
+          <label for="field1"><span>To date<span class="required">*</span></span>:<input type="text" id="to" class="input-field" name="to_date" placeholder="MM-DD-YY" value={{object.to_date}} required disabled="disabled"/></label>
+        {% else %}
+          {% if object.to_date %}
+          <label for="field1"><span>To date<span class="required">*</span></span>:<input type="text" id="to" class="input-field" name="to_date" placeholder="MM-DD-YY" value={{object.to_date}} required/></label>
+          {% else %}
+          <label for="field1"><span>To date<span class="required">*</span></span>:<input type="text" id="to" class="input-field" name="to_date" placeholder="MM-DD-YY" value="" required/></label>
+          {% endif %}
+        {% endif %}
+
+        {% if request.user.id == approve %}
+          <label for="field6"><span>Purpose<span class="required">*</span></span>:<textarea name="reason_for_visit" value={{object.reason_for_visit}} class="textarea-field" required disabled="disabled">{{object.reason_for_visit}}</textarea></label>
+        {% else %}
+          {% if object.reason_for_visit %}
+          <label for="field6"><span>Purpose<span class="required">*</span></span>:<textarea name="reason_for_visit" value={{object.reason_for_visit}} class="textarea-field" required>{{object.reason_for_visit}}</textarea></label>
+          {% else %}
+          <label for="field6"><span>Purpose<span class="required">*</span></span>:<textarea name="reason_for_visit" class="textarea-field" required></textarea></label>
+          {% endif %}
+        {% endif %}
+
+        {% if request.user.id == approve %}
+          <label for="field6"><span>Actions<span class="required">*</span></span>:<textarea name="actions_taken_during_the_visit" value={{object.actions_taken_during_the_visit}} class="textarea-field" required disabled="disabled">{{object.actions_taken_during_the_visit}}</textarea></label>
+        {% else %}
+          {% if object.actions_taken_during_the_visit %}
+          <label for="field6"><span>Actions<span class="required">*</span></span>:<textarea name="actions_taken_during_the_visit" value={{object.actions_taken_during_the_visit}} class="textarea-field" required>{{object.actions_taken_during_the_visit}}</textarea></label>
+          {% else %}
+          <label for="field6"><span>Actions<span class="required">*</span></span>:<textarea name="actions_taken_during_the_visit" class="textarea-field" required></textarea></label>
+          {% endif %}
+        {% endif %}
+
+        {% if request.user.id == approve %}
+          <label for="field6"><span>Next plan of Action <span class="required">*</span></span>:<textarea name="next_plan_of_action" value={{object.next_plan_of_action}} class="textarea-field" required  disabled="disabled">{{object.next_plan_of_action}}</textarea></label>
+        {% else %}
+          {% if object.next_plan_of_action %}
+          <label for="field6"><span>Next plan of Action <span class="required">*</span></span>:<textarea name="next_plan_of_action" value={{object.next_plan_of_action}} class="textarea-field" required>{{object.next_plan_of_action}}</textarea></label>
+          {% else %}
+          <label for="field6"><span>Next plan of Action <span class="required">*</span></span>:<textarea name="next_plan_of_action" class="textarea-field" required></textarea></label>
+          {% endif %}
+        {% endif %} 
+
+        {% if request.user.id == approve %}
+          <label for="field6"><span>Comments</span>:<textarea name="comments" class="textarea-field" value={{object.comments}} disabled="disabled">{{object.comments}}</textarea></label>
+        {% else %}
+          {% if object.comments %}
+          <label for="field6"><span>Comments</span>:<textarea name="comments" class="textarea-field" value={{object.comments}}>{{object.comments}}</textarea></label>
+          {% else %}
+          <label for="field6"><span>Comments</span>:<textarea name="comments" class="textarea-field"></textarea></label>
+          {% endif %}
+        {% endif %}
+
+        <label for="field1"><span>Reporting Senior 
+            <span class="required">*</span></span>:
+            {% if request.user.id == approve %}
+              <select name="reporting_senior_name" id="report_id" required style="width:240px;" disabled="disabled">
+                <option></option>
+                  {% for reporting_senior_name in reporting_senior_names %}
+                      <option value="{{reporting_senior_name.id}}"
+                      {% if reporting_senior_name.id == approve %} selected="selected"{% endif %}> {{reporting_senior_name.username}}
+                  {% endfor %}
+              </select>
+            {% else %}
+              <select name="reporting_senior_name" id="report_id" required style="width:240px;">
+                <option></option>
+                  {% for reporting_senior_name in reporting_senior_names %}
+                      <option value="{{reporting_senior_name.id}}"
+                      {% if reporting_senior_name.id == approve %} selected="selected"{% endif %}> {{reporting_senior_name.username}}
+                  {% endfor %}
+              </select>
+            {% endif %}              
+        </label>      
+        </div>
+    
+    </table>
+
+    {% csrf_token %}
+
+
+    {% if object.is_approved %}
+        <a href = "/clientvisitreports/">
+        <input type="button" value = "Back" name="cancel"></a>
+    {% else %}
+      {% if request.user.id == approve %}
+          <a href = "/clientvisitreports/{{object.id}}/approve">
+          <input type="button"  name="approve" value ="Approve"></a>
+          <input type="button" onClick=rejectionPopUp() name="reject" value="Reject">
+      {% else %}
+          {% if 'Corporate Admin' %}
+            {% if prepared_by == login_user %}
+              {% if object.id %}
+                  <input type="submit" name="add" value="Update">
+              {% else %}
+                  <input type="submit" name="add" value="Submit">   
+              {% endif %}
+            {% endif %}
+            {% if prepared_by != login_user %}
+              {% if object.id %}
+                <a href = "/clientvisitreports/">
+                <input type="button" value = "Back" name="cancel"></a>
+              {% else %}
+                <input type="submit" name="add" value="Submit">   
+              {% endif %}
+            {% endif %}
+
+          {% else %}
+            {% if object.id %}
+                <input type="submit" name="add" value="Update">
+            {% else %}
+                <input type="submit" name="add" value="Submit">   
+            {% endif %}
+
+         {% endif %}
+
+      {% endif %}
+
+    {% endif %}
+
+  <div class="footer-section">
+    <span class="mandatory">
+      <span>Note: Fields marked with<span class="required"> * </span>are mandatory</span></span>
+        
+  </div>
+                 
+</form>
+
+{% endblock %} 
+{% endblock %}

@@ -1,0 +1,47 @@
+<script type="application/javascript">
+$(function() { 
+    $('#overlay #cancel').click(closeOverlay);
+
+    $('#overlay #save' ).click(function(){
+        var project_type = {
+                'project_id': window.location.search.substring('ids').split("=")[1],
+                'name':$('#overlay #id_name').val(),
+                'projectTypeID':$('#overlay #projectTypeID').val(),
+              };
+        var addProjectType = function(json){
+            if (json[0].hasOwnProperty('error')){ alert(json[0].error); }
+            else{
+                $("#id_project_type option[value='"+ json[0].id +"']").remove();
+                $('#id_project_type').prepend('<option value="'+json[0].id+'">'+json[0].resource+'</option>');
+                closeOverlay();
+            }
+            }
+        $.ajax({ 
+            type : "POST",
+            url : "/project/project_type/",
+            data : project_type,
+            success : addProjectType,
+            dataType: "json"
+            });
+        });
+    });
+
+</script>
+<style>
+#overlay label{ color: white; }
+</style>
+<html>
+<head>
+    <title> Project Type</title>
+</head>
+<body id="overlay">
+    <h3><p><label> Project Type </label></p></h3>
+    <h4><p><label> {{form.errors}} </label></p></h4>
+    {{form.as_p}}
+    <div style="padding-left:45px;">
+    <input type="hidden" id="projectTypeID" name="projectTypeID" value="{{projectTypeID}}" />
+    <input type="button" id="save" name="save" value="save" />
+    <input type="button" id="cancel" name="cancel" value="cancel" />
+    </div>
+</body>
+</html>

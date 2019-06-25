@@ -1,0 +1,69 @@
+{% comment %} templates that contain program menus {% endcomment %}
+<style>
+    div.project { min-width:50%;}
+    div.project p {line-height: 80%;}
+    div.project P:first-letter { font-weight: bold; float:left; font-size: 360%;  }
+    div.project P:first-line { font-weight: bold; float:left; font-size: 110%; }
+</style>
+	
+<div class="project-info">
+    <div>
+	<br>
+        <div class="project"><p> {{project.name}} </p> <!-- <span>{{project.code}}<span>  -->
+	</div>
+    </div>
+    <div>
+        <div> 
+			<table>
+					<tbody style="font-wieght:bold">					
+						<tr>
+							<td>&nbsp;&nbsp;&nbsp;Type of Project : {{project.project_type.name}}</td>
+							
+						</tr>
+						<tr>
+							<td>&nbsp;&nbsp;&nbsp;Planned Start Date : {{project.schedules.planned_start_date|date:"d-m-Y"|cut:"01-01-2000"|cut:"01-01-1900"}}</td>
+							<td>&nbsp;&nbsp;&nbsp;Planned End Date : {{project.schedules.planned_end_date|date:"d-m-Y"|cut:"01-01-2000"|cut:"01-01-1900"}}</td>
+						</tr>
+						{% if project.ex_approval == 1 %}
+						<tr><td colspan="2">&nbsp;&nbsp;&nbsp;<b>Project Code :  {{ project.code }}</b></td></tr>
+						{% endif %}
+					</tbody>
+			</table>        
+         </div>
+        
+    		
+    </div>
+</div>
+<div style="clear:both"></div>
+<br><br>
+<div class="sub-menu">
+    <div class="sub-menu-btn" id="mnuHome">
+        <a href="/project/home/?ids={{project.id}}">Home</a>
+    </div>
+    {% if perms.tasks.add_task or perms.tasks.change_task %}
+        <div class="sub-menu-btn" id="mnuTask">
+            <a href="/task/list/?pid={{project.id}}">Task</a>
+        </div>
+    {% endif %}
+    
+    {% if perms.milestone.add_milestone or perms.milestone.change_milestone %}
+        <div class="sub-menu-btn" id="mnuMilestone">
+            <a href="/milestone/list">Milestone</a>
+        </div>
+    {% endif %}
+    {% if perms.projects.change_project %}
+        <div class="sub-menu-btn1" id="mnuProject">
+            <a href="/project/update/?ids={{project.id}}">Update Project</a>
+        </div>
+    {% endif %}
+    {% if perms.projects.change_project %}
+        <div class="sub-menu-btn1" id="mnuProjectBudget">
+            <a href="/projectbudget/create/?pjt_id={{project.id}}">Project Budget</a>
+        </div>
+    {% endif %}
+    {% if perms.projects.add_project %}
+	<div class="sub-menu-btn1" id="mnuPrint">
+            <a href="/project/printdetails/{{project.id}}/">Print Project details</a>
+        </div>
+    {% endif %}
+</div>

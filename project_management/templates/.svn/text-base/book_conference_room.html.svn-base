@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/static/css/ui.tabs.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.theme.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.core.css" rel="stylesheet" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="/static/js/ui.core.js"></script>
+    <script type="application/javascript" src="/static/js/ui.tabs.js"></script>
+{% endblock %}
+
+{% block title %} Task {% endblock %}
+
+{% block contentdata %}
+    <style>
+        form { padding: 10px; }
+        .entry-form{ width: 100%; }
+        .element{ width: 50%; min-height: 30px; float: left; }
+        .label { width: 40%; float: left; }
+        .field { width: 60%; float: left; }
+        .SaveAndCancel{ width: 100%; clear: both; }
+        input[type=text]{ width: 160px;}
+        select{ width: 170px; }
+        #id_notes{ width: 250px; height: 90px;}
+    </style>
+
+    <script>
+ 
+var selectedList;
+var availableList;
+function createListObjects()
+{
+    if(document.getElementById("meetinginvitees") != null)
+	    availableList = document.getElementById("meetinginvitees");
+    if(document.getElementById("selectedmeetinginvitees") != null)
+	    selectedList = document.getElementById("selectedmeetinginvitees");
+} 
+function addAttribute(options){
+if (options == 'meetingattendingteam')
+{
+createListObjects();
+}
+
+var addIndex = availableList.selectedIndex;
+if(addIndex < 0)
+return;
+selectedList.appendChild(
+availableList.options.item(addIndex));
+selectallAvaillist();
+}
+
+function delAttribute(options){
+if (options == 'meetingattendingteam')
+{
+createListObjects();
+}
+
+
+var selIndex = selectedList.selectedIndex;
+if(selIndex < 0)
+return;
+availableList.appendChild(
+selectedList.options.item(selIndex))
+selectallAvaillist();
+}
+
+function selectallAvaillist()
+{
+	createListObjects();
+  for (i=0;i<selectedList.length;i++)
+	{
+		selectedList.options[i].selected = true;
+	}
+}
+
+function setEndTime()
+{
+	len =  parseInt(document.getElementById("id_from_time").length);
+	if (document.getElementById("id_from_time").selectedIndex == len-1)
+		document.getElementById("id_to_time").selectedIndex = 1;
+	else if  (document.getElementById("id_from_time").selectedIndex == len-2)
+		document.getElementById("id_to_time").selectedIndex = 0;
+	else
+		document.getElementById("id_to_time").selectedIndex = document.getElementById("id_from_time").selectedIndex + 1;
+}    
+    $(document).ready(function(){
+ selectallAvaillist();
+
+    convertDate('id_approved_date');
+    convertDate('id_requesting_date');
+    convertDate('id_meeting_date');
+    $('#id_requested_by').val('{{user.pk}}');
+   
+    $('#id_approved_by').val('31');
+    $('#id_is_approvedby_0').val('Approve').attr('checked',true);
+   
+   if($('#hdn_is_approved').val() == 'True'){
+    $('#save').hide();
+   }
+   
+   getURL1 =  window.location.href;
+     if (getURL1.indexOf("selecteddate=") >= 0){
+    
+    getURL1 =  window.location.href.split("?");
+   
+   if (getURL1.length > 1)
+   
+    {
+       getURL = window.location.href.split("selecteddate=");
+       
+       year = getURL[1].split("-")[0];
+       month = getURL[1].split("-")[1];
+       date = getURL[1].split("-")[2];
+       meeting_date = month + '-' + date + '-' + year
+        $('#id_meeting_date').val(meeting_date);
+   
+    }
+    }
+     if ($('#id_booking_id').val() != 'None'){
+      $('#id_from_time').val($('#hdn_from_time').val());
+      $('#id_to_time').val($('#hdn_to_time').val());
+     }
+     
+     $('#id_is_approvedby_0').val('Approve').attr('checked',true)
+        if ($('#id_booking_id').val() == 'None'){
+           var now = new Date();
+           if ((now.getMonth()+1) <= 9)
+              monthDisplay = '0' + (now.getMonth() + 1);
+         else
+            monthDisplay = now.getMonth() + 1;
+        
+        if (now.getDate() <= 9)
+            dateDisplay = '0' + now.getDate();
+        else
+            dateDisplay = now.getDate();
+        mydate =  monthDisplay + '-' + dateDisplay + '-' + now.getFullYear();
+        
+        $('#id_requesting_date').val(mydate);
+        }    
+        
+         if ($('#id_booking_id').val() != 'None'){
+           var now = new Date();
+           if ((now.getMonth()+1) <= 9)
+              monthDisplay = '0' + (now.getMonth() + 1);
+         else
+            monthDisplay = now.getMonth() + 1;
+        
+        if (now.getDate() <= 9)
+            dateDisplay = '0' + now.getDate();
+        else
+            dateDisplay = now.getDate();
+        mydate =  monthDisplay + '-' + dateDisplay + '-' + now.getFullYear();
+        
+        $('#id_approved_date').val(mydate);
+        }   
+
+        $('#10').hide();
+     $('#13').hide();
+        if($('#id_reason_for_room option:selected').text() == 'Client Meeting'){
+            $('#10').show();
+        }
+        if($('#id_reason_for_room option:selected').text() == 'Training'){
+            $('#13').show();
+        }
+        $('#id_reason_for_room').change(function(){
+           
+        if ($('#id_reason_for_room option:selected').text() == 'Client Meeting'){
+            
+             $('#10').show();
+        }
+       else
+       {
+        $('#10').hide();
+       }
+        });
+       
+        $('#id_reason_for_room').change(function(){
+           
+        if ($('#id_reason_for_room option:selected').text() == 'Training'){
+            
+            
+              $('#13').show();
+        }
+       else
+       {
+         $('#13').hide();
+       }
+    
+    });
+        
+     $('#room_add').click(function(){
+            window.location.href = '{% url conferenceroombooking.views.manage_room_creation %}';
+        });   
+        
+         $('#cancel').click(function(){
+            window.location.href = '{% url conferenceroombooking.eventviews.MonthlyCalendar %}'
+        });  
+    });
+    </script>
+
+    <form id="conference_room_form" name="conference_room_form" action="" method="POST" />
+        <div class="header">Book Conference Room</div>
+        <br/>
+        <br/>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+            {% endfor %}
+        {% endif %}
+
+        {{form.errors}}
+        <input type="hidden" id="id_booking_id" name="id_booking_id" value="{{conference_id}}"/>
+        <input type = "hidden" id="hdn_from_time" name = "hdn_from_time" value="{{FromTime}}"/>
+        <input type = "hidden" id="hdn_to_time" name = "hdn_to_time" value="{{ToTime}}"/>
+        <input type = "hidden" id="hdn_is_approved" name = "hdn_is_approved" value="{{book_conference_room.is_approved}}"/>
+        <input type = "hidden" id="hdn_attendees_list" nmae ="hdn_attendees_list" value ="{{attendees_list}}"/>
+         
+        <div class="entry-form">
+            {% for field in form %}
+            
+            {% ifequal field.name 'name_of_meeting' %}
+                <div class="element" id="1">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+            {% endifequal %}
+            
+            
+            
+            {% ifequal field.name 'requested_by' %}
+            
+                <div class="element" id="2">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                
+            {% endifequal %}
+            
+            {% ifequal field.name 'requesting_date' %}
+                <div class="element" id="3">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+            {% endifequal %}
+            
+             {% ifequal field.name 'conference_room' %}
+                <div class="element" id = "4">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}&nbsp;&nbsp;<input type= "button" id="room_add"  name = "room_add" value = "+" /></div>
+                </div>
+                {% endifequal %}
+            
+              {% ifequal field.name 'reason_for_room' %}
+                <div class="element" id = "5">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                
+              {% ifequal field.name 'meeting_date' %}
+                <div class="element" id = "6">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                {% ifequal field.name 'from_time' %}
+                <div class="element" id="7">
+                <div class="label">{{field.label_tag}}</div>
+                 <div class="field">
+                 <select id="id_from_time" name="from_time" onchange="setEndTime();" >
+                {% for time in times %}
+                 {% ifequal time FromTime %
+                 <option value="{{time}}">{{time}}</option>
+                
+                       {% endfor %}
+                 </select>
+                 </div>
+                
+                </div>
+                {% endifequal %}
+                
+                {% ifequal field.name 'to_time' %}
+                <div class="element" id="8">
+                    <div class="label">{{field.label_tag}}</div><div class="field">
+                    <select id="id_to_time" name="to_time">
+                                                        
+                    {% for time in times %}
+                             <option value="{{time}}">{{time}}</option>
+                    {% endfor %}
+                          </select></div>
+                </div>
+                {% endifequal %}
+                
+                 {% ifequal field.name 'no_of_persons' %}
+                <div class="element" id="9">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                {% ifequal field.name 'client_food_arrangement' %}
+                <div class="element" id="10">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                 {% ifequal field.name 'approved_by' %}
+                <div class="element" id="11">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                {% if perms.users.approve_conference_room_booking %}
+                 {% ifequal field.name 'approved_date' %}
+                <div class="element" id="12">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                {% endif %}
+                
+                {% ifequal field.name 'attendence_needed' %}
+                <div class="element" id="13">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                {% ifequal field.name 'equipments_required' %}
+                <div class="element" id="14">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                
+                 {% if perms.users.approve_conference_room_booking %}
+                {% ifequal field.name 'is_approvedby' %}
+                <div class="element" id="15">
+                    <div class="label">{{field.label_tag}}</div><div class="field">{{field}}</div>
+                </div>
+                {% endifequal %}
+                {% endif %}
+          {% endfor %}
+         
+          <div class="field">
+          <table><th>Meeting Attendees</th>
+            <tr><td>
+            
+       <select name="meetinginvitees" multiple size="8" style="width: 198px" id="meetinginvitees">
+        
+        {% for each in user_list %}
+            
+         <option value="{{each.id}}">{{each.username}}</option>
+          
+          {% endfor %}
+          </select>
+            
+ </td>
+            <td align="center" valign="middle" style="width: 20px">
+          <table border="0" cellspacing="0" cellpadding="0">
+     <tr>
+  <td style="width: 20px">
+   <input type="button" name="button" id="button1" value="-->" class="b1" style="margin-top: 10px"
+          onclick="addAttribute('meetingattendingteam');" />
+   <label>
+   invite</label>
+ </td>
+    </tr>
+    <tr>
+     <td style="width: 20px">
+  <input type="button" name="button2" id="button3" value="<--" style="margin-top: 10px"
+     class="b1" onclick="delAttribute('meetingattendingteam');" />
+  <label>
+       remove</label>
+   </td>
+    </table>
+    </td>
+    <td style="height: 26px;">
+        
+     <select name="selectedmeetinginvitees" multiple style="width: 198px" size="8" id="selectedmeetinginvitees" selected>
+    
+{% for each in attendees_list %}
+     <option value="{{each.attendees_id}}">{{each.attendees}}</option>
+{% endfor %}
+             
+             
+   </select>
+ </td></tr></table>
+          </div>
+          
+          
+        <div class="SaveAndCancel">
+            {% if perms.users.book_conference_room %}
+            <input type="submit" id="save" name="save" value="save"/>
+            {% endif %}
+            {% if perms.users.approve_conference_room_booking %}
+            {% if not book_conference_room.is_approved %}
+            <input type="submit" id="save" name="save" value="Approve"/>
+            {% endif %}
+            {% endif %}
+            <input type="button" id="cancel" name="cancel" value="cancel" />
+          
+        </div>
+    </form>
+{% endblock %}

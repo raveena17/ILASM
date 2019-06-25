@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} task {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .task { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-task { padding-top: 10px; padding-bottom: 10px; width: 100%; }
+    #create-task { float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .task-header-panel { width:100%;  }
+    .task-list-header, .task-column {width: 20%; padding-top: 10px;  }
+    .task-content { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .delete-task {float: left; }
+    .page-number{ float: right; }
+</style>
+<script>
+$(document).ready(function(){
+    $('#create-task').click(function(){ 
+        window.location.href = '{% url tasks.views.manage_non_project_task %}' });
+    $('#delete').click(function(){
+            if(deleteconfirmation(document.tasklist.task_pk)){
+                document.getElementById('tasklist').action = '{% url non-project-task-delete %}';
+            }
+            else
+            {
+                return false;
+            }
+        })
+    $('table#tasks').tablesorter();
+});
+</script>
+{% load pagination_tags %}
+    <form id="tasklist" name="tasklist" action="" method="POST" />
+        <div class="task" >
+            <div class="list-header">
+                <span class="header">Non Project Task List</span>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+            <div class="message">
+               <span class="Arial-12-maroon"> {{msg}}</span>
+            </div>
+            <div class="program-blue-box">
+                <div class="create-task">
+                    {% if perms.tasks.add_task %}
+                        <input type="button" id="create-task" name="create-task" class="b1" value="Create task" />
+                    {% endif %}
+                </div>
+            </div>
+				{% autopaginate task_list %}
+            <table id="tasks" class="tablesorter">
+                <thead class="task-header-panel">
+                    <tr>
+                        <th class="task-list-header header link-line-bg con-white-bold">Select</th>
+                        <th class="task-list-header header link-line-bg con-white-bold">S.No</th>
+                        <th class="task-list-header header link-line-bg con-white-bold">Task Name</th>
+                        <th class="task-list-header header link-line-bg con-white-bold">Start Date</th>
+                        <th class="task-list-header header link-line-bg con-white-bold">End Date</th>
+                    </tr>
+                </thead>
+                <tfoot class="footer">
+                    <tr>
+                        <td colspan="2">
+                            <div class="delete-task">
+                            {% if perms.tasks.delete_task %}
+                                <input type="submit" value="Delete" id="delete" name="delete" class="b1" />
+                                <input type="button" value="Select All" id="select_all" name="select_all" 
+                                    class="b1" onclick="return doCheck('tasklist');"  />
+                                <input type="button" value="Clear All" id="clear_all" name="clear_all" 
+                                    class="b1" onclick="return unCheck('tasklist');"  />
+                            {% endif %}
+                            </div>
+                        </td>
+                        <td colspan="3">
+                           {% paginate %}
+                        </td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    {% for task in task_list %}
+                        <tr class="task-content">
+                            <td class="task-column">
+                                <input type="checkbox" id="task_pk" name="task_pk" value="{{task.pk}}" />
+                                <a href="{% url tasks.views.manage_non_project_task task.pk %}">View</a>
+                            </td>
+                            <td class="task-column">
+                                {% if is_paginated %}
+                                    {{ page_obj.start_index|add:forloop.counter0 }}
+                                {% else %}
+                                   {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td class="task-column"> {{ task.name }} </td>
+                            <td class="task-column"> {{ task.start_date|date:'d M Y'}} </td>
+                            <td class="task-column"> {{ task.end_date|date:'d M Y'}} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+{% endblock %}

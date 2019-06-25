@@ -1,0 +1,693 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} {{action}} Task  {% endblock %} 
+{% block programcontent %} {% endblock %}
+{% block programmenu %} {% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+
+<script language="JavaScript">
+
+var flag = true;
+var selectedList = null;
+var availableList;
+
+function createListObjects(options)
+{
+if (options == 'UserExternal')
+{
+    if(document.getElementById("ext_allresources") != null)
+	    availableList = document.getElementById("ext_allresources");
+    if(document.getElementById("ext_selectedresources") != null)
+	    selectedList = document.getElementById("ext_selectedresources"); 
+}	
+else
+    {
+    if(document.getElementById("allresources") != null)
+	    availableList = document.getElementById("allresources");
+    if(document.getElementById("selectedresources") != null)
+	    selectedList = document.getElementById("selectedresources");        
+    }	
+}
+
+function delAttribute(options){
+	createListObjects(options);
+	var selIndex = selectedList.selectedIndex;
+	if(selIndex < 0)
+	return;
+	availableList.appendChild(selectedList.options.item(selIndex))
+	selectallAvaillist()
+}
+function addAttribute(options){
+	createListObjects(options);
+	var addIndex = availableList.selectedIndex;
+	if(addIndex < 0)
+	return;
+	selectedList.appendChild(availableList.options.item(addIndex));
+	selectallAvaillist();
+}
+
+function selectallAvaillist()
+{
+    if (selectedList != null)
+    {
+      createListObjects('UserExternal');
+      for (i=0;i<selectedList.length;i++)
+        {
+            selectedList.options[i].selected = true;
+        }
+      createListObjects('resources');
+      for (i=0;i<selectedList.length;i++)
+        {
+            selectedList.options[i].selected = true;
+        }
+    }
+}
+
+function checkdate(objName)
+{
+return true;
+}
+function radiocheck()
+{	
+
+}
+
+
+function getTasklistsResources(event){
+	//event.preventDefault(); // cancel the default action
+	var form = this;
+	var data = {}
+	getdata = $("#programtasklist").val();
+	$.ajaxSettings.cache = false;
+	queryString = "?ids="+getdata+"&projectid="+$("#project").val();
+	$.getJSON("/GetProjectTasklistsResources/"+queryString, 
+	function(json){
+		document.getElementById('allresources').options.length =0;
+		document.getElementById('ext_allresources').options.length =0;
+        document.getElementById('selectedresources').options.length =0;
+		document.getElementById('ext_selectedresources').options.length =0;	
+		$("#programtasklist").val = getdata;
+			for (j =0 ;j <json.length;j++) {		
+				var userid = "'"+json[j].id+"'";	
+				newLi = $('<option value='+json[j].id+' onmouseover="showUser('+userid+');" onmouseout="hideUser();">'+json[j].name+'</option>');
+				if (json[j].sysuserType == 'Internal')	
+					$("#allresources").prepend(newLi);
+				else
+					$("#ext_allresources").prepend(newLi);
+			}
+		 }
+		);		
+}
+
+function getTasklists(event){
+	//event.preventDefault(); // cancel the default action
+	var form = this;
+	var data = {}
+	$.ajaxSettings.cache = false;
+	           getdata = $("#project").val();	           
+	$.getJSON("/GetProjectTasklists/?projectid="+getdata+"&templatename="+getdata, 
+		function(json)	{
+			document.getElementById('programtasklist').options.length =0;
+			document.getElementById('stage').options.length =0;
+            if(document.getElementById('allresources') != null)
+            {
+               document.getElementById('allresources').options.length =0;
+            }
+            if(document.getElementById('ext_allresources')!= null)
+            {
+    			document.getElementById('ext_allresources').options.length =0;
+            }
+            if(document.getElementById('selectedresources') != null)
+            {
+			    document.getElementById('selectedresources').options.length =0;
+            }
+			document.getElementById('projectid').value = getdata;
+			
+			$("#projectid").val = getdata;
+			var default_option = $("<option value='0'>Select</option>");
+
+			for (j =0 ;j <json[0].length;j++){
+			   module_option = $('<option value='+json[0][j].id+'>'+json[0][j].name+'</option>');
+				$("#programtasklist").prepend(module_option);
+			}
+			$("#programtasklist").val = json[0][0].id;			
+			
+			for (j =0 ;j <json[1].length;j++) {
+				var userid = "'"+json[1][j].id+"'";	
+			 	var newLi = $('<option value='+json[1][j].id+' onmouseover="showUser('+userid+');" onmouseout="hideUser();">'+json[1][j].name+'</option>');
+				if (json[1][j].sysuserType == 'Internal')	
+					$("#allresources").prepend(newLi);
+				else
+					$("#ext_allresources").prepend(newLi);
+			}			
+			for (j =0 ;j <json[2].length;j++) {
+			  milestone_option = $('<option value='+json[2][j].id+'>'+json[2][j].name+'</option>');
+			  $("#stage").prepend(milestone_option);
+			}            
+			$("#stage").prepend(default_option);
+			getTasklistsResources(document.getElementById('programtasklist'));
+		 }
+		);
+	toshowfileform();
+}
+
+ function CreateContinueProgramTask()
+{	
+	selectallAvaillist();
+	var flg = validate(); 
+	if (flg){
+		document.updatetask.action='../SaveAndContinueCreateMenuTask/';
+		return true;
+		}
+	else
+		return false;	
+}
+function saveProgramTask()
+{	
+	selectallAvaillist();
+	var flg = validate(); 
+	if (flg)
+{
+	document.updatetask.action='../SaveCreateMenuTask/';	
+	return true;
+}
+	else
+		return false;
+}
+ function validate(){
+	
+	flag = false;
+	flag = chkMaxlength(document.getElementById('tasknotes'),'Notes');
+	if (!flag) return false;
+	dateClean('txtstartdate');
+	dateClean('txtenddate');
+	flag = ReqValidate('taskName','Task Name');
+	if (flag == false)
+	{
+		return false;
+	}
+	flag = taskAllocationValidation();
+	if (flag == false)
+	{
+		return false;
+	}
+  	if(!isDate(document.getElementById("txtstartdate").value)){
+		alert('Enter a valid planned start date');
+		document.getElementById('txtstartdate').focus();
+		return false;
+	}
+	if(  !isDate(document.getElementById("txtenddate").value)){
+		alert('Enter a valid planned end date');
+		document.getElementById('txtenddate').focus();
+		return false;
+	}
+	if( !isBetweenDate(document.getElementById("txtstartdate").value,document.getElementById("txtenddate").value)){
+		alert ('Planned end date occurs before the planned start date');
+		document.getElementById('txtenddate').focus();
+		return false;
+	}
+    if(document.getElementById("taskType").value == "0")
+    {
+        alert('task type should not be empty');
+        document.getElementById('taskType').focus();
+        return false;
+    }
+	    
+	selectallAvaillist();
+	flag = true;
+	return true;
+}
+
+function checkvaliddate(obj)
+{	
+	dateClean(obj.id);
+	if(!isDate(document.getElementById(obj.id).value)){
+		alert('Enter a valid actual start date');
+		document.getElementById(obj.id).focus();
+		return false;
+	}	
+	return true;
+} 
+function checkvalidbetweendate(obj)
+{
+	dateClean(obj.id);
+   startobj = obj.id;
+   startobj = 'actualstart'+startobj.substring(9,obj.id.length);	
+   if(!isDate(document.getElementById(obj.id).value)){
+		alert('Enter a valid actual end date');
+		document.getElementById(obj.id).focus();				
+		return false;
+	}
+   if (!isBetweenDate(document.getElementById(startobj).value,document.getElementById(obj.id).value) )
+	{
+		alert ('Actual end date occurs before the actual start date');
+		document.getElementById(obj.id).focus();			
+		return false;	
+	}	
+}
+
+function showvalue()
+{		
+}
+function toshowfileform()
+{
+	if (document.getElementById('projectid').value != '0')
+	{
+		document.getElementById('file1').style.display = "block";
+		document.getElementById('file2').style.display = "block";
+	}
+	else{
+		document.getElementById('file1').style.display = "none";
+		document.getElementById('file2').style.display = "none";
+	}
+}
+
+function taskAllocationValidation()
+{
+	frm = document.updatetask;
+	for(i=0;i< frm.length;i++)
+	{
+		obj=frm.elements[i];
+		ctrl=frm.elements[i].id;
+		id = ctrl.split('status')[1]
+		actualstart = 'actualstart'+id;
+		actualend = 'actualend'+id;
+		convertDate(actualstart);
+		convertDate(actualend);		
+		dateClean(actualstart);
+		dateClean(actualend);	
+		if (ctrl.indexOf('actualstart')>=0)
+		{         		
+			flag = checkvaliddate(obj);
+			if (flag == false)
+				return false;
+		}
+		if (ctrl.indexOf('actualend')>=0)
+		{  	
+			flag = checkvalidbetweendate(obj);
+			if (flag == false)
+				return false;
+		}
+		if (ctrl.indexOf('status')>=0)
+		{			
+			if (document.getElementById(ctrl).checked)
+			{
+				if (document.getElementById(actualstart).value == '' ||
+					document.getElementById(actualend).value  == '')
+				{
+					alert('Please enter actual start and end date');
+					return false;
+				}			
+			}
+		}
+	}
+}
+
+function init() 
+ {  
+   document.getElementById('taskName').focus();
+   document.getElementById('project').value = document.getElementById('projectid').value;
+   document.getElementById('stage').value = '{{stageid}}';/*document.getElementById('stageid').value;*/
+	if (document.getElementById('projectid').value != '')
+	{		
+		toshowfileform();
+		getTasklists(document.getElementById('project'));
+	}
+   convertDate('txtstartdate');
+   convertDate('txtenddate');   
+   dateMask('txtstartdate');
+   dateMask('txtenddate');
+   
+ };
+
+if (navigator.appName == "Netscape")
+{
+ /* for Mozilla */
+   if (document.addEventListener) 
+   {
+       document.addEventListener("DOMContentLoaded", init, false);
+   }
+}
+else
+{
+ window.onload = init;
+}   
+function setCancelFormAction(action)
+{
+	var formObj = document.getElementById("updatetask");
+    var newAttr = document.createAttribute("action");
+    newAttr.nodeValue = action;	
+    formObj.removeAttributeNode(formObj.getAttributeNode("action"));
+    formObj.setAttributeNode(newAttr);
+}
+</script>
+
+</HEAD>
+<body onload="radiocheck(); document.getElementById('taskName').focus();">
+     
+    {% include "user_popup.html" %}
+    <form id="updatetask" name="updatetask" method="post" action="." enctype="multipart/form-data">
+    <style>
+         div.wr-ar table tr td { min-width : 155px; }
+    </style>
+        <div id="wr-ar" class="wr-ar" >           
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr style="height:15px;"></tr>
+            <tr>
+            <td style="width:20%;"><div class="update-program-hdr"><span class="header">{{action}} Task </span></div> </td>
+            <td style="width:40%;"><label id="msg" class="Arial-12-maroon">{{ msg }}</label> </td>
+            <td style="width:30%;white-space:nowrap;">
+             <input name="Submit1" type="submit" title="Save"  id="Submit1" value="Save" class="b1" onclick="return saveProgramTask();" />
+         	 <input name="Submit2" type="submit" title="Save And Continue"  id="Submit2" value="Save and Continue" class="b1" onclick="return CreateContinueProgramTask();" />
+             <input type="submit" name="button4" title="Cancel"  id="button4" value="Cancel" class="b1" onclick="setCancelFormAction('../Baseredirect/')";/>
+            </td>
+            </table>
+                      
+            <input type="hidden" name="projectid" id="projectid" value="{{projectid}}" />
+             <div class="program-name-form-box">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                 <tr>
+                        <td align="left" valign="middle" class="con-grey" style=" height: 7px; width: 155px;">
+                            &nbsp;</td>
+                        <td align="left" valign="middle" style=" height: 7px; width: 1973px;">
+                            &nbsp;</td>
+                        <td align="left" valign="middle" class="con-grey" style=" height: 7px; width: 1319px;">
+                            &nbsp;</td>
+                        <td align="left" valign="middle" style="height: 7px">
+                            &nbsp;</td>
+                    </tr>
+        <tr>
+            <td align="left" valign="middle" class="con-grey" style="width: 155px; height: 32px">
+                Task Name <span class="Arial-12-grey">*</span></td>
+            <td align="left" valign="middle" style="height: 32px">
+                <input type="text" name="taskName" id="taskName" value="{{tasktoedit.name}}"  style="width: 210px" maxlength="120" />
+                <input type="hidden" name="taskID" id="taskID" value="{{tasktoedit.taskID}}" /></td>
+           <td align="left" class="con-grey" valign="middle" style="width: 1319px; height: 32px;">
+               Project</td>
+    <td align="left" valign="middle" style="height: 32px">
+        <select id="project" name="project" style="width: 190px" onchange="getTasklists(this);">
+				<option value="0">Select </option>
+        {% for prog in program %}                 
+             <option  value="{{prog.pk}}">{{prog.name}}</option>                
+         {% endfor %}    
+        </select>
+    </td>
+     </tr>
+     <tr>
+      <input type="hidden" id="taskstage" name="taskstage" value="{{tasktoedit.stage.stageID}}" />
+      <input type="hidden" name="predecessorid" id="predecessorid" value="{{tasktoedit.predecessor_id}}"/> 
+      <input type="hidden" name="stageid" id="stageid" value="{{stageid}}"/> 
+      <td align="left" class="con-grey" valign="middle" style="width: 155px; height: 22px" >
+          Module</td>
+      <td align="left" valign="top" style="width: 1973px; height: 22px;" >
+ 			<select id="programtasklist" name="programtasklist" style="width: 190px" onchange="getTasklistsResources(this);" {% ifequal action 'Update' %} disabled {% endifequal %} >
+  					{% for prgtasklist in programTaskList|dictsort:"name" %}                 
+ 					{% ifequal prgtasklist.name 'None' %}
+              	  <option  value="{{prgtasklist.pk}}" selected="Selected" > {{ prgtasklist.name }}</option>
+               {% else %}
+ 					  <option  value="{{prgtasklist.pk}}"> {{ prgtasklist.name }}</option>                   
+               {% endifequal %}                                        
+				   {% endfor %}    
+  				</select>
+            </td>
+             <td align="left" valign="middle" class="con-grey" style="width: 1319px; height: 22px;">
+                 Associated Milestone</td>
+             <td align="left" valign="middle" style="height: 22px"  > 
+                <select name="stage" id="stage"  style="width: 190px">                                           
+                 <option value="0"> Select </option>
+                 {% for stage in allstages|dictsort:"name" %}
+                    <option value="{{stage.stageID}}">{{stage.name}}</option>
+                 {% endfor %}                                            
+                </select>
+            </td>                                        
+            </tr>
+                <tr>
+                 <td align="left" valign="middle" class="con-grey" style="width: 155px">
+                  Planned Start Date</td>
+                  <td align="left" valign="middle" style="width: 1973px">
+                  <input type="text" name="start_date" id="txtstartdate"
+{% if tasktoedit.plannedStartDate%} {% load tags %} {% validdate tasktoedit.plannedStartDate %} {% else %}  class="vDateField" {% endif %}
+value='{{tasktoedit.plannedStartDate|cut:"01-01-2000"|cut:"2000-01-01"|cut:"None"}}'
+                                onblur="checkdate(this)" size="11" maxlength="11" onclick="dateClean('txtstartdate');" ></td>
+                <td align="left" valign="middle" class="con-grey" style="width: 1319px">
+                Planned End Date</td>
+                <td width="51%" align="left" valign="middle">
+                <input type="text" name="end_date" id="txtenddate"
+                {% if tasktoedit.plannedEndDate%} {% load tags %} {% validdate tasktoedit.plannedEndDate %} {% else %}  class="vDateField" {% endif %}
+value='{{tasktoedit.plannedEndDate|cut:"01-01-2000"|cut:"2000-01-01"|cut:"None"}}'
+                                onblur="checkdate(this)" size="11" maxlength="11" onclick="dateClean('txtenddate');" ></td>       
+          </tr>
+  
+       <!-- task type -->
+          <tr>
+          <td class="con-grey">
+          Task Type *</td>
+          <td>
+            <select id="taskType" name="taskType" style="width:190px;">
+                <option value="0">Select</option>
+            {% for each in alltasktype %}
+                <option value="{{each.pk}}" >{{each.name}}</option>
+            {% endfor %}
+            </select>
+          </td>
+          <td colspan="2">
+          </td>
+          </tr>
+
+          <tr>
+          <td colspan="4" class="con-grey">
+            <input type="checkbox" id="taskShare" name="taskShare" value="1"><span style='margin-left:10px;'>Share Task</span>
+          </td>
+          </tr>
+
+
+{% if userRole|is_manager %}
+      <tr>
+      <td align="left" valign="middle" class="con-grey" style="width: 155px">
+          <!-- resources Title -->
+      </td>
+      <td width="86%" align="left" valign="top" colspan="3">
+          <table width="60%" align="left" valign="top">
+              <tr>
+                  <td align="center" width="50%" valign="middle" class="con-grey-bold">
+                    Resource Pool
+                  </td>
+                  <td width="10%">                     
+                  </td>
+                  <td align="center" valign="middle" style="height: 26px" class="con-grey-bold">
+						Assigned 
+                  </td>
+              </tr>
+          </table>
+      </td>
+  </tr>
+  <tr>
+      <td align="left" valign="middle" class="con-grey" style="width: 155px">
+          Internal Resource 
+      </td>
+      <td width="86%" align="left" valign="top" colspan="3">
+          <table width="100%" align="left" valign="top">
+              <tr  align="left" valign="top">
+               <td align="left" valign="top" style="width: 250px">
+                   <select name="allresources" multiple size="8" style="width: 250px" id="allresources">
+                       {% for resource in allcontacts|dictsort:"name" %}
+                       <option value="{{resource.userID}}" onmouseover="showUser('{{resource.userID}}');" onmouseout="hideUser();">{{resource.name}}</option>
+                       {% endfor %}
+                   </select>                 
+               </td>
+                  <td align="center" valign="middle" style="width: 34px">
+                   <table border="0" cellspacing="0" cellpadding="0">
+                       <tr>
+                           <td style="width: 23px">
+                               <input type="button" name="button" id="button1" value="&gt;&gt;" class="b1" style="margin-top: 10px"
+                                   onclick="addAttribute('resource');" />                                                                
+                           </td>
+                       </tr>
+                       <tr>
+                           <td style="width: 23px">
+                               <input type="button" name="button2" id="button3" value="&lt;&lt;" style="margin-top: 10px"
+                                   class="b1" onclick="delAttribute('resource');" />
+                                   </td>
+                       </tr>
+                   </table>
+                  </td>
+                  <td style="height: 26px">
+                      <select name="selectedresources" multiple style="width: 250px" size="8" id="selectedresources">
+                          {% for resource in assignedcontacts|dictsort:"name" %}
+                          <option selected="selected" onmouseover="showUser('{{resource.userID}}');"  onmouseout="hideUser();" 
+                          value="{{resource.userID}}">{{resource.name}}</option>
+                          {% endfor %}
+                      </select>                     
+                  </td>
+              </tr>
+          </table>
+      </td>
+  </tr>
+   <tr>
+      <td align="left" valign="middle" class="con-grey" style="width: 155px">
+        Shared Task
+      </td>
+      <td width="86%" align="left" valign="top" colspan="3">
+          <table width="100%" align="left" valign="top">
+              <tr align="left" valign="top">
+               <td align="left" valign="top" style="width: 250px">
+                   <select name="ext_allresources" multiple size="8" style="width: 250px" id="ext_allresources">
+                       {% for resource in ext_allcontacts|dictsort:"name" %}
+                       <option value="{{resource.userID}}" onmouseover="showUser('{{resource.userID}}');" onmouseout="hideUser();">{{resource.name}}</option>
+                       {% endfor %}
+                   </select>                  
+               </td>
+                  <td align="center" valign="middle" style="width: 34px">
+                   <table border="0" cellspacing="0" cellpadding="0">
+                       <tr>
+                           <td style="width: 23px">
+                               <input type="button" name="button" id="button1" value="&gt;&gt;" class="b1" style="margin-top: 10px"
+                                   onclick="addAttribute('UserExternal');" />                                                                
+                           </td>
+                       </tr>
+                       <tr>
+                        <td style="width: 23px">
+                           <input type="button" name="button2" id="button3" value="&lt;&lt;" style="margin-top: 10px"
+                             class="b1" onclick="delAttribute('UserExternal');" />
+                        </td>
+                       </tr>
+                   </table>
+                  </td>
+                  <td style="height: 26px">                      
+                      <select name="ext_selectedresources" multiple style="width: 250px" size="8" id="ext_selectedresources">
+                          {% for resource in ext_assignedcontacts|dictsort:"name" %}
+                          <option selected="selected" onmouseover="showUser('{{resource.userID}}');"  onmouseout="hideUser();" 
+                          value="{{resource.userID}}">{{resource.name}}</option>
+                          {% endfor %}
+                      </select>
+                   
+                  </td>
+              </tr>
+          </table>
+      </td>
+  </tr>
+  {% endif %}
+                     
+     <tr>
+         <td align="left" class="con-grey" valign="middle" style="width: 155px">
+             Notes</td>
+         <td align="left" valign="middle" colspan="3">
+             <textarea name="tasknotes" rows="8"  class="text-area" id="tasknotes" style="width: 540px;height:100px;" onkeypress="return imposeMaxLength(this,  event);" onbeforepaste="return doPaste(this);" onpaste="return doPaste(this);">{{ tasktoedit.notes }}</textarea></td>
+      </tr>
+   <tr>
+<td align="left" class="con-grey" valign="middle" style="width: 155px">              
+       <div id="file1" name="file1" style="display: none"> <span class="con-grey">File </span></div> 
+</td>
+<td align="left" valign="middle" colspan="3" style="width: 140px;">
+    <div id="file2" name="file2" style="display: none"><table>
+	<tr><td>
+		<input type="file" id="fileUploaded" name="fileUploaded"  value="{{tasktoedit.fileUploaded}}" />
+		</td>
+		{% if tasktoedit.fileUploaded %}
+		{% load tags %}
+		<td>
+		&nbsp; Download : &nbsp;  <a  id="downloadfile"  {% fileexists downloadpath tasktoedit.fileUploaded %}
+		class="con-white-bold" name="downloadfile" target="_blank">{{fileName}}</a> </td>{% endif %}					
+		</tr> <!-- {{form.fileUploaded}} -->
+	<tr><td><label id="filemsg" class="Arial-12-maroon">({{fileSizeMsg}})</label>
+	</td>
+	</tr>
+		</table></div>
+</td>
+</tr>
+     <tr><td colspan="4">&nbsp;</td></tr>
+     {% if assignedcontacts %}
+      <tr><td colspan="4" style="font-weight: bold;"><hr /><h4> Task Allocation Details</h4><hr /></td></tr>
+      <tr><td colspan="4">&nbsp;</td></tr>
+  <tr>
+  <td colspan="4" align="center">
+                                
+     <table width="98%" border="1" style="border-width:2px" cellspacing="0" cellpadding="0" id="tbltaskalloc" name ="tbltaskalloc">
+     <tr style="font-weight: bold;">
+
+     <td align="left" valign="middle">&nbsp;Internal Resource</td>
+     <td align="left" valign="middle">&nbsp;Actual Start Date</td>
+     <td align="left" valign="middle">&nbsp;Actual End Date</td>
+     <td align="center" valign="middle">&nbsp;External Resource</td>
+     </tr>
+     {% for resource in taskallocations %}
+        <tr>
+        <td >&nbsp;{{resource.name}}
+<input type="hidden" name="resourcename{{resource.userID}}" id="resourcename{{resource.userID}}" value={{resource.userID}} />
+</td>
+        <td  align="left" valign="middle">&nbsp;
+                <input type="text" name="actualstart{{resource.userID}}" id="actualstart{{resource.userID}}" value='{{resource.actualstartdate|cut:"2000-01-01"|cut:"None"}}' 
+
+                    class="vDateField"  size="11" maxlength="11" onclick="dateClean('actualstart{{resource.userID}}');" /></td>
+                    <td  align="left" valign="middle">&nbsp;
+                <input type="text" name="actualend{{resource.userID}}" id="actualend{{resource.userID}}" value='{{resource.actualenddate|cut:"2000-01-01"|cut:"None"}}' 
+
+                    class="vDateField"  size="11" maxlength="11" onclick="dateClean('actualend{{resource.userID}}');" ></td>
+                    <td align="center" valign="middle">
+                    &nbsp;<input type="checkbox"  id="status{{resource.userID}}" name="status{{resource.userID}}" {{ resource.status }} />
+                    </td>
+                    <div>
+                    <script language="JavaScript">                                           	
+					convertDate('actualstart{{resource.userID}}'); 																
+				   convertDate('actualend{{resource.userID}}');
+				   dateMask('actualstart{{resource.userID}}');
+				   dateMask('actualend{{resource.userID}}');
+				   </script>
+           </div>
+        </tr>
+                                {% endfor %}
+                                </table>
+                                {%endif%}
+                                </td></tr>
+                                <tr>
+                             
+                                    <td align="left" class="con-grey" valign="middle" style="width: 155px">
+                                      &nbsp;  </td>
+                                    <td colspan="3" align="left" valign="middle" >
+                                        <table style="font-weight: bold;">
+                                            <tr>
+                                                <td>
+                                                    <input name="Submit1" type="submit" id="Submit1" style="margin-top: 10px"
+                                                        value="Save" class="b1" align="right" onclick="return saveProgramTask();" />
+                                                   
+                                                <!--/td-->
+                                                <!--td-->
+                                                				
+                                                <input name="Submit2" type="submit" id="Submit2" style="margin-top: 10px"
+                                                        value="Save and Continue" class="b1" align="right"  onclick="return CreateContinueProgramTask();" />
+                                                </td> 
+                                             </form>
+                                                <td>
+                                                  <form name="cancel_form" action="/Baseredirect/" method="post">
+                                                    <input type="submit" name="button4" id="button4" value="Cancel" style="margin-top: 10px"
+                                                        class="b1" />
+                                                   </form>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td height="25" colspan="4" align="left" valign="middle" class="con-grey">
+                                        <span class="con-s-grey">Marked (*) Fields are Mandatory</span>
+                                    </td>
+                                </tr>
+                            </table></div>
+        </div>
+
+</body>
+{% endblock %} 

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} AMC {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%;  }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  }
+    .list-row { width:100%; }
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    #create-amc-report {float: right;}
+</style>
+<script>
+$(document).ready(function(){
+    $('#create-amc').click(function(){ 
+        window.location.href = "/AMC/create/"
+    });
+
+    $('#show_inactive').click(function(){ window.location.href = "/AMC/list/?is_active=1" });
+    $('#hide_inactive').click(function(){ window.location.href = "/AMC/list/?is_active=0" });
+    
+
+    $('#deactivate').click(function(){
+            if(confirm('Are you sure you want to dactivate the amc?')){
+                document.getElementById('amc_list').action = "/AMC/deactivate/";
+            }
+            else{
+                return false;
+            }
+        })
+
+    $('#activate').click(function(){
+            if((confirm('Are you sure you want to activate the amc?'))){
+                document.getElementById('amc_list').action = "/AMC/activate/";
+            }
+            else{
+                return false;
+            }
+        })
+
+    
+    $('table.tablesorter').tablesorter();
+});
+</script>
+{% load pagination_tags %}
+    <form id="amc_list" name="amc_list" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">AMC List</span>
+            </div>
+
+        <div class="program-blue-box">
+                <div class="create-button">
+
+                    <input type="button" id="create-amc" name="create-amc-report" class="b1" value="New AMC" style=" float: inherit; "/>
+                </div>
+        </div>
+        <div id="msg1"> 
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+        </div>
+            <!-- <h1>AMC List</h1> -->
+
+                <div  class="status-button">
+                    {% if not show_inactive %}
+                        <input type="button" id="show_inactive" name="show_inactive" class="b1" value="show Inactive" />
+                    {% else %}
+                        <input type="button" id="hide_inactive" name="hide_inactive" class="b1" value="show Active" />
+                    {% endif %}
+
+                        
+                </div><br>
+
+                <table id="users" class="tablesorter">
+                    <thead class="list-header-panel">
+                        <tr>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Select</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Client</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Project</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Start Date</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">End Date</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Description</th>
+                            <th class="cvr-list-header header link-line-bg con-white-bold">Status</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot class="footer">
+                    <tr>
+                        <td colspan="3">
+                            <div class="footer-buttons">                                
+                                {% if not show_inactive %}
+                                <input type="submit" value="Deactivate" id="deactivate" name="deactivate" class="b1" />
+                                {% else %}
+                                <input type="submit" value="Activate" id="activate" name="activate" class="b1" />
+                                {% endif %}
+                                <input type="button" value="Select All" id="select_all" name="select_all" class="b1" onclick="return doCheck('amc_list');"  />
+                                <input type="button" value="Clear All" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('amc_list');"  />
+                            </div>
+                        </td>
+                        <td colspan="10">
+                        <div class="pagination">
+                            <span class="step-links">
+                                {% if amcList.has_previous %}
+                                    <a href="?page={{ amcList.previous_page_number }}">previous</a>
+                                {% endif %}
+
+                               {% for n in amcList.paginator.page_range %}
+                                    {% if amcList.number == n %}
+                                      <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                    {% elif n > amcList.number|add:'-2' and n < amcList.number|add:'4' %}
+                                    <span class="page-item"><a class="page-link" href="?page={{ n }}">{{ n }}</a></span>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if amcList.has_next %}
+                                    <a href="?page={{ amcList.next_page_number }}">next</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                        </td>
+
+                    </tr>
+                </tfoot>
+
+
+                    <tbody>                                         
+                     {% for amc in amcList %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="amc_pk" name="amc_pk" value="{{amc.pk}}" />
+                                <a href="/AMC/update/{{amc.pk}}/">View</a>
+                            </td>
+                            <td width="10%">{{ amc.client_name }}</td>
+                            <td width="10%">{{ amc.project }}</td>
+                            <td width="10%">{{ amc.amc_start_date }}</td>
+                            <td width="10%">{{ amc.amc_end_date }}</td>
+                            <td width="10%">{{ amc.description }}</td>
+                            {% if amc.is_active  == True %}
+                                <td width="10%">Active</td>
+                            {% else %}
+                                <td width="10%">Inactive</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+
+{% endblock %}

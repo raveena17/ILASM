@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+{% endblock %}
+{% block title %} Project {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .project { width: 100%;  }
+    .list-header { width: 100%; padding-top: 10px; }
+    /*.create-project { padding-top: 10px; padding-bottom: 10px; width: 100%; }*/
+    #create-project { float: right; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .project-header-panel { width:100%;  }
+    .project-list-header, .project-column {width: 20%; padding-top: 10px;  }
+    .project-content { width:100%; }
+    .footer { width: 100%; padding-top: 60px; text-align: center; }
+    .delete-project {float: left; }
+    .page-number{ float: right; }
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 64%; float: left;font-family:Liberation Serif; }
+    .create-button-admin{padding-top: 10px; padding-bottom: 10px; width: 22%; float: right;font-family:Liberation Serif;}
+</style>
+
+<script>
+	$(document).ready(function(){
+
+		$('#create-project').click(function(){ 
+	            window.location.href = "/projects/request/"
+	        });
+
+		$('table#projects').tablesorter();
+
+        $('#projectlist').submit(function(e){
+        	document.getElementById("projectlist").method = "POST";
+		});
+
+		$('#project_deleted').click(function(){
+			alert('Are you sure you want to delete this project?')
+        	document.getElementById("projectlist").action = "/projects/deleted/"
+        	// {{msg1}}
+
+        });
+		
+	});
+	
+</script>
+
+<script type="text/javascript">
+        $('#project-approved').hide();
+    </script>
+
+{% load pagination_tags %}
+    <form id="projectlist" name="projectlist" action="" method="POST" />
+    {% csrf_token %}
+        <div class="project" >
+            <div class="list-header">
+		{% if perms.projects.add_project %}
+                <span class="header">Project Request List</span>
+		{% endif %}
+		{% if not perms.projects.add_project and perms.projects.change_project %}
+		<span class="header">Project Request Status</span>
+		{% endif %}
+            </div>
+            <div class="message">
+               <span class="Arial-12-maroon"> {{msg}}</span>
+            </div>
+
+            <div class="program-blue-box">
+                <div class="create-button">
+                	<input type="button" id="create-project" name="create-project" class="b1" value="Create Project" style="margin-right: -55%;"/>
+                </div>
+            </div>
+
+
+            <table id="projects" class="tablesorter">
+                <thead class="project-header-panel">
+                    <tr>
+                        <th class="project-list-header header link-line-bg con-white-bold" >Select</th>
+                        <th class="project-list-header header link-line-bg con-white-bold">Project Name</th>
+			{% if perms.projects.add_project %}
+                        <th class="project-list-header header link-line-bg con-white-bold">Requested By</th>
+			{% endif %}
+			<th class="project-list-header header link-line-bg con-white-bold">Status</th>
+			{% if not perms.projects.add_project %}
+			<th class="project-list-header header link-line-bg con-white-bold">Reason</th>
+			{% endif %}
+                    </tr>
+                </thead>
+
+                <tfoot class="footer">
+                    <tr><td colspan="3">
+                        <div class="footer-buttons">
+                                <a href='/projects/requestlist/'><input type="submit" value="Delete" id="project_deleted" name="deleted" class="b1" style="float: left;"/></a>
+                                
+                            </div>
+
+                        <td colspan="10"></td>
+                        <center>
+                    </tr>
+                </tfoot>
+
+
+            {% if perms.projects.add_project %} 
+                <tbody> 
+				    {% for project in project_request_list %}
+						{% if project.ex_approval == 0 and not project.rejection_reason %}
+			                    <tr class="project-content">
+			               
+
+										{% if project.is_approved == 1 and project.approval_type != 'external'%}
+											<div></div>
+											<!-- <div class="project-status" id="project-approved">
+												<td class="project-column">
+					                                <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+					                                <a href="/projects/request/?id={{project.id}}
+					                                &approve={{project.is_approved}}">View</a>
+												</td>
+												<td class="project-column">{{ project.name }}</td>
+												<td class="project-column">{{ project.requested_by}}</td>	
+					                            <td class="project-column"><b>Approved</b></td>
+											</div> -->
+
+										{% elif project.is_approved == 1 and project.approval_type == 'external'%}
+											<div>
+												<td class="project-column">
+					                                <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+					                                <a href="/projects/request/?id={{project.id}}
+					                                &approve={{project.is_approved}}"><b style="color: #04046b;">View</b></a>
+												</td>
+												<td class="project-column"><b style="color: #000000;">{{ project.name }}</b></td>
+												<td class="project-column"><b style="color: #000000;">{{ project.requested_by}}</b></td>	
+					                            <td class="project-column"><b style="color: #000000;"> Waiting for customer approval</b></td>
+											</div>
+
+										{% else %}
+											<div>
+												<td class="project-column">
+					                                <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+					                                <a href="/projects/request/?id={{project.id}}
+					                                &approve={{project.is_approved}}"><b style="color: #04046b;">View</b></a>
+												</td>
+												<td class="project-column"><b style="color: #000000;">{{ project.name }}</b></td>
+												<td class="project-column"><b style="color: #000000;">{{ project.requested_by}}</b></td>	
+					                            <td class="project-column"><b style="color: #000000;">Waiting for approval</b></td>
+											</div>
+
+										{% endif %}
+								</tr>
+						{% endif %}
+				    {% endfor %}
+                </tbody>
+
+		{% else %}
+		    <tbody>
+			{% for project in project_request_list %}
+			    {% if project.ex_approval == 0 or project.is_approved == 0 %}
+				    <tr class="project-content">
+					       	 
+						{% if project.is_approved == 1 and project.approval_type == 'internal' and not project.rejection_reason %}
+							<div></div>
+							<div>
+								<td class="project-column">
+								    <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+								    <a href="/projects/request/?id={{project.id}}&approve={{project.is_approved}}">View</a>
+								</td>
+								<td class="project-column">{{ project.name }}</td>	
+								<td class="project-column">Approved</td>
+								<td class="project-column">........</td>
+							</div>
+						{% elif project.is_approved == 0 and project.approval_type == 'internal' and project.is_rejected != 1 %}
+							<div>
+								<td class="project-column">
+								    <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+								    <a href="/projects/request/?id={{project.id}}&approve={{project.is_approved}}"><b style="color: #04046b;">View</b></a>
+								</td>
+								<td class="project-column"><b>{{ project.name }}</b></td>	
+								<td class="project-column"><b>Waiting for approval</b></td>
+								<td class="project-column"><b>........</b></td>
+							</div>
+								
+								
+						{% elif project.is_approved == 0 and project.approval_type == 'external' and project.is_rejected != 1 %}
+							<div>
+								<td class="project-column">
+								    <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+								    <a href="/projects/request/?id={{project.id}}&approve={{project.is_approved}}"><b style="color: #04046b;">View</b></a>
+								</td>
+								<td class="project-column"><b>{{ project.name }}</b></td>	
+								<td class="project-column"><b>Waiting for approval</b></td>
+								<td class="project-column"><b>.........</b></td>
+							</div>
+								
+
+						{% elif project.is_approved == 1 and project.approval_type == 'external' and project.ex_approval == 0%}
+							<div>
+								<td class="project-column">
+								    <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+								    <a href="/projects/request/?id={{project.id}}&approve={{project.is_approved}}"><b style="color: #04046b;">View</b></a>
+								</td>
+								<td class="project-column"><b>{{ project.name }}</b></td>	
+								<td class="project-column"><b>Waiting for customer approval</b></td>
+								<td class="project-column"><b>........</b></td>
+							</div>
+							
+						
+						{% elif project.is_approved == 1 and project.approval_type == 'external' and project.ex_approval == 1%}
+							<div></div>
+							<div>
+								<td class="project-column">
+								    <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+								    <a href="/projects/request/?id={{project.id}}&approve={{project.is_approved}}">View</a>
+								</td>
+								<td class="project-column">{{ project.name }}</td>	
+								<td class="project-column">Approved</td>
+								<td class="project-column">........</td>
+							</div>
+						{% elif project.rejection_reason != '' and project.is_rejected == 1%}
+							<div>
+								<td class="project-column">
+								    <input type="checkbox" id="project_pk" name="project_pk" value="{{project.code}}" />
+								    <a href="/projects/request/?id={{project.id}}&reject={{project.is_rejected}}">View</a>
+								</td>
+								<td class="project-column">{{ project.name }}</td>	
+								<td class="project-column">Rejected</td>
+								<td class="project-column">{{ project.rejection_reason }}</td>
+
+							</div>
+
+						{% else %}
+							<div></div>
+						
+						{% endif %}
+			    	</tr>
+
+				{% endif %}
+			{% endfor %}
+		    </tbody>	
+		{% endif %}	
+            </table>
+        </div>
+    </form>
+
+{% endblock %}

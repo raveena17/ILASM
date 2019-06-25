@@ -1,0 +1,55 @@
+body {
+    font-family: 'verdana';
+}
+
+/*.dots {
+    background-image: url(/static/css/images/dots.png);
+    background-repeat: no-repeat;
+    width:210px; height: 60px;
+	position: absolute;
+}*/
+
+.login-box{
+	width:386px; height:250px;
+	background-image: url(/static/css/images/login_box.png);
+	background-repeat: no-repeat;
+	position: absolute;
+	top: 33%; left: 33%;
+}
+
+.login-box div {
+    position: absolute;
+    left: 15%
+}
+
+.login-box label { 
+    color:#a7b1b2;
+}
+.login-box input { 
+}
+.alert-msg{
+font-size:0.7em;
+color: #FF0000;
+}
+
+#company-logo {
+    width: 75px; height: 75px; float:right;
+ 	background-image: url("/static/css/images/5g_logo.gif");
+	background-repeat: no-repeat;
+}
+
+#loginbuttons {
+    left: 42%;
+    top: 65%;
+}
+
+#copyright {
+	/*border-top: 1px solid #dbe6ed;*/
+	font-size: 0.6em;
+    position: absolute;
+    bottom:0%;
+}
+
+div.error{
+    background-color: #EF3038;
+}

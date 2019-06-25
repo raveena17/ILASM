@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+{% block stylesheet  %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/static/css/ui.tabs.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.theme.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/ui.core.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/projectInitiation.css" rel="stylesheet" />
+{% endblock %}
+
+{% block script %}
+    {% comment %} 
+        the files order in such that to prevent the duplication of calender in the screen
+    {% endcomment %}
+    <script type="application/javascript" src="/static/js/84.js"></script>
+    <script type="application/javascript" src="/jsi18n/"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/calendar.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/core.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/admin/DateTimeShortcuts.js"></script>
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script src="http://cdn.jquerytools.org/1.1.2/full/jquery.tools.min.js"></script>
+    <script type="application/javascript" src="/static/js/ui.core.js"></script>
+    <script type="application/javascript" src="/static/js/ui.tabs.js"></script>
+    <script type="application/javascript" src="/static/js/projectInitiation.js"></script>
+{% endblock %}
+{% block title %} {{action}} {{ title }} {% endblock %}
+{% ifequal action 'Create' %}
+ {% block programcontent %} {% endblock %}
+ {% block programmenu %} {% endblock%}
+{% endifequal %}
+ {% block taskmenus %} {% endblock %}
+ {% block contentdata %}
+
+ {% load user_tags %}
+
+{% url projects.views.program_view as  project_url %}
+{% url projects.views.ProgramDisplayList as project_list_url %}
+{% url create_customer as customer_view_url %}
+{% url update_customer as update_customer_url %}
+
+<style>
+    #overlay {
+        color:#efefef; 
+        height:150px; 
+        } 
+
+    .contentWrap { 
+        height:441px; 
+        }
+
+    .apple_overlay {        
+            background-image:url(/static/css/images/overlay_black.png); 
+            display:none;
+            width:250px;        
+            padding:35px;
+            font-size:11px;
+          }
+    .business_apple_overlay {        
+            background-image:url(/static/css/images/black.png); 
+            display:none;
+            width:650px;    
+            padding:35px;
+            font-size:11px;
+          }
+
+    /* default close button positioned on upper right corner */
+    .apple_overlay div.close,.business_apple_overlay div.close, .customer_overlay div.close, .customer_contact_overlay div.close {
+        background-image:url(/static/css/images/close.png);
+        position:absolute; right:5px; top:5px;
+        cursor:pointer;
+        height:35px;
+        width:35px;
+    }
+    .customer_overlay{
+        background-image:url(/static/css/images/black.png); 
+        display:none;
+        width:650px;    
+        padding:35px;
+        font-size:11px;
+    }
+
+    .customer_contact_overlay{
+        background-image:url(/static/css/images/black.png); 
+        display:none;
+        width:720px;
+        padding-left:40px;
+        padding-top: 10px;
+        font-size:11px;
+    }
+    
+    a:active {outline:none;}
+
+    .dialog-overlay { 
+        background-color:#fff; 
+        display:none; 
+        width:350px; 
+        padding:15px; 
+        text-align:left; 
+        border:2px solid #333; 
+                             
+        opacity:0.8; 
+            -moz-border-radius:6px; 
+            -webkit-border-radius:6px; 
+            -moz-box-shadow: 0 0 50px #ccc; 
+            -webkit-box-shadow: 0 0 50px #ccc; 
+        } 
+</style>
+<script type="application/javascript">
+$(document).ready(function(){
+    $('#mnuProject').css({'background':'#1bc2ec'});
+     var mnua = $('#mnuProject').children();
+     $(mnua[0]).css({'color':'white','font-weight':'bold'});
+});
+function getDomainToEdit(){
+    DomainToEdit = document.getElementById('id_domain').value;
+    document.getElementById('editdomain').href="/project/domain/" + DomainToEdit + "/";
+}
+function getCustomerToEdit(){
+    CustomerToEdit = document.getElementById('id_customer').value;
+    document.getElementById('editcustomer').href="/customer/update/" + CustomerToEdit + "/";
+}
+function getProjectTypeToEdit(){
+    ProjectTypeToEdit = document.getElementById('id_project_type').value;
+    document.getElementById('editprojecttype').href="/project/project_type/" + ProjectTypeToEdit + "/";
+}
+function getBusinessUnitToEdit(){
+    BusinessUnitToEdit = document.getElementById('id_business_unit').value;
+    document.getElementById('editbusinessunit').href="/project/business_unit/" + BusinessUnitToEdit + "/";
+}
+function getCustomerContactToEdit(){
+    CustomerContactToEdit = document.getElementById('id_customer_contact').value;
+    document.getElementById('customercontactedit').href="/customer/contact/update/" + CustomerContactToEdit + "/";
+}
+function getProjectGroupToEdit(){
+    projectGroupToEdit = document.getElementById('id_parent').value;
+    document.getElementById('projectgroupedit').href="/project/group/" + projectGroupToEdit + "/";
+}
+
+function saveProject() { 
+	   if(!isBetweenDate(document.getElementById("id_planned_start_date").value, document.getElementById("id_planned_end_date").value)) {
+       	 	alert ('Planned end date occurs before the planned start date');
+    		document.getElementById('id_planned_end_date').focus();
+    		return false;
+     	}    
+        else {
+             document.program.action = '/project/initiation/?ids={{project.code}}';
+             return true;
+       	}
+}
+
+</script>
+
+<form id="program" name="program" action="" method="post">
+{% if project %}
+    {% include 'project_menus.html' %}
+{% endif %}
+<table width="100%">
+    <tr>        
+    <td class="update-program-hdr" style="width: 20%; text-align: left; vertical-align: middle;">
+        <span class="header">&nbsp;{{action}} Project</span></td>
+    <td style="width:58%;text-align:center;vertical-align:middle;">
+        <label id="msg" class="Arial-12-maroon">{{duplicatealert}}</label>
+        <label id="msg" class="Arial-12-maroon">{{form.errors}}</label>
+        {% for each in milestone_form.errors %}
+        <label id="msg" class="Arial-12-maroon">{{each}}</label>
+        {% endfor %}
+        {% for each in time_based_form.errors %}
+        <label id="msg" class="Arial-12-maroon">{{each}}</label>
+        {% endfor %}
+        {% for each in specific_dates_form.errors %}
+        <label id="msg" class="Arial-12-maroon">{{each}}</label>
+        {% endfor %}        
+    </td>
+    
+    <td style="white-space:nowrap">
+        <input name="Save" type="submit" id="Savetop" value="Save" class="b1" onclick="return saveProject();" />	
+        <input name="SaveAndContinue" type="submit" id="SaveAndContinuetop" value="Save and Continue" class="b1" onclick="return saveProject();" />
+        <input type="button" name="cancel" id="cancel_bttop" value="Cancel" class="b1" />
+    </td>                                             
+    </tr>
+    </table>
+    <div class="program-name-form-box">
+    <div class="program-name-inside-box1">
+    <div>
+        <div class="both">
+        </div>
+        <input type="hidden" id="logged_in_user" value="{{user.pk}}" />    
+        <input type="hidden" name="NonHumanResourceFormCount" id="NonHumanResourceFormCount" value="{{nonHumanResourceForms.total_form_count}}" />
+        <input type="hidden" name="StageFormCount" id="StageFormCount" value="{{milestone_form.total_form_count}}" />
+        <input type="hidden" name="SpecificDatesFormCount" id="SpecificDatesFormCount" value="{{specific_dates_form.total_form_count}}" />
+        <input type="hidden" name="redirectionUrl" id="redirectionUrl" value="" />
+        <input type="hidden" name ="planned_effort_days" id="planned_effort_days" />
+        
+        
+        {{form.code}}
+    <div class="title-border"></div>
+    <table align="left" width="100%">
+    <tr><td></td></tr>
+    <tr>
+    <td style="background-color: #E8E8E8">
+    <div class="projectDetails">
+        <table align="left" width="100%">
+            <tr style="height: 10px">
+                <td colspan="6">
+                    <span class="sub-header"> Project Key Details </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="con-grey LabelField Arial-12-grey">Project Name *</td>
+                <td class="Field">{{form.project_name}}</td>
+                <td class="EditField"></td>
+                <td class="con-grey Arial-12-grey">Planned Start Date</td>
+                <td colspan="2">{{form.planned_start_date}}</td>
+            <tr>
+    
+            <tr>
+                <td class="con-grey Arial-12-grey">Short Name</td>
+                <td>{{form.short_name}}</td>
+                <td></td>
+                <td class="con-grey Arial-12-grey">Planned End Date</td>
+                <td colspan="2">{{form.planned_end_date}}</td>
+                <td style="display:none" colspan="2">{{form.project_no}}</td>
+            <tr>
+    
+            <tr>                        
+                <td class="con-grey Arial-12-grey">Project Type</td>
+                <td>{{form.project_type}}</td>
+                <td>
+                    <a href="/project/project_type/" rel="#overlay">
+                    <input type="button" id="project_type_add" class="b1" value="+"/></a>
+					<a href="#" onclick="getProjectTypeToEdit();" rel="#overlay" id="editprojecttype">                     
+                    <input id="project_type_edit" class="b1" type="button" value="Edit" /></a>
+                    <div class="apple_overlay" id="overlay">
+                     <!-- the external content is loaded inside this tag -->
+                     <div class="contentWrap"></div>
+                     </div>    
+                   <!--  <input id="type+" class="b1" type="submit" value="+" onclick ="return setFormAction('/CreateTagOrProjectTypeFromProject/?ids={{prog_to_up.programID}}&name=ProjectTypeForm')" />
+                    <input id="typeedit" class="b1" type="button" value="Edit" onclick ="setNavigation('/CreateTagOrProjectTypeFromProject/?name=ProjectTypeForm', 'id_project_type', 'pkID', 'Type of Program', 'update')" /> -->
+                </td>
+                <td class="con-grey Arial-12-grey">Estimated Effort</td>
+                <td>{{form.planned_effort}}</td>
+                <td class="EditLabel">{{form.planned_effort_unit}}</td>
+            </tr>
+    
+            <tr>
+                <td class="con-grey Arial-12-grey">Domain</td>
+                <td>{{form.domain}}</td>
+                <td>
+                		<a href="/project/domain/" rel="#overlay">
+                        <input type="button" id="domain_add" class="b1" value="+"/></a>
+						<a href="#" onclick="getDomainToEdit();" rel="#overlay" id="editdomain">                     
+                        <input id="domain_edit" class="b1" type="button" value="Edit" /></a>
+                        <div class="apple_overlay" id="overlay">
+                         <!-- the external content is loaded inside this tag -->
+                         <div class="contentWrap"></div>
+                         </div>                    
+                </td>
+                <td class="con-grey Arial-12-grey">Project Manager/Lead</td>
+                <td>{{form.owner}}</td>
+                <td></td>
+            </tr>
+    
+            <tr>
+                <td class="con-grey Arial-12-grey"> Apex Body Owner</td>
+                <td>{{form.apex_body_owner}}</td>
+                <td></td>
+                <td class="con-grey Arial-12-grey">Customer Name</td>
+                <td>{{form.customer}}</td>
+                <td class="EditLabel">
+                    <a href="/customer/create/" rel="#customer_overlay">
+                        <input type="button" id="customer_add" class="b1" value="+"/>
+                    </a>
+                    <a href="#" onclick="getCustomerToEdit();" rel="#customer_overlay" id="editcustomer">
+                        <input id="customer_edit" class="b1" type="button" value="Edit" />
+                    </a>
+                    <div class="customer_overlay" id="customer_overlay">
+                         <!-- the external content is loaded inside this tag -->
+                         <div class="contentWrap"></div>
+                    </div>
+                </td>
+            </tr>
+    
+            <tr>
+                <td class="con-grey LabelField Arial-12-grey">Business Unit </td>
+                <td>{{form.business_unit}}</td>
+                <td>
+                    <!--a href="/project/business_unit/" rel="#business_overlay">
+                    <input type="button" id="business_unit_add" class="b1" value="+"/></a>
+					<a href="#" onclick="getBusinessUnitToEdit();" rel="#business_overlay" id="editbusinessunit"> 
+                    <input id="businessunit_edit" class="b1" type="button" value="Edit" /></a>
+                    <div class="business_apple_overlay" id="business_overlay">
+                     <!-- the external content is loaded inside this tag -->
+                     <div class="contentWrap"></div>
+                     </div-->    
+                </td>
+                <td>Project Group</td>
+                <td>{{form.parent}}</td>
+                <td>
+                    <a href="/project/group/" rel="#project_group_overlay">
+                    <input type="button" id="business_unit_add" class="b1" value="+"/></a>
+					<a href="#" onclick="getProjectGroupToEdit();" rel="#project_group_overlay" id="projectgroupedit">
+                    <input id="project_group_edit" class="b1" type="button" value="Edit" /></a>
+                    <div class="apple_overlay" id="project_group_overlay">
+                     <!-- the external content is loaded inside this tag -->
+                     <div class="contentWrap"></div>
+                     </div>    
+                </td>  
+</tr>
+<tr>
+		<td class="con-grey Arial-12-grey">Time Exceeded Alert </td>
+		<td>{{form.estimated_time_exceed}}</td>
+		
+</tr>
+        </table>
+    </div>
+    </td>
+    </tr>    
+    <tr><td style="height:20px"></td></tr>    
+    <tr>
+    <td style="background-color: #E8E8E8">
+    <div class="approvalDetails" id="approvalDetails">
+        <table width="100%" id="approvalTable">
+            <tr>
+                <td colspan="6"><span class="sub-header"> Approval Details </span></td>
+            </tr>
+           <tr>
+                <td class="con-grey LabelField Arial-12-grey" >Approval Type *</td>
+                <td class="Field">{{form.approval_type}}</td>
+                <td colspan="4"></td>
+           </tr>
+           <tr id="clientDetails">
+                <td class="con-grey LabelField Arial-12-grey">Client Name</td>
+                <td class="Field">{{form.customer_contact}}</td>
+                <td style="width: 12%">
+                    <!--customer contact -->
+                    <a href="/customer/contact/create/" rel="#customer_contact_overlay">
+                        <input type="button" id="customer_contact_add" class="b1" value="+"/>
+                    </a>
+                    <a href="#"  onclick="getCustomerContactToEdit();" rel="#customer_contact_overlay" id="customercontactedit">
+                        <input id="businessunit_edit" class="b1" type="button" value="Edit" />
+                    </a>
+                    <div class="customer_contact_overlay" id="customer_contact_overlay">
+                         <!-- the external content is loaded inside this tag -->
+                         <div class="contentWrap"></div>
+                     </div>
+                </td>
+                <td colspan="3"></td>
+           </tr>
+           <tr id="approvalInfo">
+                <td class="con-grey LabelField Arial-12-grey">Approval date</td>
+                <td colspan="2">{{form.approval_date}}</td>
+                <td class="con-grey LabelField Arial-12-grey">Approval reference Details</td>
+                <td colspan="2">{{form.approval_reference}}</td>
+           </tr>
+        </table>
+    </div>
+    </td>
+    </tr>
+    <tr><td style="height:30px"></td></tr>    
+    <tr>
+    <td style="background-color: #E8E8E8">
+    <div class="billingDetails">
+        <table width="100%" >
+            <tr>
+                <td><span class="sub-header">Billing Details</span></td>
+            </tr>
+            <tr>
+    <td>
+    <div id="tabs">
+       <ul>
+            <li><a href="#milestone"><span class="con-grey Arial-12-grey">milestone</span></a></li>
+            <li><a href="#time-based"><span class="con-grey Arial-12-grey">time based</span></a></li>
+            <li><a href="#specified-dates"><span  class="con-grey Arial-12-grey">specified dates</span></a></li>
+        </ul>
+    
+       <div id="milestone">
+          <table width="100%">
+              <tr>
+                <td width="70%">
+                    <table id="stageTable">
+                        <tr width = "100%">
+                            <td width="60%">
+                               <span class="con-grey Arial-12-grey"> milestone </span>
+                            </td>
+                            <td width="30%">
+                                <span class="con-grey Arial-12-grey">percentage</span>
+                            </td>
+                            <td width="10%">
+                               <span class="con-grey Arial-12-grey"> delete</span>
+                            </td>
+               </tr>    
+    
+                {{ milestone_form.management_form }} 
+                    {% for each in milestone_form.forms %}
+                      <tr id="row{{forloop.counter}}">
+                        {{each.errors}}
+                        {{each.id}}
+                        <td>{{each.name}}</td>
+                        <td>{{each.percentage}}</td>
+                        <td>{{each.DELETE}}</td>
+                     <tr>
+                    {% endfor %}
+
+                  </table>
+             </td>
+             <td>
+                <input type="button" name="add" id="btnadd" value="+" style="margin-top: 10px" class="b1"  onclick="createStageElement();" />
+                <input type="button" name="add" id="btnadd" value="-" style="margin-top: 10px" class="b1"  onclick="removeStageElement();" />
+             </td>    
+           </tr>
+           <tr>
+                <td>
+                 <input type="button" name="DeleteAllMilestoneDetails" id="DeleteAllMilestoneDetails" value="Delete All" class="b1" />
+                </td>
+            </tr>
+         </table>
+      </div>
+    
+    <div id="time-based">
+    <table id="id_invoice_dates" width="100%">
+    {{ time_based_form.management_form }} 
+    {% for each in time_based_form.forms %}
+    {{each.id}}
+        <tr>
+            <td class="con-grey LabelField Arial-12-grey">
+               <span class="con-grey Arial-12-grey"> Frequency </span>
+            </td>
+            <td>
+                {{each.invoice_terms}}
+            </td>
+            <td colspan="4">
+            </td>
+        </tr>
+        <tr>
+            <td class="con-grey LabelField Arial-12-grey">
+              <span class="con-grey Arial-12-grey">  Invoice Start Date </span>
+            </td>
+            <td colspan="2" class="invoiceField" >
+                {{each.start_date}}
+            </td>
+            <td class="con-grey LabelField Arial-12-grey" >
+               <span class="con-grey Arial-12-grey"> Invoice End Date </span>
+            </td>
+            <td colspan="2">
+                {{each.end_date}}
+                {{each.DELETE}}
+            </td>
+        </tr>
+        {% endfor %}
+    
+        <tr>
+            <td>
+                <input type="button" name="DeleteAllTimeBasedDetails" id="DeleteAllTimeBasedDetails" value="Delete" class="b1" />
+            </td>
+        </tr>
+    </table>
+    </div>
+    
+        <div id="specified-dates">
+            <table width="100%">
+                <tr>
+                    <td width="70%">
+                        <table width="100%" id="SpecificDatesTable">
+                            <tr>
+                                <td>
+                                   <span class="con-grey Arial-12-grey"> Date </span>
+                                </td>
+                                <td>
+                                    <span class="con-grey Arial-12-grey">Percentage </span>
+                                </td>
+                                <td>
+                                   <span class="con-grey Arial-12-grey"> Delete </span>
+                                </td>
+                            </tr>
+
+                            {{ specific_dates_form.management_form }}
+                            {% for each in specific_dates_form.forms %}
+                            {{each.id}}
+                            <tr id="rowsd{{forloop.counter}}">
+                                <td>
+                                   <span class="con-grey Arial-12-grey"> {{each.start_date}}</span>
+                                </td>
+                                <td>
+                                   <span class="con-grey Arial-12-grey"> {{each.percentage}}</span>
+                                </td>
+                                <td>
+                                   <span class="con-grey Arial-12-grey"> {{each.DELETE}}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}                                            
+                        </table>
+                    </td>
+                    <td>
+                        <input type="button" name="add" id="btnadd" value="+" style="margin-top: 10px" class="b1"  onclick="createSpecificDatesElement();" />
+                        <input type="button" name="add" id="btnadd" value="-" style="margin-top: 10px" class="b1"  onclick="removeSpecificDatesElement();" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        
+                        <input type="button" name="DeleteAllSpecificDatesDetails" id="DeleteAllSpecificDatesDetails" value="Delete All" class="b1" />
+                        
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+       </td>                            
+     </tr>
+ </table>
+    </div>
+    </td>
+    </tr>
+
+
+<tr>
+    <td valign="middle" align="left" colspan="5">
+        <table>
+            <tr>
+                <td align="right">
+                    <input name="Save" type="submit" id="Save"  value="Save" class="b1" onclick="return saveProject();" />
+                </td>
+                <td>
+                    <input name="SaveAndContinue" type="submit" id="SaveAndContinue"  value="Save and Continue" class="b1" onclick="return saveProject();" /> 
+                </td>
+                <td align="left">
+                    <input type="button" name="cancel" id="cancel_bt" value="Cancel" class="b1" />
+                </td>  
+                <td>
+                </td>
+            </tr> 
+        </table>
+    </td>
+</tr>
+</table>
+
+    <div class="both"></div>
+    <div class="update-program-add-box1">&nbsp;</div>
+    <div class="update-program-add-box4"></div>
+    <div class="con-grey">
+        <span class="Arial-12-grey"><br /><br /><br />Marked (*) Fields are Mandatory<br /></span>
+    </div>
+    </div>  
+    <div style="padding-bottom: 5px; padding-left: 15px; padding-right: 15px;">
+    </div>
+    </div> </div>
+{% endblock %} 

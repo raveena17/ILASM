@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/tablesorter-theme-blue.css" type="text/css" media="print, projection, screen" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+    <script type="application/javascript" src="/static/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.tablesorter.js"></script> 
+
+{% endblock %}
+{% block title %} Leave Credit List {% endblock %}
+{% block taskmenus %}{% endblock %}
+{% block header-section %}
+   {% include 'search_header.html' %}
+{% endblock %}
+{% block contentdata %}
+{% load user_tags %}
+<style>
+    .list { width: 100%; }
+    .list-header { width: 100%; padding-top: 10px; font-family:Liberation Serif;}
+    .create-button { padding-top: 10px; padding-bottom: 10px; width: 17%; float: right;font-family:Liberation Serif; }
+    .message { width: 100%; text-align: center; height: 20px; }
+    .list-header-panel { width:100%; font-family:Liberation Serif; font-size: 20px; }
+    .list-header, .list-column { min-width: 5%; max-width: 20%; padding-top: 10px;  font-family:Liberation Serif; font-size: 20px;}
+    .list-row { width:100%; font-family: Liberation Serif; font-size: 12px;}
+    .footer { width: 100%; padding-top: 60px; }
+    .footer-buttons {float: left; }
+    .page-number{ float: right; }
+    .b1{font-family: Liberation Serif;
+    font-size: 14px;}
+    .header {font-size: 18px; font-style: normal; line-height: normal;font-weight: normal;font-variant: normal;text-transform: none;color: #000000; text-decoration: none;}
+    .header link-line-bg con-white-bold {font-family: Liberation Serif; font-size: 18px;}
+    #leave-credit.b1 { font-family: Arial, Helvetica, sans-serif;  font-size: 12px;  float: left; margin-left: -486%; }
+    #leave-back.b1 { font-family: Arial, Helvetica, sans-serif;  font-size: 12px;  float: right; margin-left: -420%; }
+
+</style>
+
+<script>
+    $(document).ready(function(){
+        
+        $('#cancel').click(function(){
+            if(confirm('are you sure you want to cancel selected?')){
+                document.getElementById('leavelist').action = "/leave/cancel/";
+            }
+            else{
+                return false;
+            }
+        })
+        $('table.tablesorter').tablesorter();
+
+    });
+</script>
+
+
+{% load pagination_tags %}
+    <form id="leavelist" name="leavelist" action="" method="POST" />
+        {% csrf_token %}
+        <div class="list" >
+            <div class="list-header">
+                <span class="header">Leave Credit List</span>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}"><h4>{{ message }}</h4></div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="program-blue-box">
+                <div class="create-button">
+                    {% for role in  user.groups.all %}
+                        {% if role.name == 'Corporate Admin' %}
+                        <a href="/leave/credit/">
+                        <input type="button" id="leave-credit" name="leave-credit" class="b1" value="Leave Credit" /></a>
+                        <a href="/leave/list/">
+                        <input type="button" id="leave-back" name="leave-back" class="b1" value=">>> Back" /></a>
+
+
+                        
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        {% if creditlist %} 
+            <table id="users" class="tablesorter">
+                <thead class="list-header-panel">
+                    <tr>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Select</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">S.No</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Credit Date</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Username</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Leave Type</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">No-of-days</th>
+                        <th class="header link-line-bg con-white-bold" style="font-size: small; font-family: Liberation serif;">Current Year</th>
+
+                    </tr>
+                </thead>
+
+                <tfoot class="footer">
+                    <tr><td colspan="3">
+                        <div class="footer-buttons">
+                                <!-- <input type="submit" value="Cancel" id="cancel" name="cancel" class="b1" />
+                                <input type="button" value="Clear" id="clear_all" name="clear_all" class="b1" onclick="return unCheck('leavelist');"  /> -->
+                            </div>
+                        <td colspan="10">
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if creditlist.has_previous %}
+                                        <a href="?credit_page={{ creditlist.previous_page_number }}">previous</a>
+                                    {% endif %}
+
+                                   {% for n in creditlist.paginator.page_range %}
+                                        {% if creditlist.number == n %}
+                                          <span class="page-link">{{ n }}<span class="sr-only"></span></span>
+                                        {% elif n > creditlist.number|add:'-2' and n < creditlist.number|add:'4' %}
+                                        <span class="page-item"><a class="page-link" href="?credit_page={{ n }}">{{ n }}</a></span>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if creditlist.has_next %}
+                                        <a href="?credit_page={{ creditlist.next_page_number }}">next</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </td>
+                        <center>
+                    </tr>
+                </tfoot>
+                <tbody>
+
+                    {% for leave in creditlist %}
+                        <tr class="list-row">
+                            <td width="6%">
+                                <input type="checkbox" id="leave_pk" name="leave_pk" value="{{leave.pk}}" />
+                                <a href="/leave/credit/update/{{leave.pk}}">View</a>
+                            </td>
+                            <td width="5%">
+                                {% if is_paginated %}
+                                    {{ page_obj.start_index|add:forloop.counter0 }}
+                                {% else %}
+                                   {{ forloop.counter }}
+                                {% endif %}
+                            </td>
+                            <td width="10%">{{ leave.credit_date |date:"N d, Y" }}</td>
+                            <td width="10%">{{ leave.empid}}</td>
+                            <td width="10%">{{ leave.leave_id}}</td>
+                            <td width="10%">{{ leave.no_of_days}}</td>
+                            <td width="10%">{{ leave.cur_year}}</td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        </div>
+    </form>
+
+{% endblock %}
+
+
+
+
+
+
+
+

@@ -1,0 +1,40 @@
+{% extends "base.html" %} 
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" title="standard-css1" />
+    <link href="/static/css/forms.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block script %}
+    <script type="application/javascript" language="JavaScript" src="/static/js/Validation.js"></script>
+    <script type="application/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
+{% endblock %}
+{% block title %} The First step {% endblock %}
+{% block programcontent %} {% endblock %} 
+{% block programmenu %}{% endblock %} 
+{% block taskmenus %} {% endblock %}
+{% block contentdata %}
+<form name="contacts" id="contacts" action="." method="post">
+<div class="wr-ar">
+<div class="update-program-hdr">
+   	<table width="100%">
+        <tr>
+     		<td width="30%"><span class="header">
+			The First step
+		</span></td>
+     		<td width="50%"></td>
+        </tr>
+     </table>
+   </div>
+<div class="plain"> 
+            
+<p><strong>Badri Narayanan</strong></p> 
+<p><strong>There are great many leaders who have achieved the impossible by being positive. We can become leaders too so let the first step towards this be a positive one, the correct one</strong>.</p> 
+<p>Experiences make life. We often exchange our experience with our friends, folks and colleagues at various times. These experiences could be as simple as coming to office or as hard as doing a bungee. If we observe closely we would generally associate an experience with a mood (elation, humour, disappointment, etc). The mood is determined by how attached we are as individuals to an entity that causes the experience. For an avid follower of the Indian cricket team, the experience of watching the team play a very close match is going to be more exhilirating than compared to a non-follower. The Indian cricket fan is obviously more attached to the result of an Indian team victory and the thought of it not fulfilling his/ her expectation will surely result in huge anxiety.</p> 
+<p>Let us now look at a living entity, whose senses are not as developed as ours and who weighs hardly 100 mg when fully matured. I am referring to a worker bee, whose sole purpose is to collect nectars. No one has informed it that drinking the nectar could make it immortal, but it still continues to collect the nectar!!! Now, let us look at the environment in which it collects the nectar. The flower from which it collects would be hundred times bigger than its size, the atmosphere in which it is flying would be zillion times bigger, even a gentle breeze could cause it to tumble. Does any of this affect the bee? Can there be an exhilarating flight for a bee? Does a bee attach mood to its experience of collecting nectar? Does it ever get anxious about a windy atmosphere that it is not going to fly again? By hook or by crook, each and every time it collects the nectar and returns back to the beehive to store it.</p> 
+<p>Even if a bee does not attach a mood, from our perspective it is making a successful experience of collecting nectar each time it flies. So, what makes a bee to enjoy so many successful experiences in spite of all the odds? Why aren't we (supposed to be the greatest living beings!!) always having successful experiences and instead are ending up having undesired experiences? I am no expert in this, but I think a bee is successful because it does not have the extra sense that we have to attach a mood to an experience and it simply does its work without thinking about failures.</p> 
+<p>Are we doing the same? With our extra sense we train our intelligence to go by our previous experiences particularly past failures. We think about failures even before we start any work; a false start. This is like trying to breathe fresh air with a self-tied noose around our neck when the whole atmosphere is available for us. By starting with a negative thought we are spreading the thought across the environment giving ourselves little chance. So, is positive thinking enough for a successful experience? Yes, positive energy brings with it all the strength (both emotional and physical) required to achieve the desired experience. It can spread across the environment and the environment can act in our favour to achieve our results. At least without it the experience can not be the desired one as one would continue to carry the negative vibes right through. One can remain positive and achieve their dreams; else end up going through the repeated cycles of undesired experiences!!!<img class="image-right" src="../../bee.PNG" alt="beeeeeeee" height="163" width="156" /></p> 
+<p>There are great many leaders who have achieved the impossible by being positive. We can become leaders too so let the first step towards this be a positive one, the correct one.</p> 
+<p></p> 
+ 
+        </div> 
+</div>
+	{% endblock %} 
